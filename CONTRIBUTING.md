@@ -98,6 +98,7 @@ CaramOS/
 │   ├── includes.chroot/             # Overlay copy vào rootfs
 │   └── hooks/live/                  # Hook build-time legacy, hạn chế thêm mới
 ├── packages/
+│   ├── caramos-app-center/          # App Center (git submodule: VN-Linux-Family/CaramOS-app-center)
 │   └── caramos-ota/                 # Hệ thống OTA chính
 │       ├── debian/changelog         # Version package upload PPA
 │       ├── usr/bin/
@@ -124,6 +125,11 @@ Tài liệu OTA chi tiết nằm tại:
 - [packages/README.md](packages/README.md)
 - [packages/caramos-ota/README.md](packages/caramos-ota/README.md)
 
+App Center (trình chọn ứng dụng lần đầu và kho ứng dụng) là repo riêng
+[VN-Linux-Family/CaramOS-app-center](https://github.com/VN-Linux-Family/CaramOS-app-center), gắn vào
+`packages/caramos-app-center` bằng git submodule, có phiên bản và release PPA riêng. Thêm hay sửa ứng dụng gợi
+ý: làm trong repo đó (xem README của nó), không cần ra bản CaramOS mới.
+
 ---
 
 ## Build ISO
@@ -131,6 +137,12 @@ Tài liệu OTA chi tiết nằm tại:
 ### Local build
 
 Yêu cầu: Ubuntu/Mint/Debian phù hợp, có `sudo`, đủ dung lượng cho rootfs và ISO.
+
+Clone kèm submodule App Center (repo đã clone trước đó thì chạy `git submodule update --init`):
+
+```bash
+git clone --recurse-submodules https://github.com/VN-Linux-Family/CaramOS.git
+```
 
 ```bash
 sudo apt update

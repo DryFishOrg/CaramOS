@@ -20,8 +20,11 @@ CaramOS là bản phân phối Linux dựa trên Linux Mint 22 (Ubuntu 24.04 LTS
 │   ├── overlay.sh        # Copy includes.chroot vào rootfs
 │   ├── chroot_shell.sh   # Debug chroot
 │   └── debug_iso.sh      # Kiểm tra boot splash/Plymouth
+├── packages/
+│   ├── caramos-ota/      # Gói OTA: migration, Update Center, Control Center
+│   └── caramos-app-center/  # Git submodule VN-Linux-Family/CaramOS-app-center (App Center)
 ├── config/
-│   ├── packages.txt      # Packages cần thêm (plank, fcitx5, chrome...)
+│   ├── packages.txt      # Packages cần thêm (flameshot, copyq...)
 │   ├── hooks/live/       # Hooks chạy bên trong chroot
 │   │   └── NNNN-ten.hook.chroot  # Đặt tên theo thứ tự ưu tiên (0100, 0200...)
 │   └── includes.chroot/  # Overlay files copy vào rootfs
@@ -125,6 +128,13 @@ make docker-build
 ### CI/CD
 
 GitHub Actions workflow trong `.github/workflows/build.yml` build trên Ubuntu 24.04 runners.
+
+### App Center (submodule)
+
+- `packages/caramos-app-center` là git submodule của repo riêng `VN-Linux-Family/CaramOS-app-center`, có version và release PPA riêng (`make -C packages/caramos-app-center release VERSION=x`).
+- Clone: `git clone --recurse-submodules ...` hoặc `git submodule update --init`. Build ISO dựng gói từ submodule (`scripts/ota_bootstrap.sh`).
+- Sửa App Center: commit + push trong submodule trước, rồi commit con trỏ submodule trong CaramOS.
+- `caramos-ota` có `Recommends: caramos-app-center` và tự nâng cấp App Center trong lần kiểm tra OTA hằng ngày.
 
 ### Git Workflow
 

@@ -174,6 +174,21 @@ def install_packages(packages: list[str]) -> bool:
         return False
 
 
+# Packages released on their own schedule that the daily OTA check keeps up to date, when installed.
+COMPANION_PACKAGES = ("caramos-app-center",)
+
+
+def upgrade_companion_packages() -> None:
+    """Upgrade installed companion packages; never installs them and never fails the OTA run."""
+
+    for package in COMPANION_PACKAGES:
+        if not installed_version(package):
+            continue
+        result = run_command(["apt-get", "install", "--only-upgrade", "--yes", "--", package], allow_fail=True)
+        if result.returncode != 0:
+            log_error(f"Could not upgrade {package}; it keeps its current version")
+
+
 def remove_package(package: str) -> bool:
     return run_command(["apt-get", "remove", "--yes", "--", package], allow_fail=True).returncode == 0
 

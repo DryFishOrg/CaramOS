@@ -17,6 +17,7 @@ from .apt import (
     remove_package,
     repair_apt,
     repair_dpkg,
+    upgrade_companion_packages,
 )
 from .constants import EXIT_APT, EXIT_CANCEL, EXIT_ERROR, EXIT_OK, TOOL_NAME, TOOL_VERSION
 from .logging_utils import current_log_file, init_log, log_error, log_info, now_iso
@@ -76,6 +77,7 @@ def self_update_ota_if_needed(*, skip_self_update: bool, reexec_args: list[str])
         print(f"Log: {current_log_file()}")
         raise SystemExit(EXIT_APT)
 
+    upgrade_companion_packages()
     after = installed_version("caramos-ota")
     log_info(f"OTA self-update after version: {after or '(not installed)'}")
     if before == after:

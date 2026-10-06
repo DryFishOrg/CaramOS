@@ -49,13 +49,8 @@ disable_package_data_downloads
 "${APT_GET[@]}" install -y --no-install-recommends unzip wget curl ca-certificates file xz-utils fontconfig cabextract || true
 
 # --- Apps ---
-echo "[CaramOS] Installing Google Chrome..."
-if wget -q -O /tmp/google-chrome.deb "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"; then
-    "${APT_GET[@]}" install -y /tmp/google-chrome.deb || "${APT_GET[@]}" install -f -y
-    rm -f /tmp/google-chrome.deb
-else
-    echo "[CaramOS] WARNING: Could not download Google Chrome." >&2
-fi
+# Bộ văn phòng, trình duyệt (ngoài Firefox của Mint) và các ứng dụng khác do App Center CaramOS cài
+# theo lựa chọn của người dùng ở lần đăng nhập đầu tiên (/etc/caramos-app-center/first-run).
 
 # --- Themes/assets ---
 echo "[CaramOS] Using Cinnamon Delight theme from Task 17; ChromeOS theme is intentionally not installed."

@@ -208,7 +208,7 @@ release:
 	./tools/prepare-release.py --check '$(VERSION)'
 	$(MAKE) compile
 	$(MAKE) validate
-	PYTHONPATH=usr/lib/python3/dist-packages python3 -m unittest discover -s tests -v
+	PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=usr/lib/python3/dist-packages python3 -m unittest discover -s tests -v
 	$(MAKE) build
 	$(MAKE) source
 	$(MAKE) gpg-unlock

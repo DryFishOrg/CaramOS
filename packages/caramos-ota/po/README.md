@@ -29,4 +29,5 @@ msgfmt --check --statistics -o /dev/null po/*/vi.po
 ```
 
 Update metadata shown in the Update Center comes from each migration's `manifest.json`: `title`/`summary`
-are Vietnamese and `title_en`/`summary_en` are shown in other languages.
+are Vietnamese and `title_en`/`summary_en` are shown in other languages. The App Center has its own
+catalog (`caramos-app-center` domain) in its repository, `packages/caramos-app-center`.

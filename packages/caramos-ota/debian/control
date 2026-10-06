@@ -18,6 +18,7 @@ Depends: ${misc:Depends},
  python3-gi,
  gir1.2-gtk-3.0,
  pkexec
+Recommends: caramos-app-center
 Description: CaramOS over-the-air update and offline audit tools
  Provides a CaramOS-specific OTA update command, daily update check,
  desktop notifier, state tracking, logs, best-effort rollback support,
