@@ -1,48 +1,15 @@
-"""How caramos-ota and the ISO build tie in the App Center (repository VN-Linux-Family/CaramOS-app-center)."""
+"""How the ISO build ties in the App Center (repository VN-Linux-Family/CaramOS-app-center).
+
+Updates from its GitHub releases are tested in test_app_center_update.py.
+"""
 
 from __future__ import annotations
 
-import subprocess
 import unittest
 from pathlib import Path
-from unittest.mock import patch
-
-from caramos_ota import apt
 
 ROOT = Path(__file__).parents[1]
 REPO = ROOT.parents[1]
-
-
-class CompanionUpgradeTests(unittest.TestCase):
-    def run_upgrade(self, installed: str, returncode: int = 0) -> list[list[str]]:
-        calls: list[list[str]] = []
-
-        def fake_run(args, **_kwargs):
-            calls.append(list(args))
-            return subprocess.CompletedProcess(args, returncode, "", "")
-
-        with patch.object(apt, "installed_version", return_value=installed), \
-                patch.object(apt, "run_command", side_effect=fake_run), patch.object(apt, "log_error"):
-            apt.upgrade_companion_packages()
-        return calls
-
-    def test_upgrades_the_app_center_only_when_installed(self) -> None:
-        self.assertEqual([["apt-get", "install", "--only-upgrade", "--yes", "--", "caramos-app-center"]],
-                         self.run_upgrade("0.1.0"))
-        self.assertEqual([], self.run_upgrade(""))
-
-    def test_a_failed_upgrade_does_not_raise(self) -> None:
-        self.run_upgrade("0.1.0", returncode=100)
-
-    def test_self_update_runs_the_companion_upgrade(self) -> None:
-        source = (ROOT / "usr/lib/python3/dist-packages/caramos_ota/cli.py").read_text(encoding="utf-8")
-        update = source.split("def self_update_ota_if_needed", 1)[1].split("\ndef ", 1)[0]
-        self.assertIn("upgrade_companion_packages()", update)
-
-    def test_package_recommends_the_app_center(self) -> None:
-        control = (ROOT / "debian/control").read_text(encoding="utf-8")
-        self.assertIn("Recommends: caramos-app-center", control)
-        self.assertNotIn("caramos_app_center", (ROOT / "debian/install").read_text(encoding="utf-8"))
 
 
 @unittest.skipUnless((REPO / "config").is_dir(), "ISO tree is not in the source package")
@@ -61,6 +28,11 @@ class IsoIntegrationTests(unittest.TestCase):
     def test_iso_enables_the_first_run_picker(self) -> None:
         self.assertTrue((REPO / "config/includes.chroot/etc/caramos-app-center/first-run").is_file())
 
+    def test_new_users_get_the_app_center_instead_of_the_mint_welcome_screen(self) -> None:
+        # mintwelcome-launcher skips users with this flag (the "show at startup" checkbox writes it);
+        # the package stays installed because mint-meta-core depends on it.
+        self.assertTrue((REPO / "config/includes.chroot/etc/skel/.linuxmint/mintwelcome/norun.flag").is_file())
+
     def test_ci_checks_out_the_submodule(self) -> None:
         workflow = (REPO / ".github/workflows/build.yml").read_text(encoding="utf-8")
         self.assertIn("submodules: true", workflow)
@@ -69,6 +41,9 @@ class IsoIntegrationTests(unittest.TestCase):
         self.assertFalse((REPO / "config/hooks/live/0250-wps-office.hook.chroot").exists())
         hook = (REPO / "config/hooks/live/0100-caramos-setup.hook.chroot").read_text(encoding="utf-8")
         self.assertNotIn("google-chrome-stable_current_amd64.deb", hook)
+        # The Desktop shortcut would point at a browser that is not installed; the App Center launcher
+        # takes its place (migration 20261009120000_add_app_center_launcher adds it to /etc/skel).
+        self.assertFalse((REPO / "config/includes.chroot/etc/skel/Desktop/google-chrome.desktop").exists())
 
 
 if __name__ == "__main__":

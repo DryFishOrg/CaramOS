@@ -125,10 +125,11 @@ Tài liệu OTA chi tiết nằm tại:
 - [packages/README.md](packages/README.md)
 - [packages/caramos-ota/README.md](packages/caramos-ota/README.md)
 
-App Center (trình chọn ứng dụng lần đầu và kho ứng dụng) là repo riêng
+App Center (trình chọn ứng dụng) là repo riêng
 [VN-Linux-Family/CaramOS-app-center](https://github.com/VN-Linux-Family/CaramOS-app-center), gắn vào
-`packages/caramos-app-center` bằng git submodule, có phiên bản và release PPA riêng. Thêm hay sửa ứng dụng gợi
-ý: làm trong repo đó (xem README của nó), không cần ra bản CaramOS mới.
+`packages/caramos-app-center` bằng git submodule, có phiên bản riêng và phát hành bằng GitHub Release (không qua
+PPA): push tag `vX.Y.Z` là xong, máy CaramOS tự cài bản mới trong lần kiểm tra OTA hằng ngày sau khi kiểm tra
+chữ ký. Thêm hay sửa ứng dụng gợi ý: làm trong repo đó (xem README của nó), không cần ra bản CaramOS mới.
 
 ---
 

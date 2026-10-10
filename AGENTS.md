@@ -131,10 +131,10 @@ GitHub Actions workflow trong `.github/workflows/build.yml` build trên Ubuntu 2
 
 ### App Center (submodule)
 
-- `packages/caramos-app-center` là git submodule của repo riêng `VN-Linux-Family/CaramOS-app-center`, có version và release PPA riêng (`make -C packages/caramos-app-center release VERSION=x`).
+- `packages/caramos-app-center` là git submodule của repo riêng `VN-Linux-Family/CaramOS-app-center`, có version riêng và phát hành bằng GitHub Release, không qua PPA (`make -C packages/caramos-app-center release VERSION=x`, rồi push tag; workflow ký `latest.json` bằng chìa App Center).
 - Clone: `git clone --recurse-submodules ...` hoặc `git submodule update --init`. Build ISO dựng gói từ submodule (`scripts/ota_bootstrap.sh`).
 - Sửa App Center: commit + push trong submodule trước, rồi commit con trỏ submodule trong CaramOS.
-- `caramos-ota` có `Recommends: caramos-app-center` và tự nâng cấp App Center trong lần kiểm tra OTA hằng ngày.
+- `caramos-ota` (`caramos_ota/app_center.py`) cài và cập nhật App Center từ GitHub Release trong lần kiểm tra OTA hằng ngày, sau khi kiểm tra chữ ký bằng chìa `usr/share/caramos-ota/keys/caramos-app-center-release.gpg`.
 
 ### Git Workflow
 
