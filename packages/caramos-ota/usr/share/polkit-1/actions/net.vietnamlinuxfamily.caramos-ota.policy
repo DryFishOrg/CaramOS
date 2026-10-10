@@ -5,7 +5,9 @@
 <policyconfig>
   <action id="net.vietnamlinuxfamily.caramos-ota.upgrade">
     <description>Run CaramOS OTA upgrade</description>
+    <description xml:lang="vi">Chạy cập nhật OTA của CaramOS</description>
     <message>Authentication is required to install CaramOS updates</message>
+    <message xml:lang="vi">Cần xác thực để cài bản cập nhật CaramOS</message>
     <icon_name>system-software-update</icon_name>
     <defaults>
       <allow_any>no</allow_any>

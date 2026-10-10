@@ -1,4 +1,9 @@
-"""GTK dialog builders for the CaramOS OTA desktop notifier."""
+"""GTK dialog builders for the CaramOS OTA desktop notifier.
+
+Every page is a scrolled body above a fixed action bar, so the buttons stay on screen however small the
+window or long the list of changes (issue #77). Colours follow the Vietnam Linux Family palette, with a
+dark variant when the desktop uses a dark GTK theme.
+"""
 
 from __future__ import annotations
 
@@ -12,76 +17,156 @@ from .state import format_value, normalize_package
 
 CARAMOS_ICON = Path("/usr/share/pixmaps/caramos-logo.png")
 
+LIGHT = {
+    "green_900": "#1f4f32", "green_800": "#285f3d", "green_700": "#2f7048", "on_green": "#fffaf0",
+    "bg": "#f7f3e9", "card": "#fffdf7", "ink": "#1f2a22", "muted": "#657064", "line": "#e3dfd1",
+    "accent": "#2f7048", "tint": "rgba(47, 112, 72, 0.08)", "warn_bg": "#fff8df", "warn_line": "#ead5a3",
+    "warn_ink": "#7a5514", "error_900": "#7a2e1d", "error_700": "#a5432a",
+}
+DARK = {
+    "green_900": "#0f2a1a", "green_800": "#16331f", "green_700": "#3d8a5a", "on_green": "#fffaf0",
+    "bg": "#141d17", "card": "#1c2820", "ink": "#eef2ea", "muted": "#a3b0a2", "line": "#2d3b31",
+    "accent": "#8fd1a6", "tint": "rgba(143, 209, 166, 0.10)", "warn_bg": "#2e2715", "warn_line": "#5a4a22",
+    "warn_ink": "#ffd08a", "error_900": "#4a1d14", "error_700": "#7a3424",
+}
+
+CSS = """
+window.caramos-ota { background-color: %(bg)s; color: %(ink)s; }
+window.caramos-ota * { font-family: "Be Vietnam Pro", "Inter", "Noto Sans", sans-serif; }
+window.caramos-ota label { color: %(ink)s; }
+
+window.caramos-ota headerbar.caramos-header {
+  background-image: linear-gradient(135deg, %(green_900)s, %(green_800)s);
+  background-color: %(green_900)s;
+  border: none;
+  box-shadow: inset 0 -1px rgba(0, 0, 0, 0.12);
+  padding: 4px 8px;
+}
+window.caramos-ota headerbar.caramos-header label { color: %(on_green)s; }
+window.caramos-ota headerbar.caramos-header .title { font-weight: 800; }
+window.caramos-ota headerbar.caramos-header .subtitle { opacity: 0.75; }
+window.caramos-ota headerbar.caramos-header button.titlebutton {
+  color: %(on_green)s; background-image: none; background-color: transparent; border: none; box-shadow: none;
+}
+window.caramos-ota headerbar.caramos-header button.titlebutton:hover { background-color: rgba(255, 255, 255, 0.14); }
+
+window.caramos-ota .hero {
+  background-image: linear-gradient(135deg, %(green_900)s, %(green_700)s);
+  border-radius: 20px;
+  padding: 20px 22px;
+}
+window.caramos-ota .hero.error { background-image: linear-gradient(135deg, %(error_900)s, %(error_700)s); }
+window.caramos-ota .hero label { color: %(on_green)s; }
+window.caramos-ota .hero label.eyebrow {
+  font-size: 11px; font-weight: 800;
+  background-color: rgba(255, 250, 240, 0.16); border-radius: 999px; padding: 3px 10px;
+}
+window.caramos-ota .hero label.hero-title { font-size: 22px; font-weight: 800; }
+window.caramos-ota .hero .version-box {
+  background-color: rgba(255, 250, 240, 0.12); border-radius: 14px; padding: 10px 14px;
+}
+window.caramos-ota .hero label.version-caption { font-size: 12px; }
+window.caramos-ota .hero label.version-value { font-size: 20px; font-weight: 800; }
+window.caramos-ota .hero label.version-arrow { font-size: 20px; }
+
+window.caramos-ota label.chip {
+  font-size: 12px; font-weight: 700;
+  background-color: %(card)s; border: 1px solid %(line)s; border-radius: 999px; padding: 4px 12px;
+}
+window.caramos-ota .card {
+  background-color: %(card)s; border: 1px solid %(line)s; border-radius: 16px; padding: 16px 18px;
+}
+window.caramos-ota label.card-title { font-size: 15px; font-weight: 800; }
+window.caramos-ota label.muted { color: %(muted)s; }
+window.caramos-ota label.status-value { font-weight: 800; }
+window.caramos-ota .change-row { padding: 4px 0; }
+window.caramos-ota .change-row image { color: %(accent)s; }
+
+window.caramos-ota .callout {
+  background-color: %(warn_bg)s; border: 1px solid %(warn_line)s; border-radius: 14px; padding: 12px 14px;
+}
+window.caramos-ota .callout label, window.caramos-ota .callout image { color: %(warn_ink)s; font-weight: 600; }
+
+window.caramos-ota .action-bar {
+  background-color: %(card)s; border-top: 1px solid %(line)s; padding: 12px 18px;
+}
+window.caramos-ota .action-bar label.muted { font-size: 12px; }
+
+window.caramos-ota button.primary, window.caramos-ota button.secondary {
+  background-image: none; box-shadow: none; text-shadow: none;
+  border-radius: 999px; padding: 9px 22px;
+}
+window.caramos-ota button.primary { background-color: %(green_700)s; border: 1px solid %(green_700)s; }
+window.caramos-ota button.primary:hover { background-color: %(green_800)s; }
+window.caramos-ota button.primary label { color: #ffffff; font-weight: 800; }
+window.caramos-ota button.secondary { background-color: %(card)s; border: 1px solid %(line)s; }
+window.caramos-ota button.secondary:hover { border-color: %(accent)s; }
+window.caramos-ota button.secondary label { color: %(ink)s; font-weight: 800; }
+
+window.caramos-ota progressbar.ota-progress trough {
+  min-height: 10px; border-radius: 999px; border: none; background-image: none;
+  background-color: rgba(255, 250, 240, 0.22);
+}
+window.caramos-ota progressbar.ota-progress progress {
+  min-height: 10px; border-radius: 999px; border: none; background-image: none; background-color: %(on_green)s;
+}
+
+window.caramos-ota expander title label { font-weight: 700; }
+window.caramos-ota textview.log-view, window.caramos-ota textview.log-view text {
+  background-color: %(card)s; color: %(ink)s; font-family: "Ubuntu Mono", "DejaVu Sans Mono", monospace;
+  font-size: 12px;
+}
+window.caramos-ota scrolledwindow.log-scroll { border: 1px solid %(line)s; border-radius: 12px; }
+"""
+
 
 def import_gtk():
     """Import GTK3 lazily so non-GUI sessions can exit quietly."""
 
     import gi
 
+    # Pin Gdk and Pango too: with GTK 4 typelibs installed (the App Center needs them), an unpinned Gdk
+    # loads 4.0 and GTK 3 then fails to import, so the Update Center never opened.
     gi.require_version("Gtk", "3.0")
+    gi.require_version("Gdk", "3.0")
+    gi.require_version("Pango", "1.0")
+    gi.require_version("GdkPixbuf", "2.0")
     from gi.repository import Gdk, GLib, Gtk
 
     return Gtk, Gdk, GLib
 
 
 def set_caramos_icon(dialog, Gtk) -> None:
-    """Use the CaramOS brand icon for OTA dialogs when available."""
+    """Use the CaramOS brand icon for OTA dialogs.
 
-    if CARAMOS_ICON.exists():
-        dialog.set_icon_from_file(str(CARAMOS_ICON))
-    else:
+    The 512 px pixmap is too large for GTK 3 to publish as _NET_WM_ICON, which left the taskbar entry
+    blank; the themed icon (or the pixmap scaled down) is published.
+    """
+
+    theme = Gtk.IconTheme.get_default()
+    if theme is not None and theme.has_icon("caramos-logo"):
         dialog.set_icon_name("caramos-logo")
+    elif CARAMOS_ICON.exists():
+        from gi.repository import GdkPixbuf
+
+        dialog.set_icon(GdkPixbuf.Pixbuf.new_from_file_at_size(str(CARAMOS_ICON), 128, 128))
+
+
+def prefers_dark(Gtk) -> bool:
+    """True when the desktop uses a dark GTK theme (CaramOS dark mode switches to a -Dark theme)."""
+
+    settings = Gtk.Settings.get_default()
+    if settings is None:
+        return False
+    theme = (settings.get_property("gtk-theme-name") or "").lower()
+    return bool(settings.get_property("gtk-application-prefer-dark-theme")) or "dark" in theme
 
 
 def apply_theme(Gtk, Gdk) -> None:
-    """Apply CaramOS/VNLF GTK styling."""
+    """Apply the CaramOS/VNLF styling to the Update Center window."""
 
-    css = b"""
-    * {
-      font-family: "Be Vietnam Pro", "Inter", "Noto Sans", sans-serif;
-    }
-    dialog, box {
-      background: #f7f3e9;
-      color: #1f2a22;
-    }
-    .hero {
-      background: linear-gradient(135deg, #1f4f32, #2f7048);
-      border-radius: 18px;
-      color: #fffaf0;
-      padding: 16px;
-      box-shadow: 0 18px 48px rgba(31, 79, 50, 0.18);
-    }
-    .card {
-      background: #fffdf7;
-      border: 1px solid #e3dfd1;
-      border-radius: 14px;
-      padding: 10px;
-      box-shadow: 0 10px 26px rgba(31, 79, 50, 0.06);
-    }
-    .muted { color: #657064; }
-    .version-old { color: #657064; font-size: 18px; font-weight: 800; }
-    .version-new { color: #2f7048; font-size: 18px; font-weight: 900; }
-    .warning {
-      background: #fff8df;
-      border: 1px solid #ead5a3;
-      border-radius: 12px;
-      color: #7a5514;
-      padding: 8px;
-      font-weight: 700;
-    }
-    textview.notes-view,
-    textview.notes-view text {
-      background: #fffdf7;
-      color: #1f2a22;
-    }
-    button {
-      border-radius: 12px;
-      padding: 8px 16px;
-      font-weight: 800;
-    }
-    """
     provider = Gtk.CssProvider()
-    provider.load_from_data(css)
+    provider.load_from_data((CSS % (DARK if prefers_dark(Gtk) else LIGHT)).encode("utf-8"))
     Gtk.StyleContext.add_provider_for_screen(
         Gdk.Screen.get_default(),
         provider,
@@ -101,34 +186,128 @@ def severity_label(severity: str) -> str:
     return labels.get(severity, severity)
 
 
-def add_info_row(Gtk, grid, row: int, label: str, value: object) -> None:
-    """Add a label/value row to a GTK grid."""
-
-    key = Gtk.Label()
-    key.set_markup(f"<span foreground='#6b7280'>{html.escape(label)}</span>")
-    key.set_xalign(0)
-    key.set_valign(Gtk.Align.START)
-    grid.attach(key, 0, row, 1, 1)
-
-    val = Gtk.Label()
-    val.set_text(format_value(value))
-    val.set_xalign(0)
-    val.set_selectable(True)
-    val.set_line_wrap(True)
-    grid.attach(val, 1, row, 1, 1)
+# Small widget helpers --------------------------------------------------------------------------
 
 
-def _add_action_buttons(Gtk, outer, buttons: list[tuple[str, Any]]) -> None:
-    """Add right-aligned page actions."""
+def _label(Gtk, text: str, *classes: str, wrap: bool = True, xalign: float = 0.0):
+    from gi.repository import Pango
 
-    actions = Gtk.ButtonBox(orientation=Gtk.Orientation.HORIZONTAL)
-    actions.set_layout(Gtk.ButtonBoxStyle.END)
-    actions.set_spacing(8)
-    for label, callback in buttons:
-        button = Gtk.Button(label=label)
-        button.connect("clicked", callback)
-        actions.add(button)
-    outer.pack_start(actions, False, False, 0)
+    widget = Gtk.Label(label=text)
+    widget.set_xalign(xalign)
+    widget.set_line_wrap(wrap)
+    if wrap:
+        widget.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
+    for css_class in classes:
+        widget.get_style_context().add_class(css_class)
+    return widget
+
+
+def _box(Gtk, vertical: bool = True, spacing: int = 0, *classes: str):
+    box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL if vertical else Gtk.Orientation.HORIZONTAL, spacing=spacing)
+    for css_class in classes:
+        box.get_style_context().add_class(css_class)
+    return box
+
+
+def _hero(Gtk, eyebrow: str, title: str, summary: str, *, error: bool = False):
+    hero = _box(Gtk, True, 8, "hero")
+    if error:
+        hero.get_style_context().add_class("error")
+    if eyebrow:
+        tag = _label(Gtk, eyebrow, "eyebrow", wrap=False)
+        tag.set_halign(Gtk.Align.START)
+        hero.pack_start(tag, False, False, 0)
+    hero.pack_start(_label(Gtk, title, "hero-title"), False, False, 0)
+    if summary:
+        hero.pack_start(_label(Gtk, summary, "hero-summary"), False, False, 0)
+    return hero
+
+
+def _callout(Gtk, icon_name: str, text: str):
+    row = _box(Gtk, False, 10, "callout")
+    image = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.LARGE_TOOLBAR)
+    image.set_valign(Gtk.Align.START)
+    row.pack_start(image, False, False, 0)
+    row.pack_start(_label(Gtk, text), True, True, 0)
+    return row
+
+
+def _button(Gtk, text: str, style: str, callback):
+    button = Gtk.Button(label=text)
+    button.get_style_context().add_class(style)
+    button.connect("clicked", callback)
+    return button
+
+
+def _page(Gtk, body_children: list, buttons: list, hint: str = ""):
+    """A scrolled body over a fixed action bar that is always visible."""
+
+    page = _box(Gtk, True, 0)
+    scroll = Gtk.ScrolledWindow()
+    scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+    scroll.set_min_content_height(120)
+    body = _box(Gtk, True, 14)
+    body.set_margin_top(18)
+    body.set_margin_bottom(18)
+    body.set_margin_start(20)
+    body.set_margin_end(20)
+    for child in body_children:
+        body.pack_start(child, False, False, 0)
+    scroll.add(body)
+    page.pack_start(scroll, True, True, 0)
+
+    if buttons or hint:
+        bar = _box(Gtk, False, 10, "action-bar")
+        if hint:
+            note = _label(Gtk, hint, "muted")
+            note.set_valign(Gtk.Align.CENTER)
+            bar.pack_start(note, True, True, 0)
+        for button in buttons:
+            button.set_valign(Gtk.Align.CENTER)
+            bar.pack_end(button, False, False, 0)
+        page.pack_end(bar, False, False, 0)
+    return page
+
+
+def _info_card(Gtk, title: str, rows: list[tuple[str, str]]):
+    card = _box(Gtk, True, 10, "card")
+    card.pack_start(_label(Gtk, title, "card-title"), False, False, 0)
+    grid = Gtk.Grid()
+    grid.set_column_spacing(18)
+    grid.set_row_spacing(8)
+    for index, (key, value) in enumerate(rows):
+        grid.attach(_label(Gtk, key, "muted", wrap=False), 0, index, 1, 1)
+        grid.attach(_label(Gtk, value, "status-value"), 1, index, 1, 1)
+    card.pack_start(grid, False, False, 0)
+    return card
+
+
+def _details(Gtk, title: str, text: str, *, expanded: bool):
+    """A collapsible read-only log; returns (expander, text view)."""
+
+    expander = Gtk.Expander(label=title)
+    expander.set_expanded(expanded)
+    scroll = Gtk.ScrolledWindow()
+    scroll.get_style_context().add_class("log-scroll")
+    scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+    scroll.set_min_content_height(180)
+    scroll.set_margin_top(8)
+    view = Gtk.TextView()
+    view.get_style_context().add_class("log-view")
+    view.set_editable(False)
+    view.set_cursor_visible(False)
+    view.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
+    view.set_left_margin(10)
+    view.set_right_margin(10)
+    view.set_top_margin(8)
+    view.set_bottom_margin(8)
+    view.get_buffer().set_text(text)
+    scroll.add(view)
+    expander.add(scroll)
+    return expander, view
+
+
+# Window and pages ------------------------------------------------------------------------------
 
 
 def build_update_window():
@@ -138,8 +317,16 @@ def build_update_window():
     apply_theme(Gtk, Gdk)
 
     window = Gtk.Window()
+    window.get_style_context().add_class("caramos-ota")
+    header = Gtk.HeaderBar()
+    header.set_show_close_button(True)
+    header.set_subtitle("Vietnam Linux Family")
+    header.get_style_context().add_class("caramos-header")
+    window.set_titlebar(header)
     window.set_title(_("CaramOS - Update Center"))
     window.set_default_size(*_screen_dialog_size(Gdk))
+    # Small enough for any laptop screen; the page bodies scroll and the action bar stays visible.
+    window.set_size_request(380, 360)
     window.set_resizable(True)
     window.set_position(Gtk.WindowPosition.CENTER)
     set_caramos_icon(window, Gtk)
@@ -168,256 +355,107 @@ def build_update_page(update_info: dict[str, Any], on_accept, on_close):
     )
     packages = [normalize_package(pkg) for pkg in update_info.get("packages", [])]
 
-    outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-    outer.set_margin_top(12)
-    outer.set_margin_bottom(10)
-    outer.set_margin_start(14)
-    outer.set_margin_end(14)
+    hero = _hero(Gtk, _("New update"), title, summary)
+    versions = _box(Gtk, False, 10)
+    versions.set_margin_top(6)
+    for caption, value in ((_("Current version"), current_version), (_("Available version"), new_release)):
+        block = _box(Gtk, True, 2, "version-box")
+        block.pack_start(_label(Gtk, caption, "version-caption", wrap=False), False, False, 0)
+        block.pack_start(_label(Gtk, value, "version-value", wrap=False), False, False, 0)
+        versions.pack_start(block, False, False, 0)
+        if caption == _("Current version"):
+            arrow = _label(Gtk, "→", "version-arrow", wrap=False)
+            arrow.set_valign(Gtk.Align.CENTER)
+            versions.pack_start(arrow, False, False, 0)
+    hero.pack_start(versions, False, False, 0)
 
-    hero = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-    hero.get_style_context().add_class("hero")
-    outer.pack_start(hero, False, False, 0)
+    chips = Gtk.FlowBox()
+    chips.set_selection_mode(Gtk.SelectionMode.NONE)
+    chips.set_column_spacing(8)
+    chips.set_row_spacing(8)
+    chips.set_max_children_per_line(4)
+    for caption, value in ((_("Update channel"), channel), (_("Severity"), severity), (_("Size"), size)):
+        chip = _label(Gtk, "%s: %s" % (caption, value), "chip")
+        chip.set_halign(Gtk.Align.START)
+        chips.add(chip)
 
-    eyebrow = Gtk.Label()
-    eyebrow.set_markup("<span foreground='#fffaf0' weight='bold'>CARAMOS OTA • VIETNAM LINUX FAMILY</span>")
-    eyebrow.set_xalign(0)
-    hero.pack_start(eyebrow, False, False, 0)
-
-    heading = Gtk.Label()
-    heading.set_markup(f"<span foreground='#ffffff' size='large' weight='bold'>{html.escape(title)}</span>")
-    heading.set_xalign(0)
-    heading.set_line_wrap(True)
-    hero.pack_start(heading, False, False, 0)
-
-    subtitle = Gtk.Label()
-    subtitle.set_markup(f"<span foreground='#fffaf0'>{html.escape(summary)}</span>")
-    subtitle.set_xalign(0)
-    subtitle.set_line_wrap(True)
-    hero.pack_start(subtitle, False, False, 0)
-
-    version_grid = Gtk.Grid()
-    version_grid.set_column_spacing(12)
-    version_grid.set_row_spacing(8)
-    outer.pack_start(version_grid, False, False, 0)
-
-    old_card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
-    old_card.get_style_context().add_class("card")
-    old_lbl = Gtk.Label(label=_("Current version"))
-    old_lbl.get_style_context().add_class("muted")
-    old_lbl.set_xalign(0)
-    old_val = Gtk.Label(label=current_version)
-    old_val.get_style_context().add_class("version-old")
-    old_val.set_xalign(0)
-    old_card.pack_start(old_lbl, False, False, 0)
-    old_card.pack_start(old_val, False, False, 0)
-    version_grid.attach(old_card, 0, 0, 1, 1)
-
-    new_card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
-    new_card.get_style_context().add_class("card")
-    new_lbl = Gtk.Label(label=_("Available version"))
-    new_lbl.get_style_context().add_class("muted")
-    new_lbl.set_xalign(0)
-    new_val = Gtk.Label(label=new_release)
-    new_val.get_style_context().add_class("version-new")
-    new_val.set_xalign(0)
-    new_card.pack_start(new_lbl, False, False, 0)
-    new_card.pack_start(new_val, False, False, 0)
-    version_grid.attach(new_card, 1, 0, 1, 1)
-
-    meta_card = Gtk.Grid()
-    meta_card.get_style_context().add_class("card")
-    meta_card.set_column_spacing(16)
-    meta_card.set_row_spacing(7)
-    outer.pack_start(meta_card, False, False, 0)
-    add_info_row(Gtk, meta_card, 0, _("Update channel"), channel)
-    add_info_row(Gtk, meta_card, 1, _("Severity"), severity)
-    add_info_row(Gtk, meta_card, 2, _("Size"), size)
-
-    pkg_panel = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-    pkg_panel.get_style_context().add_class("card")
-    outer.pack_start(pkg_panel, True, True, 0)
-
-    pkg_title = Gtk.Label()
-    pkg_title.set_markup(
-        "<span weight='bold'>{}</span>".format(
-            html.escape(ngettext("%d change in this update", "%d changes in this update", len(packages)) % len(packages))
-        )
+    changes = _box(Gtk, True, 6, "card")
+    changes.pack_start(
+        _label(Gtk, ngettext("%d change in this update", "%d changes in this update", len(packages)) % len(packages),
+               "card-title"),
+        False, False, 0,
     )
-    pkg_title.set_xalign(0)
-    pkg_panel.pack_start(pkg_title, False, False, 0)
-
-    scroll = Gtk.ScrolledWindow()
-    scroll.set_min_content_height(80)
-    scroll.set_max_content_height(150)
-    pkg_panel.pack_start(scroll, True, True, 0)
-
-    pkg_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
     for pkg in packages:
-        item = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=3)
+        row = _box(Gtk, False, 10, "change-row")
+        mark = Gtk.Image.new_from_icon_name("object-select-symbolic", Gtk.IconSize.MENU)
+        mark.set_valign(Gtk.Align.START)
+        mark.set_margin_top(3)
+        row.pack_start(mark, False, False, 0)
         description = format_value(pkg.get("description") or pkg.get("name"), _("CaramOS update"))
-        description_lbl = Gtk.Label(label=description)
-        description_lbl.set_xalign(0)
-        description_lbl.set_line_wrap(True)
-        item.pack_start(description_lbl, False, False, 0)
-        pkg_box.pack_start(item, False, False, 0)
+        row.pack_start(_label(Gtk, description), True, True, 0)
+        changes.pack_start(row, False, False, 0)
 
-    scroll.add(pkg_box)
-
-    warning = Gtk.Label()
-    warning.get_style_context().add_class("warning")
-    warning.set_text(
+    warning = _callout(
+        Gtk,
+        "battery-good-charging-symbolic",
         _(
             "Recommended: plug in the charger, keep a stable network connection and do not turn off the "
             "computer during the update. You can close this window and update later."
-        )
+        ),
     )
-    warning.set_xalign(0)
-    warning.set_line_wrap(True)
-    outer.pack_start(warning, False, False, 0)
-
-    _add_action_buttons(
-        Gtk,
-        outer,
-        [
-            (_("Later"), lambda _button: on_close()),
-            (_("Update now"), lambda _button: on_accept()),
-        ],
-    )
-    return outer
+    buttons = [
+        _button(Gtk, _("Update now"), "primary", lambda _button: on_accept()),
+        _button(Gtk, _("Later"), "secondary", lambda _button: on_close()),
+    ]
+    return _page(Gtk, [hero, chips, changes, warning], buttons)
 
 
-def _screen_dialog_size(Gdk, *, width_ratio: float = 0.78, height_ratio: float = 0.80) -> tuple[int, int]:
-    """Return a premium responsive dialog size bounded by the current screen."""
+def _screen_dialog_size(Gdk, *, max_width: int = 720, max_height: int = 680) -> tuple[int, int]:
+    """Default window size: comfortable on large screens, never larger than the monitor's work area."""
 
-    screen = Gdk.Screen.get_default()
-    screen_width = screen.get_width() if screen is not None else 1024
-    screen_height = screen.get_height() if screen is not None else 768
-    width = min(760, max(640, int(screen_width * width_ratio)))
-    height = min(max(560, int(screen_height * height_ratio)), screen_height - 48)
-    return width, height
+    width, height = 1024, 728
+    display = Gdk.Display.get_default()
+    monitor = None
+    if display is not None:
+        monitor = display.get_primary_monitor() or display.get_monitor(0)
+    if monitor is not None:
+        area = monitor.get_workarea()
+        width, height = area.width, area.height
+    return max(380, min(max_width, width - 64)), max(360, min(max_height, height - 64))
 
 
 def build_progress_page():
     """Build the progress page shown during update."""
 
     Gtk, _gdk, _glib = import_gtk()
-    outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-    outer.set_margin_top(12)
-    outer.set_margin_bottom(10)
-    outer.set_margin_start(14)
-    outer.set_margin_end(14)
-
-    hero = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-    hero.get_style_context().add_class("hero")
-    outer.pack_start(hero, False, False, 0)
-
-    eyebrow = Gtk.Label()
-    eyebrow.set_markup(
-        "<span foreground='#fffaf0' weight='bold'>{}</span>".format(html.escape(_("CARAMOS OTA • UPDATING")))
-    )
-    eyebrow.set_xalign(0)
-    hero.pack_start(eyebrow, False, False, 0)
-
-    header = Gtk.Label()
-    header.set_markup(
-        "<span foreground='#ffffff' size='large' weight='bold'>{}</span>".format(html.escape(_("Updating CaramOS…")))
-    )
-    header.set_xalign(0)
-    hero.pack_start(header, False, False, 0)
-
-    stage_lbl = Gtk.Label(label=_("Preparing the update…"))
-    stage_lbl.set_xalign(0)
-    stage_lbl.set_line_wrap(True)
+    hero = _hero(Gtk, _("Updating"), _("Updating CaramOS…"), "")
+    stage_lbl = _label(Gtk, _("Preparing the update…"), "hero-summary")
     hero.pack_start(stage_lbl, False, False, 0)
-
     progress = Gtk.ProgressBar()
+    progress.get_style_context().add_class("ota-progress")
     progress.set_pulse_step(0.05)
-    outer.pack_start(progress, False, False, 0)
+    progress.set_margin_top(8)
+    hero.pack_start(progress, False, False, 0)
 
-    log_card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-    log_card.get_style_context().add_class("card")
-    outer.pack_start(log_card, True, True, 0)
-
-    log_title = Gtk.Label()
-    log_title.set_markup("<span weight='bold'>{}</span>".format(html.escape(_("Update progress"))))
-    log_title.set_xalign(0)
-    log_card.pack_start(log_title, False, False, 0)
-
-    scroll = Gtk.ScrolledWindow()
-    scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-    scroll.set_min_content_height(260)
-    log_card.pack_start(scroll, True, True, 0)
-
-    log_view = Gtk.TextView()
-    log_view.set_editable(False)
-    log_view.set_cursor_visible(False)
-    log_view.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
-    scroll.add(log_view)
-
-    warning = Gtk.Label()
-    warning.get_style_context().add_class("warning")
-    warning.set_text(_("Please do not turn off the computer or close the update."))
-    warning.set_xalign(0)
-    warning.set_line_wrap(True)
-    outer.pack_start(warning, False, False, 0)
-
-    return outer, progress, stage_lbl, log_view
+    details, log_view = _details(Gtk, _("Update progress"), "", expanded=False)
+    page = _page(Gtk, [hero, details], [], hint=_("Please do not turn off the computer or close the update."))
+    return page, progress, stage_lbl, log_view
 
 
 def build_result_page(success: bool, detail: str, on_close):
     """Build the result page shown after update."""
 
     Gtk, _gdk, _glib = import_gtk()
-    outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-    outer.set_margin_top(12)
-    outer.set_margin_bottom(10)
-    outer.set_margin_start(14)
-    outer.set_margin_end(14)
-
-    hero = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-    hero.get_style_context().add_class("hero")
-    outer.pack_start(hero, False, False, 0)
-
     if success:
-        title = _("Update complete!")
-        summary = _("CaramOS was updated successfully.")
+        hero = _hero(Gtk, "", _("Update complete!"), _("CaramOS was updated successfully."))
     else:
-        title = _("Update failed")
-        summary = _("Something went wrong during the update. Try again or run sudo caramos-ota --repair.")
-
-    header = Gtk.Label()
-    header.set_markup(f"<span foreground='#ffffff' size='large' weight='bold'>{html.escape(title)}</span>")
-    header.set_xalign(0)
-    hero.pack_start(header, False, False, 0)
-
-    summary_lbl = Gtk.Label(label=summary)
-    summary_lbl.set_xalign(0)
-    summary_lbl.set_line_wrap(True)
-    hero.pack_start(summary_lbl, False, False, 0)
-
-    detail_card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-    detail_card.get_style_context().add_class("card")
-    outer.pack_start(detail_card, True, True, 0)
-
-    detail_title = Gtk.Label()
-    detail_title.set_markup("<span weight='bold'>{}</span>".format(html.escape(_("Update details"))))
-    detail_title.set_xalign(0)
-    detail_card.pack_start(detail_title, False, False, 0)
-
-    scroll = Gtk.ScrolledWindow()
-    scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-    scroll.set_min_content_height(340)
-    detail_card.pack_start(scroll, True, True, 0)
-
-    detail_view = Gtk.TextView()
-    detail_view.set_editable(False)
-    detail_view.set_cursor_visible(False)
-    detail_view.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
-    detail_view.get_buffer().set_text(detail or summary)
-    scroll.add(detail_view)
-
-    _add_action_buttons(Gtk, outer, [(_("Close"), lambda _button: on_close())])
-    return outer
+        hero = _hero(
+            Gtk, "", _("Update failed"),
+            _("Something went wrong during the update. Try again or run sudo caramos-ota --repair."),
+            error=True,
+        )
+    details, _view = _details(Gtk, _("Update details"), detail or "", expanded=not success)
+    return _page(Gtk, [hero, details], [_button(Gtk, _("Close"), "primary", lambda _button: on_close())])
 
 
 def build_no_update_page(status: dict[str, str] | None, on_close):
@@ -429,60 +467,19 @@ def build_no_update_page(status: dict[str, str] | None, on_close):
     latest_version = format_value(status.get("latest_version"))
     channel = format_value(status.get("channel"), "stable")
 
-    outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-    outer.set_margin_top(12)
-    outer.set_margin_bottom(10)
-    outer.set_margin_start(14)
-    outer.set_margin_end(14)
-
-    hero = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-    hero.get_style_context().add_class("hero")
-    outer.pack_start(hero, False, False, 0)
-
-    eyebrow = Gtk.Label()
-    eyebrow.set_markup("<span foreground='#fffaf0' weight='bold'>CARAMOS OTA • VIETNAM LINUX FAMILY</span>")
-    eyebrow.set_xalign(0)
-    hero.pack_start(eyebrow, False, False, 0)
-
-    header = Gtk.Label()
-    header.set_markup(
-        "<span foreground='#ffffff' size='large' weight='bold'>{}</span>".format(html.escape(_("CaramOS is up to date")))
-    )
-    header.set_xalign(0)
-    hero.pack_start(header, False, False, 0)
-
-    summary = Gtk.Label(label=_("The system runs the latest version in the stable update channel."))
-    summary.set_xalign(0)
-    summary.set_line_wrap(True)
-    hero.pack_start(summary, False, False, 0)
-
-    card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-    card.get_style_context().add_class("card")
-    outer.pack_start(card, True, True, 0)
-
-    title = Gtk.Label()
-    title.set_markup("<span weight='bold'>{}</span>".format(html.escape(_("Update status"))))
-    title.set_xalign(0)
-    card.pack_start(title, False, False, 0)
-
-    version_grid = Gtk.Grid()
-    version_grid.set_column_spacing(12)
-    version_grid.set_row_spacing(8)
-    card.pack_start(version_grid, False, False, 0)
-    add_info_row(Gtk, version_grid, 0, _("Current version"), current_version)
-    add_info_row(Gtk, version_grid, 1, _("Latest version"), latest_version)
-    add_info_row(Gtk, version_grid, 2, _("Update channel"), channel)
-
-    body = Gtk.Label()
-    body.set_xalign(0)
-    body.set_line_wrap(True)
-    body.set_text(
+    hero = _hero(Gtk, "", _("CaramOS is up to date"),
+                 _("The system runs the latest version in the stable update channel."))
+    card = _info_card(Gtk, _("Update status"), [
+        (_("Current version"), current_version),
+        (_("Latest version"), latest_version),
+        (_("Update channel"), channel),
+    ])
+    note = _label(
+        Gtk,
         _(
             "There are no new migrations to install.\n\n"
             "You can close this window. CaramOS OTA keeps checking periodically with a systemd timer."
-        )
+        ),
+        "muted",
     )
-    card.pack_start(body, False, False, 0)
-
-    _add_action_buttons(Gtk, outer, [(_("Close"), lambda _button: on_close())])
-    return outer
+    return _page(Gtk, [hero, card, note], [_button(Gtk, _("Close"), "primary", lambda _button: on_close())])

@@ -10,3 +10,5 @@ Terminal=false
 Categories=Settings;PackageManager;
 Keywords=CaramOS;Update;Updates;OTA;Upgrade;Cập nhật;Nâng cấp;
 StartupNotify=true
+# Matches the notifier window so the taskbar shows this entry's icon.
+StartupWMClass=caramos-ota-notifier

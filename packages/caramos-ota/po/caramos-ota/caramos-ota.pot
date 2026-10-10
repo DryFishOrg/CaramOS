@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: caramos-ota\n"
-"Report-Msgid-Bugs-To: developer@vietnamlinuxfamily.net\n"
-"POT-Creation-Date: 2026-10-06 00:11+0700\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-09 20:41+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,148 +18,153 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:96
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:169
 msgid "New features"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:97
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:170
 msgid "Important"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:98
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:171
 msgid "Normal"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:99
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:172
 msgid "None"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:141
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:314
 msgid "CaramOS - Update Center"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:164
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:339
 msgid "A new CaramOS update is available"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:167
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:342
 msgid "This update runs the CaramOS migrations the new version needs."
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:205
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:472
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:346
+msgid "New update"
+msgstr ""
+
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:349
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:354
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:459
 msgid "Current version"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:217
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:349
 msgid "Available version"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:232
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:474
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:365
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:461
 msgid "Update channel"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:233
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:365
 msgid "Severity"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:234
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:365
 msgid "Size"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:243
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:370
 #, python-format
 msgid "%d change in this update"
 msgid_plural "%d changes in this update"
 msgstr[0] ""
 msgstr[1] ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:257
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:380
 msgid "CaramOS update"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:270
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:388
 msgid ""
 "Recommended: plug in the charger, keep a stable network connection and do "
 "not turn off the computer during the update. You can close this window and "
 "update later."
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:282
-msgid "Later"
-msgstr ""
-
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:283
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:393
 msgid "Update now"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:316
-msgid "CARAMOS OTA • UPDATING"
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:394
+msgid "Later"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:323
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:417
+msgid "Updating"
+msgstr ""
+
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:417
 #: usr/lib/python3/dist-packages/caramos_ota_notifier/app.py:48
 msgid "Updating CaramOS…"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:328
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:418
 msgid "Preparing the update…"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:342
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:426
 msgid "Update progress"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:359
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:427
 msgid "Please do not turn off the computer or close the update."
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:382
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:436
 msgid "Update complete!"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:383
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:436
 msgid "CaramOS was updated successfully."
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:385
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:439
 msgid "Update failed"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:386
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:440
 msgid ""
 "Something went wrong during the update. Try again or run sudo caramos-ota --"
 "repair."
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:403
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:443
 msgid "Update details"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:419
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:487
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:444
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:471
 #: usr/lib/python3/dist-packages/caramos_ota_audit/ui.py:97
 msgid "Close"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:449
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:456
 msgid "CaramOS is up to date"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:454
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:457
 msgid "The system runs the latest version in the stable update channel."
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:464
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:458
 msgid "Update status"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:473
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:460
 msgid "Latest version"
 msgstr ""
 
-#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:481
+#: usr/lib/python3/dist-packages/caramos_ota_notifier/ui.py:466
 msgid ""
 "There are no new migrations to install.\n"
 "\n"
