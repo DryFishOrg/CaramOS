@@ -42,6 +42,9 @@ install_spice_from_repo() {
 }
 
 "${APT_GET[@]}" update -qq || true
+# git is only needed for the clones below and Mint does not ship it: removed again at the end.
+GIT_WAS_INSTALLED=0
+dpkg-query -W -f='${Status}' git 2>/dev/null | grep -q 'install ok installed' && GIT_WAS_INSTALLED=1
 "${APT_GET[@]}" install -y --no-install-recommends unzip wget ca-certificates python3 git || true
 
 # Themes from task 17.
@@ -163,5 +166,9 @@ fi
 
 dconf update || true
 glib-compile-schemas /usr/share/glib-2.0/schemas/ || true
+
+if [ "$GIT_WAS_INSTALLED" = 0 ]; then
+    "${APT_GET[@]}" purge -y git git-man liberror-perl || true
+fi
 
 echo "[CaramOS] Task-17 Cinnamon spices installed."

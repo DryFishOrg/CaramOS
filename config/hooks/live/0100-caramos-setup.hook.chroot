@@ -59,7 +59,9 @@ echo "[CaramOS] Installing Cinnamon Delight icons..."
 if wget -q -O /tmp/tela-icons.zip "https://github.com/vinceliuice/Tela-circle-icon-theme/archive/refs/heads/master.zip"; then
     unzip -qo /tmp/tela-icons.zip -d /tmp/
     cd /tmp/Tela-circle-icon-theme-master
-    ./install.sh -a || true
+    # Only the standard colour (Tela-circle, -light, -dark): CaramOS uses Tela-circle-light and
+    # Tela-circle-dark. All 15 colours (-a) were ~600 000 small files, 1.2 GB once installed.
+    ./install.sh standard || true
     cd /
     rm -rf /tmp/tela-icons.zip /tmp/Tela-circle-icon-theme-master
 fi

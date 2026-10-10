@@ -85,6 +85,8 @@ step_customize() {
     chroot "$WORK_DIR/squashfs" /bin/bash -c '
         APT_LOCK_TIMEOUT="${APT_LOCK_TIMEOUT:-600}"
         apt-get -o DPkg::Lock::Timeout="$APT_LOCK_TIMEOUT" clean
+        # Backups debconf and dpkg keep of their databases from before the last package change.
+        rm -f /var/cache/debconf/*-old /var/lib/dpkg/*-old
         rm -rf /tmp/* /var/tmp/*
         rm -f /etc/resolv.conf
     '

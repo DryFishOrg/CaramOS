@@ -22,7 +22,11 @@ fi
 printf 'deb [signed-by=/etc/apt/keyrings/fcitx5-lotus.gpg] https://fcitx5-lotus.pages.dev/apt/%s %s main\n' "$CODENAME" "$CODENAME" > /etc/apt/sources.list.d/fcitx5-lotus.list
 
 "${APT_GET[@]}" update -qq
-"${APT_GET[@]}" install -y fcitx5-lotus fcitx5-config-qt fcitx5-frontend-gtk3 fcitx5-frontend-gtk4 fcitx5-frontend-qt5 im-config
+# --no-install-recommends: python3-qtpy (a Lotus dependency) recommends Qt WebEngine (~150 MB) and
+# fcitx5-config-qt the Chinese libime dictionaries (~40 MB); Lotus uses neither. The frontends fcitx5
+# recommends (fcitx5-frontend-all) are listed instead, so typing works in GTK 2/3/4 and Qt 5/6 apps.
+"${APT_GET[@]}" install -y --no-install-recommends fcitx5-lotus fcitx5-config-qt \
+    fcitx5-frontend-gtk2 fcitx5-frontend-gtk3 fcitx5-frontend-gtk4 fcitx5-frontend-qt5 fcitx5-frontend-qt6 im-config
 
 mkdir -p /etc/profile.d /etc/xdg/autostart /etc/skel/.config/fcitx5/conf /etc/skel/.config/environment.d
 cat > /etc/profile.d/caramos-fcitx5.sh <<'ENV'
