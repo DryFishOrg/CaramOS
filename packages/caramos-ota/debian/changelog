@@ -14,13 +14,13 @@ caramos-ota (1.0.21-0caramos1) noble; urgency=medium
   * Installer slideshow: Zalo is preselected in the App Center instead of
     preinstalled.
   * Stop shipping __pycache__ bytecode written by tests and manifest checks.
-  * Lighten the desktop session: about 145 MiB less RAM five minutes after an
+  * Lighten the desktop session: about 150 MiB less RAM five minutes after an
     automatic login on the test VMs, 50 MiB below Linux Mint 22.3. Fill GTK
     3's OpenGL visual cache before the session daemons start, keep Fcitx 5
-    from starting the XDG portals, start the calendar reminder daemon (and
-    with it the Evolution data server) once there is an event, a task or a
-    calendar account, hide the print queue applet, and disable cups-browsed
-    and kerneloops.
+    from starting the XDG portals, start Flameshot without OpenGL, start the
+    calendar reminder daemon (and with it the Evolution data server) once
+    there is an event, a task or a calendar account, hide the print queue
+    applet, and disable cups-browsed and kerneloops.
   * Recommend and configure earlyoom: when RAM and swap are nearly full it
     stops the app using the most memory instead of letting the machine
     freeze while it swaps. It never picks the session's own processes.

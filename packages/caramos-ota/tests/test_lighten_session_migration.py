@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import configparser
 import importlib.util
+import os
+import pwd
 import re
 import shutil
 import subprocess
@@ -54,6 +56,7 @@ class LightenDesktopSessionTests(unittest.TestCase):
         for unit in ("cups-browsed.service", "kerneloops.service", "earlyoom.service"):
             (self.units / unit).write_text("[Service]\n", encoding="utf-8")
         self.runtime = self.root / "run/systemd/system"
+        self.users: list[pwd.struct_passwd] = []
         self.system_helper = self.root / "usr/local/sbin/caramos-fcitx5-lotus-system-enable"
         self.login_helper = self.root / "usr/local/bin/caramos-fcitx5-lotus-enable"
         for helper in (self.system_helper, self.login_helper):
@@ -71,6 +74,9 @@ class LightenDesktopSessionTests(unittest.TestCase):
             "LOTUS_SYSTEM_HELPER": self.system_helper,
             "LOTUS_LOGIN_HELPER": self.login_helper,
             "ALARM_NOTIFY_WRAPPER": self.root / "usr/local/libexec/caramos-evolution-alarm-notify",
+            "SKEL": self.root / "etc/skel",
+            "PASSWD_HOME_ROOT": self.root / "home",
+            "_desktop_users": lambda: self.users,
         }.items():
             patcher = patch.object(migration, name, value)
             patcher.start()
@@ -235,6 +241,46 @@ class LightenDesktopSessionTests(unittest.TestCase):
         login()
         self.assertEqual('InputMethod="Telex"\n', (home / ".config/fcitx5/conf/lotus.conf").read_text(encoding="utf-8"))
         self.assertEqual("-d --replace\n-d --replace\n", log.read_text(encoding="utf-8"))
+
+    def flameshot_entry(self, base: Path, exec_line: str = "Exec=/usr/bin/flameshot") -> Path:
+        path = base / ".config/autostart/flameshot.desktop"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(f"[Desktop Entry]\nName=Flameshot\n{exec_line}\nType=Application\n", encoding="utf-8")
+        path.chmod(0o644)
+        return path
+
+    def add_user(self, name: str) -> Path:
+        home = self.root / "home" / name
+        home.mkdir(parents=True)
+        self.users.append(pwd.struct_passwd((name, "x", os.getuid(), os.getgid(), name, str(home), "/bin/bash")))
+        return home
+
+    def test_flameshot_starts_without_opengl_for_skel_and_users(self) -> None:
+        skel = self.flameshot_entry(self.root / "etc/skel")
+        an = self.flameshot_entry(self.add_user("an"))
+        binh = self.flameshot_entry(self.add_user("binh"), "Exec=/usr/bin/flameshot --tray-icon-hidden")
+        self.add_user("chi")  # no autostart entry
+
+        self.run_migration()
+
+        for path in (skel, an):
+            self.assertIn("Exec=env QT_XCB_GL_INTEGRATION=none /usr/bin/flameshot\n", path.read_text(encoding="utf-8"))
+            self.assertIn("Name=Flameshot\n", path.read_text(encoding="utf-8"))
+            self.assertEqual(0o644, path.stat().st_mode & 0o777)
+        self.assertIn("Exec=/usr/bin/flameshot --tray-icon-hidden\n", binh.read_text(encoding="utf-8"))
+        self.assertFalse((self.root / "home/chi/.config").exists())
+        self.assertEqual([], list(an.parent.glob(".flameshot.desktop.*")))
+
+    def test_flameshot_entry_behind_a_symlink_is_left_alone(self) -> None:
+        home = self.add_user("an")
+        elsewhere = self.root / "elsewhere"
+        target = self.flameshot_entry(elsewhere)
+        (home / ".config").mkdir()
+        (home / ".config/autostart").symlink_to(target.parent, target_is_directory=True)
+
+        self.run_migration()
+
+        self.assertIn("Exec=/usr/bin/flameshot\n", target.read_text(encoding="utf-8"))
 
     def test_skips_what_is_not_installed(self) -> None:
         self.system_helper.unlink()

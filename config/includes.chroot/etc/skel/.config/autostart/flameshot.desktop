@@ -1,7 +1,8 @@
 [Desktop Entry]
 Name=Flameshot
 Comment=Screenshot tool
-Exec=/usr/bin/flameshot
+# Flameshot paints with QPainter; Qt's OpenGL integration would load Mesa and LLVM (~22 MiB).
+Exec=env QT_XCB_GL_INTEGRATION=none /usr/bin/flameshot
 Terminal=false
 Type=Application
 X-GNOME-Autostart-enabled=true

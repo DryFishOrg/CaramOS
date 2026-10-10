@@ -18,6 +18,9 @@ feature stays:
   system-config-printer's print queue applet (~20 MiB) repeats the print notifications Cinnamon already
   shows. Both are overridden for Cinnamon sessions in /etc/xdg/xdg-cinnamon/autostart, which takes
   precedence over /etc/xdg/autostart; package files stay.
+- Flameshot paints with QPainter, yet Qt's OpenGL integration loaded Mesa and LLVM into it (~22 MiB).
+  Its autostart entry, which CaramOS puts in /etc/skel and so in each user's ~/.config/autostart, now
+  starts it with QT_XCB_GL_INTEGRATION=none, wherever its Exec line is still CaramOS's.
 - cups-browsed (queues for network printers, which CUPS now lists by itself) and kerneloops (sends
   kernel crash reports to Ubuntu and holds boot until the network is online) are disabled.
 - earlyoom (a Recommends of caramos-ota) stops the largest process when free RAM and swap both fall
@@ -38,6 +41,7 @@ Boot and login also do less work:
 from __future__ import annotations
 
 import os
+import pwd
 import tempfile
 from pathlib import Path
 
@@ -106,6 +110,12 @@ Hidden=true
 """
 
 DISABLED_SERVICES = ("cups-browsed.service", "kerneloops.service")
+
+FLAMESHOT_AUTOSTART = Path(".config/autostart/flameshot.desktop")
+FLAMESHOT_EXEC = "Exec=/usr/bin/flameshot"
+FLAMESHOT_EXEC_WITHOUT_GL = "Exec=env QT_XCB_GL_INTEGRATION=none /usr/bin/flameshot"
+SKEL = Path("/etc/skel")
+PASSWD_HOME_ROOT = Path("/home")
 
 LOTUS_SYSTEM_HELPER = Path("/usr/local/sbin/caramos-fcitx5-lotus-system-enable")
 LOTUS_SYSTEM_HELPER_SCRIPT = r'''#!/bin/sh
@@ -260,6 +270,61 @@ def _configure_earlyoom(context: MigrationContext, running: bool) -> None:
         context.run_command(["systemctl", "restart", "--no-block", "earlyoom.service"], allow_fail=True)
 
 
+def _desktop_users() -> list[pwd.struct_passwd]:
+    users = []
+    for info in pwd.getpwall():
+        if not 1000 <= info.pw_uid < 60000 or info.pw_shell.endswith(("nologin", "false")):
+            continue
+        home = Path(info.pw_dir)
+        if PASSWD_HOME_ROOT not in home.parents or not home.is_dir():
+            continue
+        users.append(info)
+    return sorted(users, key=lambda info: info.pw_uid)
+
+
+def _flameshot_without_gl(context: MigrationContext, base: Path, owner: tuple[int, int] | None) -> None:
+    path = base / FLAMESHOT_AUTOSTART
+    if path.is_symlink() or not path.is_file():
+        return
+    directory = path.parent
+    if owner is not None:
+        # This runs as root in the user's home: write only inside it, into their own folder and file.
+        resolved = directory.resolve()
+        if (directory.is_symlink() or base.resolve() not in resolved.parents
+                or resolved.stat().st_uid != owner[0] or path.stat().st_uid != owner[0]):
+            context.log(f"skip {path}: not a regular file in a folder of its owner")
+            return
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeDecodeError):
+        return
+    if FLAMESHOT_EXEC not in lines:
+        return
+    context.log(f"start Flameshot without OpenGL: {path}")
+    if context.dry_run:
+        return
+    content = "\n".join(FLAMESHOT_EXEC_WITHOUT_GL if line == FLAMESHOT_EXEC else line for line in lines) + "\n"
+    mode = path.stat().st_mode & 0o777
+    # mkstemp creates a new file and os.replace renames over the name without following it.
+    fd, staging = tempfile.mkstemp(prefix=f".{path.name}.", dir=directory)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(content)
+        os.chmod(staging, mode)
+        if owner is not None:
+            os.chown(staging, *owner)
+        os.replace(staging, path)
+    except BaseException:
+        Path(staging).unlink(missing_ok=True)
+        raise
+
+
+def _update_flameshot_autostart(context: MigrationContext) -> None:
+    _flameshot_without_gl(context, SKEL, None)
+    for info in _desktop_users():
+        _flameshot_without_gl(context, Path(info.pw_dir), (info.pw_uid, info.pw_gid))
+
+
 def _update_lotus_helpers(context: MigrationContext) -> None:
     # Only replace helpers CaramOS installed (migration v1_0_12 and the ISO hook).
     for path, content in ((LOTUS_SYSTEM_HELPER, LOTUS_SYSTEM_HELPER_SCRIPT),
@@ -275,6 +340,7 @@ def run(context: MigrationContext) -> None:
     _write(context, GTK_VISUALS_PRIMER, GTK_VISUALS_PRIMER_SCRIPT)
     _write(context, FCITX_CLASSICUI, FCITX_CLASSICUI_CONFIG)
     _override_autostart(context)
+    _update_flameshot_autostart(context)
     _update_lotus_helpers(context)
     _disable_services(context, running)
     _configure_earlyoom(context, running)

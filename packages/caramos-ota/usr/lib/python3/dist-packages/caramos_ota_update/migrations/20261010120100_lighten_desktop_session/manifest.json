@@ -11,6 +11,7 @@
   "release_notes_vi": [
     "Các dịch vụ nền của Cinnamon không còn nạp OpenGL khi tự động đăng nhập.",
     "Bộ gõ không còn khởi động các dịch vụ portal không cần thiết.",
+    "Flameshot không còn nạp OpenGL (bớt khoảng 20 MiB), vẫn chụp màn hình như cũ.",
     "Dịch vụ nhắc lịch chỉ khởi động khi đã có sự kiện, việc cần làm hoặc tài khoản lịch; tắt applet hàng đợi in trùng với thông báo của Cinnamon.",
     "Tắt cups-browsed và kerneloops (gửi báo cáo lỗi nhân cho Ubuntu, làm chậm khởi động).",
     "Khởi động không còn phải nạp lại systemd vì bộ gõ Lotus; đăng nhập không còn khởi động lại bộ gõ khi cấu hình không đổi.",
@@ -20,6 +21,7 @@
   "release_notes_en": [
     "Cinnamon's background services no longer load OpenGL after an automatic login.",
     "The input method no longer starts portal services it does not need.",
+    "Flameshot no longer loads OpenGL (about 20 MiB less) and takes screenshots as before.",
     "The calendar reminder service starts once there is an event, a task or a calendar account; the print queue applet, which repeats Cinnamon's notifications, is off.",
     "Disable cups-browsed and kerneloops (sends kernel crash reports to Ubuntu, slows down startup).",
     "Boot no longer reloads systemd for the Lotus input method; login no longer restarts the input method when its settings did not change.",
