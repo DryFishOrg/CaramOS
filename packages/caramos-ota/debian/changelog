@@ -1,3 +1,22 @@
+caramos-ota (1.0.21-0caramos1) noble; urgency=medium
+
+  * Release CaramOS 1.0.21.
+  * Run all pending timestamp migrations by migration ID ledger.
+  * Install the App Center (caramos-app-center, the app picker) from its
+    GitHub releases and keep it up to date in the daily check. Releases are
+    verified against the App Center release key shipped in
+    /usr/share/caramos-ota/keys before anything is installed.
+  * Put an App Center launcher on each user's Desktop and in /etc/skel.
+  * Update Center: redesign in the Vietnam Linux Family colours; the page
+    scrolls above a fixed button bar, so "Update now" stays visible on small
+    screens (#77). Pin Gdk 3.0 so it still opens next to the GTK 4 App Center,
+    show its taskbar icon, and translate the password prompt.
+  * Installer slideshow: Zalo is preselected in the App Center instead of
+    preinstalled.
+  * Stop shipping __pycache__ bytecode written by tests and manifest checks.
+
+ -- Vietnam Linux Family <developer@vietnamlinuxfamily.net>  Sat, 10 Oct 2026 09:21:09 +0700
+
 caramos-ota (1.0.20-0caramos1) noble; urgency=medium
 
   * Release CaramOS 1.0.20.
