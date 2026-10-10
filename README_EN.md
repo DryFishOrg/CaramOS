@@ -55,6 +55,7 @@ office tools, and practical daily-use utilities.
 | **CaramOS branding** | Customized boot menu, Plymouth, logo, wallpaper, panel and theme |
 | **Vietnamese-first defaults** | Vietnamese locale, Asia/Ho_Chi_Minh timezone and Be Vietnam Pro fonts |
 | **Vietnamese input** | Fcitx5 + Lotus installed and configured by default |
+| **Light, no freeze when RAM runs out** | Uses less RAM after startup than stock Linux Mint; earlyoom closes the app using the most memory instead of letting the machine freeze when RAM and swap are nearly full |
 | **CaramOS App Center** | At the first login, pick an office suite (ONLYOFFICE, WPS, LibreOffice), browsers (Chrome, Cốc Cốc, Edge, Brave) and chat apps; every choice lists its strengths and weaknesses |
 | **Zalo** | Preselected in the App Center's recommended set (the build with voice and video calls) |
 | **Cinnamon Delight + Tela/Bibata** | Modern theme, icons and cursor with a clean desktop experience |

@@ -59,6 +59,7 @@ trình duyệt, ứng dụng văn phòng và các tiện ích quen thuộc.
 | **Giao diện CaramOS** | Branding CaramOS, boot menu/Plymouth, logo, wallpaper, panel và theme được tuỳ biến |
 | **Tiếng Việt mặc định** | Locale Việt Nam, timezone Asia/Ho_Chi_Minh, font Be Vietnam Pro |
 | **Bộ gõ tiếng Việt** | Fcitx5 + Lotus được cài và cấu hình sẵn |
+| **Nhẹ, không đơ khi hết RAM** | Lúc khởi động xong dùng ít RAM hơn Linux Mint gốc; earlyoom đóng ứng dụng tốn RAM nhất thay vì để máy đơ khi RAM và swap gần hết |
 | **App Center CaramOS** | Lần đăng nhập đầu tiên chọn bộ văn phòng (ONLYOFFICE, WPS, LibreOffice), trình duyệt (Chrome, Cốc Cốc, Edge, Brave) và ứng dụng liên lạc, mỗi lựa chọn ghi rõ ưu và nhược điểm |
 | **Zalo** | Chọn sẵn trong bộ đề xuất của App Center (bản gọi thoại, gọi video được) |
 | **Cinnamon Delight + Tela/Bibata** | Theme, icon và cursor hiện đại, nhẹ, dễ nhìn |
