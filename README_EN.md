@@ -56,7 +56,7 @@ office tools, and practical daily-use utilities.
 | **Vietnamese-first defaults** | Vietnamese locale, Asia/Ho_Chi_Minh timezone and Be Vietnam Pro fonts |
 | **Vietnamese input** | Fcitx5 + Lotus installed and configured by default |
 | **CaramOS App Center** | At the first login, pick an office suite (ONLYOFFICE, WPS, LibreOffice), browsers (Chrome, Cốc Cốc, Edge, Brave) and chat apps; every choice lists its strengths and weaknesses |
-| **Zalo** | Zalo AppImage included with a desktop shortcut |
+| **Zalo** | Preselected in the App Center's recommended set (the build with voice and video calls) |
 | **Cinnamon Delight + Tela/Bibata** | Modern theme, icons and cursor with a clean desktop experience |
 | **Neofetch/Fastfetch identity** | CaramOS ASCII logo and synchronized OS identity/version metadata |
 | **OTA updates** | `caramos-ota` delivers post-ISO updates through reviewed version migrations |
@@ -140,7 +140,7 @@ architecture and developer workflow.
 | **Release compression** | SquashFS `xz` |
 | **Theme / Icons / Cursor** | Cinnamon Delight, Tela Circle/Cinnamon Delight Icons, Bibata |
 | **Font / Input Method** | Be Vietnam Pro, Fcitx5 + Lotus |
-| **Included apps** | Firefox, Zalo AppImage; everything else through the App Center (Flathub or publisher packages) |
+| **Included apps** | Firefox; everything else (office suite, Chrome, Zalo...) through the App Center (Flathub or publisher packages) |
 
 ### Build ISO
 

@@ -8,7 +8,7 @@ panel-zone-text-sizes='[{"panelId": 1, "left":0.0, "center":0.0, "right":0.0}]'
 favorite-apps=@as []
 
 [org/cinnamon/applets/grouped-window-list]
-pinned-apps=['google-chrome.desktop','wps-office-prometheus.desktop','zalo.desktop','mintinstall.desktop','cinnamon-settings.desktop']
+pinned-apps=['firefox.desktop','nemo.desktop','caramos-app-center.desktop','cinnamon-settings.desktop']
 title-display=1
 number-display=false
 group-apps=true

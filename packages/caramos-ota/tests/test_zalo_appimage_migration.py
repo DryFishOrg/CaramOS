@@ -21,7 +21,6 @@ MIGRATION_DIR = (
     / "usr/lib/python3/dist-packages/caramos_ota_update/migrations"
     / "20261005110000_update_zalo_appimage"
 )
-HOOK = ROOT / "config/hooks/live/0300-zalo-unoffical.hook.chroot"
 
 
 def load_migration():
@@ -120,16 +119,6 @@ class ReleaseAssetTests(unittest.TestCase):
         self.assertEqual(["Zalo-26.10.10+ZaDark-26.2.1-ed91566-x86_64.AppImage"], matched)
         self.assertTrue(migration.ASSET_PATTERN.fullmatch(REBUILT_NAME))
         self.assertFalse(migration.ASSET_PATTERN.fullmatch("Zalo-26.9.10+ZaDark-26.2.1-8ec7c5b-x86_64.AppImage"))
-
-    @unittest.skipUnless(HOOK.is_file(), "ISO hooks are not in the source package")
-    def test_hook_writes_only_the_launcher_for_the_migration(self) -> None:
-        source = HOOK.read_text(encoding="utf-8")
-        self.assertIn('APPIMAGE_PATH="$INSTALL_DIR/Zalo.AppImage"', source)
-        self.assertIn("Exec=$APPIMAGE_PATH", source)
-        self.assertEqual(Path("/usr/local/bin/Zalo.AppImage"), migration.ZALO_APPIMAGE)
-        self.assertNotIn("zalo-for-linux/releases", source)
-        self.assertNotIn("hthienloc", source)
-        self.assertIn(MIGRATION_DIR.name, source)
 
 
 class ZaloMigrationTests(unittest.TestCase):

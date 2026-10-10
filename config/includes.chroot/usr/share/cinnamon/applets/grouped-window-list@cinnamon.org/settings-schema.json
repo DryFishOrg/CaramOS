@@ -153,10 +153,9 @@
   "pinned-apps": {
     "type": "generic",
     "default": [
-      "google-chrome.desktop",
-      "wps-office-prometheus.desktop",
-      "zalo.desktop",
-      "mintinstall.desktop",
+      "firefox.desktop",
+      "nemo.desktop",
+      "caramos-app-center.desktop",
       "cinnamon-settings.desktop"
     ]
   },

@@ -8,11 +8,13 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).parents[3]
+# CaramOS 1.0.21 preinstalls no Chrome, WPS or Zalo (the App Center installs them): new users get the
+# preinstalled browser, Files, the App Center and Settings. Cinnamon reads the schema default; the dconf and
+# hook copies are kept in step with it.
 TARGET_IDS = (
-    "google-chrome.desktop",
-    "wps-office-prometheus.desktop",
-    "zalo.desktop",
-    "mintinstall.desktop",
+    "firefox.desktop",
+    "nemo.desktop",
+    "caramos-app-center.desktop",
     "cinnamon-settings.desktop",
 )
 
@@ -47,13 +49,14 @@ class TaskbarDesktopDefaultsStaticTests(unittest.TestCase):
         ):
             self.assertFalse((desktop / filename).exists())
 
-    def test_zalo_hook_installs_application_launcher_only(self) -> None:
-        hook = ROOT / "config/hooks/live/0300-zalo-unoffical.hook.chroot"
-        source = hook.read_text(encoding="utf-8")
-        self.assertIn('/usr/share/applications/zalo.desktop', source)
-        self.assertNotIn("SKEL_DESKTOP", source)
-        self.assertNotIn('/etc/skel/Desktop', source)
-
+    def test_fresh_iso_installs_no_zalo(self) -> None:
+        # Without hook 0300's launcher, migration 20261005110000 finds no Zalo and downloads none.
+        self.assertFalse((ROOT / "config/hooks/live/0300-zalo-unoffical.hook.chroot").exists())
+        for path in (
+            ROOT / "config/includes.chroot/etc/dconf/db/local.d/00-caramos-theme",
+            ROOT / "config/includes.chroot/etc/dconf/db/local.d/01-caramos-task17-panel",
+        ):
+            self.assertNotIn("zalo.desktop", path.read_text(encoding="utf-8"))
 
 if __name__ == "__main__":
     unittest.main()

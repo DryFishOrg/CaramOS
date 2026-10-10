@@ -60,7 +60,7 @@ trình duyệt, ứng dụng văn phòng và các tiện ích quen thuộc.
 | **Tiếng Việt mặc định** | Locale Việt Nam, timezone Asia/Ho_Chi_Minh, font Be Vietnam Pro |
 | **Bộ gõ tiếng Việt** | Fcitx5 + Lotus được cài và cấu hình sẵn |
 | **App Center CaramOS** | Lần đăng nhập đầu tiên chọn bộ văn phòng (ONLYOFFICE, WPS, LibreOffice), trình duyệt (Chrome, Cốc Cốc, Edge, Brave) và ứng dụng liên lạc, mỗi lựa chọn ghi rõ ưu và nhược điểm |
-| **Zalo** | Zalo AppImage được cài sẵn; bản gọi thoại, gọi video chọn trong App Center |
+| **Zalo** | Chọn sẵn trong bộ đề xuất của App Center (bản gọi thoại, gọi video được) |
 | **Cinnamon Delight + Tela/Bibata** | Theme, icon và cursor hiện đại, nhẹ, dễ nhìn |
 | **Neofetch/Fastfetch CaramOS** | Logo ASCII màu và OS identity đồng bộ theo version CaramOS |
 | **Build linh hoạt** | Dev build nhanh bằng `lz4`, release build nhỏ hơn bằng `xz`, hỗ trợ Docker |
@@ -100,7 +100,7 @@ thân thiện, hiện đại và sẵn sàng cho người dùng Việt Nam.
 | **Compression release** | SquashFS `xz` |
 | **Theme / Icon / Cursor** | Cinnamon Delight, Tela Circle/Cinnamon Delight Icons, Bibata |
 | **Font / Input** | Be Vietnam Pro, Fcitx5 + Lotus |
-| **Apps có sẵn** | Firefox, Zalo AppImage; còn lại cài qua App Center (Flathub hoặc gói chính hãng) |
+| **Apps có sẵn** | Firefox; còn lại (bộ văn phòng, Chrome, Zalo...) cài qua App Center (Flathub hoặc gói của nhà phát triển) |
 
 ## Cấu trúc dự án
 
