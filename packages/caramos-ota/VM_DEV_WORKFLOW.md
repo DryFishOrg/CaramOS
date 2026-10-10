@@ -63,7 +63,10 @@ virsh -c qemu:///system list --all   # không được báo lỗi quyền
 
 ## 3. Setup một lần cho mỗi bản base
 
-Ví dụ với base `1.0.16` (mặc định). Với base khác, thêm `BASE=x.y.z` vào từng lệnh hoặc ghi vào
+VM test luôn dựng từ **bản CaramOS đã phát hành mới nhất**, cài mới từ ISO của bản đó: `BASE` mặc định lấy tag
+`vX.Y.Z` mới nhất (ví dụ tag `v1.0.20` → `BASE=1.0.20`, domain `caram1.0.20`, ISO
+`CaramOS-1.0.20-cinnamon-amd64.iso` ở gốc repo). Mỗi lần phát hành bản mới thì dựng lại VM từ bản đó.
+Các ví dụ bên dưới dùng `1.0.16`. Với base khác, thêm `BASE=x.y.z` vào từng lệnh hoặc ghi vào
 `vm.local.env` (mục 7).
 
 ### Bước 1 — Tạo VM
@@ -328,7 +331,7 @@ cp vm.local.env.example vm.local.env
 
 | Biến | Mặc định | Ý nghĩa |
 | --- | --- | --- |
-| `BASE` | `1.0.16` | Bản CaramOS làm nền |
+| `BASE` | tag `vX.Y.Z` mới nhất (vd. `1.0.20`) | Bản CaramOS làm nền: luôn là bản đã phát hành mới nhất |
 | `VM_DOMAIN` | `caram<BASE>` | Tên domain libvirt |
 | `VM_SNAPSHOT` | `clean` | Snapshot dùng cho `vm-snapshot`/`vm-reset` |
 | `REMOTE_USER` | `caram` | User trong VM |

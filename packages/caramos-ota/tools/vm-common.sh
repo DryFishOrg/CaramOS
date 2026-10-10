@@ -19,6 +19,11 @@ vm_load_local_config() {
 vm_load_local_config
 
 VIRSH_URI="${VIRSH_URI:-qemu:///system}"
+# Test VMs start from the latest released CaramOS: the newest vX.Y.Z tag (e.g. v1.0.20 -> 1.0.20).
+vm_latest_release() {
+  git -C "${VM_PKG_DIR}" tag --list 'v[0-9]*' --sort=-v:refname 2>/dev/null | head -n 1 | sed 's/^v//'
+}
+BASE="${BASE:-$(vm_latest_release)}"
 BASE="${BASE:-1.0.16}"
 VM_DOMAIN="${VM_DOMAIN:-caram${BASE}}"
 VM_SNAPSHOT="${VM_SNAPSHOT:-clean}"

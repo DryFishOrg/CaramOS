@@ -8,7 +8,9 @@ GPG_TTY ?= $(shell tty 2>/dev/null || true)
 export GPG_TTY
 # Dev VM target. Per-developer overrides go in vm.local.env (git-ignored); see VM_DEV_WORKFLOW.md.
 -include vm.local.env
-BASE ?= 1.0.16
+# Test VMs start from the latest released CaramOS (newest vX.Y.Z tag); override with BASE=x.y.z.
+LATEST_RELEASE := $(shell git tag --list 'v[0-9]*' --sort=-v:refname 2>/dev/null | head -n 1 | sed 's/^v//')
+BASE ?= $(or $(LATEST_RELEASE),1.0.16)
 VM_DOMAIN ?= caram$(BASE)
 VM_SNAPSHOT ?= clean
 REMOTE_USER ?= caram
@@ -16,7 +18,7 @@ REMOTE_USER ?= caram
 REMOTE_HOST ?=
 REMOTE_PORT ?= 22
 export BASE VM_DOMAIN VM_SNAPSHOT REMOTE_USER REMOTE_HOST REMOTE_PORT
-TEST_RELEASE_FROM ?= 1.0.16.1
+TEST_RELEASE_FROM ?= $(BASE)
 TEST_RELEASE_TARGET ?= $(shell PYTHONPATH=usr/lib/python3/dist-packages python3 -c 'from caramos_ota.release_metadata import PRODUCT_VERSION; print(PRODUCT_VERSION)' 2>/dev/null || printf 'dev')
 VERSION ?=
 
