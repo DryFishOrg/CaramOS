@@ -24,3 +24,4 @@ etc/xdg/autostart/caramos-ota-notifier.desktop etc/xdg/autostart/
 etc/logrotate.d/caramos-ota etc/logrotate.d/
 usr/share/themes/Cinnamon-Delight-Dark usr/share/themes/
 usr/share/cinnamon/styles.d/30_caramos.styles usr/share/cinnamon/styles.d/
+usr/share/glib-2.0/schemas/60_caramos-ota.gschema.override usr/share/glib-2.0/schemas/

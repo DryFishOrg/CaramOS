@@ -32,6 +32,12 @@ class ControlCenterAppletStaticTests(unittest.TestCase):
         self.assertNotIn("safeCommandOutput", self.source)
         self.assertNotIn("new_for_bus_sync", self.source)
 
+    def test_vpn_state_is_polled_only_while_the_menu_is_open(self) -> None:
+        periodic = self.source.split("this._vpnPeriodicRefreshId = Mainloop.timeout_add_seconds", 1)[1].split("});", 1)[0]
+        self.assertIn("if (this.menu.isOpen) this._refreshVpnState();", periodic)
+        opened = self.source.split("this.menu.connect('open-state-changed'", 1)[1].split("} else {", 1)[0]
+        self.assertIn("this._refreshVpnState();", opened)
+
     def test_wifi_actions_do_not_pass_secrets(self) -> None:
         self.assertNotRegex(self.source, r"nmcli[^\n]*(?:password|psk)")
         self.assertNotRegex(self.source, r"spawn[^\n]*network\.ssid")

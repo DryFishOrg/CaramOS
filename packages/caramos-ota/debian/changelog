@@ -14,6 +14,25 @@ caramos-ota (1.0.21-0caramos1) noble; urgency=medium
   * Installer slideshow: Zalo is preselected in the App Center instead of
     preinstalled.
   * Stop shipping __pycache__ bytecode written by tests and manifest checks.
+  * Lighten the desktop session: about 145 MiB less RAM five minutes after an
+    automatic login on the test VMs, 50 MiB below Linux Mint 22.3. Fill GTK
+    3's OpenGL visual cache before the session daemons start, keep Fcitx 5
+    from starting the XDG portals, start the calendar reminder daemon (and
+    with it the Evolution data server) once there is an event, a task or a
+    calendar account, hide the print queue applet, and disable cups-browsed
+    and kerneloops.
+  * Recommend and configure earlyoom: when RAM and swap are nearly full it
+    stops the app using the most memory instead of letting the machine
+    freeze while it swaps. It never picks the session's own processes.
+  * Boot no longer reloads systemd for the Lotus input method; login no
+    longer restarts Fcitx when its settings did not change, nor resets the
+    Flameshot shortcut.
+  * Control Center: query VPN connections while the menu is open instead of
+    running nmcli twice every 15 seconds.
+  * System Reports tray: look for running Timeshift snapshots and automatic
+    updates once a minute instead of every 10 seconds; each check read the
+    command line of every process.
+  * Remove the 14 Tela icon colours CaramOS does not use (about 1.1 GiB).
 
  -- Vietnam Linux Family <developer@vietnamlinuxfamily.net>  Sat, 10 Oct 2026 09:21:09 +0700
 

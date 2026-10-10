@@ -2232,6 +2232,7 @@ class CaramOSControlCenterApplet extends Applet.IconApplet {
                 this._focusOpener = global.stage.get_key_focus();
                 this._alignMenuToRightEdge();
                 this._addOneShot(1, () => this._focusFirstControl(this._container));
+                this._refreshVpnState();
             } else {
                 this._restoreFocus();
             }
@@ -2259,8 +2260,10 @@ class CaramOSControlCenterApplet extends Applet.IconApplet {
             this._refresh();
             return true;
         });
+        // The VPN tile is only in the menu and NetworkManager changes refresh it: while the menu is
+        // closed, do not run nmcli twice every 15 s.
         this._vpnPeriodicRefreshId = Mainloop.timeout_add_seconds(REFRESH_SECONDS, () => {
-            this._refreshVpnState();
+            if (this.menu.isOpen) this._refreshVpnState();
             return true;
         });
     }

@@ -1,0 +1,5 @@
+# CaramOS (caramos-ota). mintreport-tray lists every process (psutil, the command line of each) every
+# automonitor-seconds to show an icon while Timeshift or automatic updates run; Mint's 10 s made it the
+# busiest process of an idle desktop. Those jobs take minutes, so the icon can appear up to a minute late.
+[com.linuxmint.report]
+automonitor-seconds=60
