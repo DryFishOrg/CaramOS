@@ -777,7 +777,7 @@ trong khối CSS tối; `test_control_center_dark_mode.py` kiểm tra điều n�
 (`DelightDarkGeneratorTests` kiểm tra không còn xám navy và thứ tự độ sáng các vùng), rồi so ảnh sáng/tối
 trên VM (`make vm-reset ship`, bật/tắt bằng `vm-dev.sh click`).
 
-**Chưa kiểm chứng:** ứng dụng Qt (WPS Office, Flameshot, CopyQ) và Zalo không đi theo GTK theme;
+**Chưa kiểm chứng:** ứng dụng Qt (WPS Office, Flameshot) và Zalo không đi theo GTK theme;
 cần kiểm tra riêng. Màn hình đăng nhập (slick-greeter) vẫn dùng theme sáng toàn hệ thống.
 
 ---

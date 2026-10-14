@@ -24,7 +24,7 @@ CaramOS là bản phân phối Linux dựa trên Linux Mint 22 (Ubuntu 24.04 LTS
 │   ├── caramos-ota/      # Gói OTA: migration, Update Center, Control Center
 │   └── caramos-app-center/  # Git submodule VN-Linux-Family/CaramOS-app-center (App Center)
 ├── config/
-│   ├── packages.txt      # Packages cần thêm (flameshot, copyq...)
+│   ├── packages.txt      # Packages cần thêm (flameshot, vlc...)
 │   ├── hooks/live/       # Hooks chạy bên trong chroot
 │   │   └── NNNN-ten.hook.chroot  # Đặt tên theo thứ tự ưu tiên (0100, 0200...)
 │   └── includes.chroot/  # Overlay files copy vào rootfs

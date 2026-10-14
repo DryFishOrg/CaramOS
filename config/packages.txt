@@ -5,5 +5,3 @@
 # Display Manager: Giữ nguyên LightDM + Slick-Greeter mặc định của Mint
 #5 @dungdinhmanh
 flameshot
-#19
-copyq
