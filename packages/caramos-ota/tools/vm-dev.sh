@@ -480,7 +480,10 @@ cmd_sync() {
   host="$(vm_ip)"
   # --relative + --no-implied-dirs: only the listed files/dirs are touched, so --delete cannot
   # reach outside the package's own directories and parent dirs such as /usr keep their attributes.
+  # usr/share/locale is listed whole but belongs to every package: deleting there removed all other
+  # translations (cinnamon.mo too, and without it GLib turns off every translation in Cinnamon).
   rsync -rlpt --relative --no-implied-dirs --delete \
+    --filter='protect /usr/share/locale/**' \
     --exclude='__pycache__/' --exclude='*.pyc' \
     --chown=root:root --chmod=go-w \
     --rsync-path='sudo -n rsync' \

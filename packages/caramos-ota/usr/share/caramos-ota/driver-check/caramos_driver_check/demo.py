@@ -1,0 +1,77 @@
+"""Development only: made-up machines for working on the window without their hardware.
+
+    CARAMOS_DRIVER_CHECK_DEMO=broadcom       Broadcom Wi-Fi without driver, offline, NVIDIA on nouveau
+    CARAMOS_DRIVER_CHECK_DEMO=online-later   the same, and the network comes back after 20 seconds
+    CARAMOS_DRIVER_CHECK_DEMO=nvidia         online, only the NVIDIA driver is missing
+    CARAMOS_DRIVER_CHECK_DEMO=live           the Broadcom laptop in the live USB session
+    CARAMOS_DRIVER_CHECK_DEMO=ok             everything works
+"""
+
+from __future__ import annotations
+
+import time
+from time import monotonic
+
+from .analysis import Report, analyze
+from .drivers import DriverProposal
+from .hardware import Device, NetInterface, RfkillSwitch, Snapshot, UsbInterface
+
+BROADCOM = Device("pci", "0000:02:00.0", "14e4", "43a0", "Broadcom BCM4360 802.11ac Wireless Network Adapter",
+                  vendor_name="Broadcom", pci_class="028000", subsystem="106b:0117")
+INTEL_WIFI = Device("pci", "0000:00:14.3", "8086", "a0f0", "Intel Wi-Fi 6 AX201 160MHz", vendor_name="Intel",
+                    driver="iwlwifi", pci_class="028000", net=("wlp0s20f3",))
+ETHERNET = Device("pci", "0000:03:00.0", "10ec", "8168", "Realtek RTL8111/8168/8211/8411 PCI Express Gigabit "
+                  "Ethernet Controller", vendor_name="Realtek", driver="r8169", pci_class="020000", net=("enp3s0",))
+INTEL_GPU = Device("pci", "0000:00:02.0", "8086", "9b41", "Intel UHD Graphics", vendor_name="Intel", driver="i915",
+                   pci_class="030000")
+NVIDIA = Device("pci", "0000:01:00.0", "10de", "1f99", "NVIDIA GeForce GTX 1650 Mobile / Max-Q", vendor_name="NVIDIA",
+                driver="nouveau", pci_class="030200", modules=("nouveau",), loaded_modules=("nouveau",))
+AUDIO = Device("pci", "0000:00:1f.3", "8086", "02c8", "Intel Comet Lake PCH-LP cAVS", vendor_name="Intel",
+               driver="sof-audio-pci-intel-cnl", pci_class="040100", sound_cards=1)
+BLUETOOTH = Device("usb", "1-10", "8087", "0026", "Intel AX201 Bluetooth", vendor_name="Intel",
+                   interfaces=(UsbInterface("1.0", "e0", "01", "01", "btusb"),), bluetooth=("hci0",))
+WEBCAM = Device("usb", "1-5", "0bda", "5520", "Integrated Webcam HD", vendor_name="Realtek",
+                interfaces=(UsbInterface("1.0", "0e", "01", "00", "uvcvideo"),), video_nodes=2)
+FINGERPRINT = Device("usb", "1-9", "27c6", "55a4", "Goodix", vendor_name="Goodix",
+                     interfaces=(UsbInterface("1.0", "ff", "00", "00"),))
+FINGERPRINTS = {"27c6:55a4": ""}
+
+
+class DemoScanner:
+    def __init__(self, case: str) -> None:
+        self.case = case
+        self.demo = case   # the window shows a banner: this is not the computer it runs on
+        self.started = monotonic()
+
+    def connected(self) -> bool:
+        if self.case == "online-later":
+            return monotonic() - self.started > 20
+        return self.case not in ("broadcom", "live")
+
+    def snapshot(self) -> Snapshot:
+        online = self.connected()
+        ethernet = NetInterface("enp3s0", wireless=False, up=online, driver="r8169", bus="pci",
+                                address="0000:03:00.0")
+        if self.case in ("nvidia", "ok"):
+            wifi = NetInterface("wlp0s20f3", wireless=True, up=True, driver="iwlwifi", bus="pci",
+                                address="0000:00:14.3")
+            pci = (INTEL_WIFI, ETHERNET, INTEL_GPU, AUDIO) + ((NVIDIA,) if self.case == "nvidia" else ())
+            net = (ethernet, wifi)
+        else:
+            pci = (BROADCOM, ETHERNET, INTEL_GPU, NVIDIA, AUDIO)
+            net = (ethernet,)
+        usb = (BLUETOOTH, WEBCAM) + ((FINGERPRINT,) if self.case != "ok" else ())
+        return Snapshot(pci=pci, usb=usb, net=net, rfkill=(RfkillSwitch("bluetooth", False, False),),
+                        connected=online, kernel="6.14.0-37-generic", live=self.case == "live")
+
+    def proposals(self) -> list[DriverProposal]:
+        time.sleep(1.2)   # UbuntuDrivers loads the APT cache
+        proposals = [DriverProposal("nvidia-driver-580-open", "nvidia:580-open", NVIDIA.address, "NVIDIA",
+                                    "TU117M", free=False)]
+        if self.case not in ("nvidia", "ok"):
+            proposals.append(DriverProposal("bcmwl-kernel-source", "bcmwl-kernel-source", BROADCOM.address,
+                                            "Broadcom", "BCM4360", offline=True))
+        return proposals if self.case != "ok" else []
+
+    def analyze(self, snapshot: Snapshot, proposals) -> Report:
+        return analyze(snapshot, FINGERPRINTS, proposals)

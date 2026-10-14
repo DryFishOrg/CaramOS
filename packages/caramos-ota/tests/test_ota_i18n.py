@@ -25,7 +25,7 @@ UI_SOURCES = [
     DIST / "caramos_ota_notifier/state.py",
     DIST / "caramos_ota_audit/ui.py",
     DIST / "caramos_ota_audit/cli.py",
-]
+] + sorted((ROOT / "usr/share/caramos-ota/driver-check/caramos_driver_check").rglob("*.py"))
 MIGRATIONS = DIST / "caramos_ota_update/migrations"
 VIETNAMESE = re.compile(r"[À-ỹĐđ]")
 TIMESTAMP_ID = re.compile(r"^\d{14}_[a-z0-9_]+$")

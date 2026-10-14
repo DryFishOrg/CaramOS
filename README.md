@@ -59,6 +59,8 @@ trình duyệt, ứng dụng văn phòng và các tiện ích quen thuộc.
 | **Giao diện CaramOS** | Branding CaramOS, boot menu/Plymouth, logo, wallpaper, panel và theme được tuỳ biến |
 | **Tiếng Việt mặc định** | Locale Việt Nam, timezone Asia/Ho_Chi_Minh, font Be Vietnam Pro |
 | **Bộ gõ tiếng Việt** | Fcitx5 + Lotus được cài và cấu hình sẵn |
+| **Kiểm tra driver** | App cùng giao diện App Center, tự chạy ở lần đăng nhập đầu tiên (cả khi chạy thử từ USB): kiểm tra Wi-Fi, mạng dây, đồ họa, âm thanh, Bluetooth, webcam, vân tay; cài driver NVIDIA và Wi-Fi Broadcom bằng một nút; thiếu driver mạng thì hướng dẫn vào mạng bằng dây LAN, điện thoại qua USB hoặc cài từ USB cài CaramOS; nút Nhờ giúp đỡ gửi lời nhắn kèm hồ sơ phần cứng `hw-probe` tới cộng đồng VNLF |
+| **Góp ý & hỗ trợ** | Biểu tượng dấu chấm hỏi ở góc phải thanh tác vụ: nhờ giúp đỡ, báo lỗi hoặc góp ý gửi thẳng tới cộng đồng VNLF, kèm ảnh chụp màn hình (Flameshot, làm mờ được chỗ riêng tư), video quay màn hình (Ctrl+Shift+Alt+R, tối đa 1 phút) hoặc ảnh, video có sẵn trong máy; ảnh và video được nén nhỏ và bỏ thông tin vị trí trước khi gửi; menu hiện tình trạng các yêu cầu đã gửi và báo khi VNLF hoặc cộng đồng trả lời; yêu cầu được chia sẻ để cộng đồng VNLF cùng giúp (bỏ tick được), VNLF duyệt trước khi đăng |
 | **Nhẹ, không đơ khi hết RAM** | Lúc khởi động xong dùng ít RAM hơn Linux Mint gốc; earlyoom đóng ứng dụng tốn RAM nhất thay vì để máy đơ khi RAM và swap gần hết |
 | **App Center CaramOS** | Lần đăng nhập đầu tiên chọn bộ văn phòng (ONLYOFFICE, WPS, LibreOffice), trình duyệt (Chrome, Cốc Cốc, Edge, Brave) và ứng dụng liên lạc, mỗi lựa chọn ghi rõ ưu và nhược điểm |
 | **Zalo** | Chọn sẵn trong bộ đề xuất của App Center (bản gọi thoại, gọi video được) |

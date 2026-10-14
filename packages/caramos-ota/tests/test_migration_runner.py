@@ -54,9 +54,11 @@ class MigrationRunnerTests(unittest.TestCase):
                 "20261009120000_add_app_center_launcher",
                 "20261010120000_remove_unused_icon_colours",
                 "20261010120100_lighten_desktop_session",
+                "20261012120000_add_driver_check",
+                "20261012180000_add_help_applet",
             ],
         )
-        self.assertEqual(11, run_one.call_count)
+        self.assertEqual(13, run_one.call_count)
         self.assertEqual(
             [
                 "20260805111120_update_taskbar_pins_cleanup_desktop",
@@ -70,6 +72,8 @@ class MigrationRunnerTests(unittest.TestCase):
                 "20261009120000_add_app_center_launcher",
                 "20261010120000_remove_unused_icon_colours",
                 "20261010120100_lighten_desktop_session",
+                "20261012120000_add_driver_check",
+                "20261012180000_add_help_applet",
             ],
             [entry.args[0].migration_id for entry in run_one.call_args_list],
         )

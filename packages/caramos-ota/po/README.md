@@ -4,7 +4,7 @@ Source strings in the code are English. Each folder is one gettext domain with a
 
 | Domain | Used by | Source files |
 |---|---|---|
-| `caramos-ota` | Update Center, Audit tool (`caramos_ota.i18n`) | `usr/lib/python3/dist-packages/caramos_ota_notifier/*.py`, `caramos_ota_audit/{ui,cli}.py` |
+| `caramos-ota` | Update Center, Audit tool, Driver Check and Feedback & Help (`caramos_ota.i18n`), Feedback & Help applet | `usr/lib/python3/dist-packages/caramos_ota_notifier/*.py`, `caramos_ota_audit/{ui,cli}.py`, `usr/share/caramos-ota/driver-check/caramos_driver_check/**/*.py`, `usr/share/caramos-ota/applets/caramos-help@caramos/applet.js` |
 | `caramos-control-center` | Control Center applet | `usr/share/caramos-ota/applets/caramos-control-center@caramos/applet.js` |
 
 `tools/caramos-ota-testkit.sh compile` (run by the package build) compiles every `po/<domain>/<lang>.po` to
@@ -18,7 +18,11 @@ cd packages/caramos-ota
 xgettext --language=Python --from-code=UTF-8 --keyword=_ --keyword=ngettext:1,2 \
   --package-name=caramos-ota -o po/caramos-ota/caramos-ota.pot \
   usr/lib/python3/dist-packages/caramos_ota_notifier/{ui,app,state}.py \
-  usr/lib/python3/dist-packages/caramos_ota_audit/{ui,cli}.py
+  usr/lib/python3/dist-packages/caramos_ota_audit/{ui,cli}.py \
+  $(find usr/share/caramos-ota/driver-check/caramos_driver_check -name '*.py' | sort)
+xgettext --language=JavaScript --from-code=UTF-8 --keyword=_ --keyword=ngettext:1,2 --join-existing \
+  --package-name=caramos-ota -o po/caramos-ota/caramos-ota.pot \
+  usr/share/caramos-ota/applets/caramos-help@caramos/applet.js
 xgettext --language=JavaScript --from-code=UTF-8 --keyword=_ --keyword=ngettext:1,2 \
   --add-comments=Translators: --package-name=caramos-control-center \
   -o po/caramos-control-center/caramos-control-center.pot \

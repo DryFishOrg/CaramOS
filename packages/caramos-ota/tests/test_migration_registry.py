@@ -80,7 +80,7 @@ class MigrationRegistryTests(unittest.TestCase):
         catalog = discover_migrations()
         descriptors = {item.migration_id: item for item in catalog}
 
-        self.assertEqual(25, len(catalog))
+        self.assertEqual(27, len(catalog))
         self.assertNotIn("v1_0_13", descriptors)
         self.assertNotIn("v1_0_14", descriptors)
         self.assertEqual("1.0.12", latest_legacy_release(catalog))
@@ -102,6 +102,8 @@ class MigrationRegistryTests(unittest.TestCase):
                 "20261009120000_add_app_center_launcher",
                 "20261010120000_remove_unused_icon_colours",
                 "20261010120100_lighten_desktop_session",
+                "20261012120000_add_driver_check",
+                "20261012180000_add_help_applet",
             ],
             timestamp_ids,
         )
@@ -139,6 +141,8 @@ class MigrationRegistryTests(unittest.TestCase):
                 "20261009120000_add_app_center_launcher",
                 "20261010120000_remove_unused_icon_colours",
                 "20261010120100_lighten_desktop_session",
+                "20261012120000_add_driver_check",
+                "20261012180000_add_help_applet",
             ],
             [item.migration_id for item in plan.migrations],
         )
@@ -172,6 +176,8 @@ class MigrationRegistryTests(unittest.TestCase):
                 "20261009120000_add_app_center_launcher",
                 "20261010120000_remove_unused_icon_colours",
                 "20261010120100_lighten_desktop_session",
+                "20261012120000_add_driver_check",
+                "20261012180000_add_help_applet",
             ],
             [item.migration_id for item in plan.migrations],
         )
@@ -190,7 +196,7 @@ class MigrationRegistryTests(unittest.TestCase):
 
     def test_existing_ledger_ids_leave_only_new_timestamp_pending(self) -> None:
         catalog = discover_migrations()
-        pending = ["20260808090000_restore_power_profiles_daemon", "20261003210000_fix_system_file_ownership", "20261004120000_fix_mint_base_codename", "20261005110000_update_zalo_appimage", "20261005190000_install_grub_theme", "20261006090000_fix_forced_locale", "20261006090100_fix_lotus_boot_deadlock", "20261009120000_add_app_center_launcher", "20261010120000_remove_unused_icon_colours", "20261010120100_lighten_desktop_session"]
+        pending = ["20260808090000_restore_power_profiles_daemon", "20261003210000_fix_system_file_ownership", "20261004120000_fix_mint_base_codename", "20261005110000_update_zalo_appimage", "20261005190000_install_grub_theme", "20261006090000_fix_forced_locale", "20261006090100_fix_lotus_boot_deadlock", "20261009120000_add_app_center_launcher", "20261010120000_remove_unused_icon_colours", "20261010120100_lighten_desktop_session", "20261012120000_add_driver_check", "20261012180000_add_help_applet"]
         applied = {item.migration_id for item in catalog if item.migration_id not in pending}
 
         plan = resolve_plan(

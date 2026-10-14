@@ -76,6 +76,12 @@ step_customize() {
         test -d /usr/share/cinnamon/applets/Cinnamenu@json
         find /usr/share/cinnamon/applets/Cinnamenu@json -name settings-schema.json -print -quit | grep -q .
         test -f /usr/share/plymouth/themes/caramos/caramos.plymouth
+        # Driver Check runs at the first login; its hardware reports need hw-probe (OTA migration).
+        test -f /etc/xdg/autostart/caramos-driver-check.desktop
+        command -v hw-probe
+        # Feedback & Help: the question mark on the panel (hook 0170 and an OTA migration put it there).
+        test -f /usr/share/cinnamon/applets/caramos-help@caramos/applet.js
+        grep -q "caramos-help@caramos" /etc/dconf/db/local.d/01-caramos-task17-panel
         date -u +"%Y-%m-%dT%H:%M:%SZ" > /etc/caramos-customized
     '
     ok "Rootfs đã được customize đầy đủ."

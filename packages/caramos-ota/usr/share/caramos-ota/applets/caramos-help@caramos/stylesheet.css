@@ -1,0 +1,43 @@
+/* CaramOS Feedback & Help: room at the end of the panel, then the menu in theme colours, a bold title, a
+   smaller line under it and the note under a request: what VNLF says, whether it is shared. */
+
+/* The CaramOS panel draws its right zone as a pill. Last in it, the icon keeps off the rounded end: about
+   the room the zone has at its other end, and its hover background stays inside the curve. */
+.panel-top .panelRight > .caramos-help-panel-button:last-child,
+.panel-bottom .panelRight > .caramos-help-panel-button:last-child {
+  margin-right: 8px;
+}
+
+.caramos-help-row {
+  spacing: 12px;
+}
+
+.caramos-help-texts {
+  spacing: 1px;
+}
+
+.caramos-help-title {
+  font-weight: bold;
+}
+
+.caramos-help-detail {
+  font-size: 0.85em;
+}
+
+.caramos-help-note {
+  spacing: 12px;
+  font-size: 0.85em;
+}
+
+.caramos-help-chip {
+  spacing: 4px;
+}
+
+.caramos-help-note-icon {
+  icon-size: 12px;
+}
+
+.caramos-help-section {
+  font-size: 0.85em;
+  font-weight: bold;
+}

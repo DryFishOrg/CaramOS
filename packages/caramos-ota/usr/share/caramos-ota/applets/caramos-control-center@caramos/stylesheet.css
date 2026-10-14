@@ -10,14 +10,20 @@
   background-color: rgba(0, 0, 0, 0.08);
 }
 
+/* Each icon sits like a one-icon applet beside it: 16px with 1px on each side (system-status-icon), and
+   8px between icons, the padding of two applet boxes. */
 .caramos-cc-indicator {
-  spacing: 5px;
-  padding: 2px 6px;
+  spacing: 8px;
   min-height: 22px;
 }
 
 .caramos-cc-panel-icon {
-  icon-size: 15px;
+  icon-size: 16px;
+  padding: 0 1px;
+}
+
+.caramos-cc-panel-battery-box {
+  spacing: 3px;
 }
 
 .caramos-cc-panel-battery {

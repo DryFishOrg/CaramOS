@@ -2532,8 +2532,14 @@ class CaramOSControlCenterApplet extends Applet.IconApplet {
         box.add_child(this._panelVpnIcon);
         box.add_child(this._panelMicIcon);
         box.add_child(this._panelVolumeIcon);
-        box.add_child(this._panelBatteryIcon);
-        box.add_child(this._panelBatteryLabel);
+        // The percentage stays close to its battery, nearer than the icons are to each other.
+        this._panelBattery = new St.BoxLayout({ vertical: false, style_class: 'caramos-cc-panel-battery-box' });
+        this._panelBattery.add_child(this._panelBatteryIcon);
+        this._panelBattery.add_child(this._panelBatteryLabel);
+        box.add_child(this._panelBattery);
+        // These icons stand in for the applet icon. The empty icon box would still add the applet box's
+        // spacing on the left, so the panel button would be wider on that side.
+        this._applet_icon_box.hide();
         this.actor.add_child(box);
     }
 
@@ -4188,16 +4194,14 @@ class CaramOSControlCenterApplet extends Applet.IconApplet {
         if (battery.available) {
             this._panelBatteryLabel.set_text(battery.percentText);
             this._panelBatteryIcon.set_gicon(Gio.icon_new_for_string(battery.icon));
-            this._panelBatteryLabel.show();
-            this._panelBatteryIcon.show();
+            this._panelBattery.show();
             if (this._batteryPill) {
                 this._batteryPill.get_child().get_children()[0].set_gicon(Gio.icon_new_for_string(battery.icon));
                 this._updateBatteryUi(this._powerState.battery);
                 this._batteryPill.show();
             }
         } else {
-            this._panelBatteryLabel.hide();
-            this._panelBatteryIcon.hide();
+            this._panelBattery.hide();
             if (this._batteryPill) this._batteryPill.hide();
         }
 

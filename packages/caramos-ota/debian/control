@@ -18,12 +18,23 @@ Depends: ${misc:Depends},
  python3,
  python3-gi,
  gir1.2-gtk-3.0,
+ gir1.2-notify-0.7,
+ gir1.2-gtk-4.0,
+ gir1.2-adw-1,
+ python3-pil,
+ ffmpeg,
+ kmod,
  pkexec
-Recommends: earlyoom
+Recommends: earlyoom,
+ ubuntu-drivers-common
+Suggests: hw-probe
 Description: CaramOS over-the-air update and offline audit tools
  Provides a CaramOS-specific OTA update command, daily update check,
  desktop notifier, state tracking, logs, best-effort rollback support,
- and an offline hardware/session audit bundle creator for bug reports.
+ an offline hardware/session audit bundle creator for bug reports,
+ Driver Check, which tells at first login which drivers are missing,
+ and Feedback & Help, which sends requests with screenshots and short
+ screen recordings to Vietnam Linux Family.
  .
  Users only need to run: sudo caramos-ota
  .

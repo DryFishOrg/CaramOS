@@ -76,11 +76,15 @@ class MigrationContext:
 
         self.run_command(["apt-get", "update"])
 
-    def apt_install(self, packages: Sequence[str]) -> None:
-        """Install packages through APT after validating package names."""
+    def apt_install(self, packages: Sequence[str], *, recommends: bool = True) -> None:
+        """Install packages through APT after validating package names.
+
+        recommends=False leaves out the packages' recommended packages.
+        """
 
         package_list = self._validate_packages(packages)
-        self.run_command(["apt-get", "install", "--yes", "--", *package_list])
+        options = [] if recommends else ["--no-install-recommends"]
+        self.run_command(["apt-get", "install", "--yes", *options, "--", *package_list])
 
     def apt_replace(self, install: Sequence[str], remove: Sequence[str]) -> None:
         """Install and remove packages in one APT transaction."""

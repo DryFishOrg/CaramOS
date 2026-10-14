@@ -73,11 +73,14 @@ compile_sources() {
   pycache_prefix="$(mktemp -d)"
   trap 'rm -rf "${pycache_prefix}"' RETURN
   PYTHONPYCACHEPREFIX="${pycache_prefix}" python3 -m py_compile \
+    usr/bin/caramos-driver-check \
+    usr/bin/caramos-help \
     usr/bin/caramos-ota \
     usr/bin/caramos-ota-audit \
     usr/bin/caramos-ota-notifier \
     usr/bin/caramos-ota-update \
-    $(find usr/lib/python3/dist-packages -name '*.py' | sort)
+    usr/share/caramos-ota/driver-check/caramos-driver-check-helper \
+    $(find usr/lib/python3/dist-packages usr/share/caramos-ota/driver-check -name '*.py' | sort)
   rm -rf "${pycache_prefix}"
   trap - RETURN
   echo "[OK] Python compile passed"
@@ -120,6 +123,7 @@ clean_build() {
     debian/files
   find debian -maxdepth 1 \( -name '*.substvars' -o -name '*.debhelper.log' \) -delete
   find usr/lib/python3/dist-packages -name __pycache__ -type d -prune -exec rm -rf {} +
+  find usr/share/caramos-ota/driver-check -name __pycache__ -type d -prune -exec rm -rf {} +
   find usr/lib/python3/dist-packages -name '*.pyc' -delete
   rm -rf usr/share/locale
   rm -f "${PKG_DIR}/../caramos-ota_"*.buildinfo \
@@ -226,16 +230,21 @@ restore_system() {
 }
 
 smoke_installed() {
+  command -v caramos-driver-check
+  command -v caramos-help
   command -v caramos-ota
   command -v caramos-ota-audit
   command -v caramos-ota-notifier
   command -v caramos-ota-update
   python3 -m py_compile \
+    /usr/bin/caramos-driver-check \
+    /usr/bin/caramos-help \
     /usr/bin/caramos-ota \
     /usr/bin/caramos-ota-audit \
     /usr/bin/caramos-ota-notifier \
     /usr/bin/caramos-ota-update \
-    $(find /usr/lib/python3/dist-packages/caramos_ota /usr/lib/python3/dist-packages/caramos_ota_audit /usr/lib/python3/dist-packages/caramos_ota_notifier /usr/lib/python3/dist-packages/caramos_ota_update -name '*.py' 2>/dev/null | sort)
+    /usr/share/caramos-ota/driver-check/caramos-driver-check-helper \
+    $(find /usr/lib/python3/dist-packages/caramos_ota /usr/lib/python3/dist-packages/caramos_ota_audit /usr/lib/python3/dist-packages/caramos_ota_notifier /usr/lib/python3/dist-packages/caramos_ota_update /usr/share/caramos-ota/driver-check -name '*.py' 2>/dev/null | sort)
   echo "[OK] Installed smoke test passed"
 }
 
