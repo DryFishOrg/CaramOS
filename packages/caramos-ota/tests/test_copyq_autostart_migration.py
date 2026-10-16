@@ -137,6 +137,7 @@ class StopCopyqAutostartTests(unittest.TestCase):
         self.assertIn("Ứng dụng Khởi chạy", " ".join(manifest["release_notes_vi"]))   # Cinnamon's Vietnamese name
 
 
+@unittest.skipUnless((REPO / "config").is_dir(), "ISO tree is not in the source package")
 class NewInstallTests(unittest.TestCase):
     def test_the_iso_has_no_copyq(self) -> None:
         for name in ("config/packages.txt", "config/package-lists/caramos.list.chroot"):

@@ -72,6 +72,7 @@ class DriverCheckPackagingTests(unittest.TestCase):
         self.assertEqual("caramos-driver-check", entry["StartupWMClass"])
         self.assertIn("HardwareSettings", entry["Categories"])
 
+    @unittest.skipUnless(APP_CENTER_FIRST_RUN.is_file(), "the App Center is not in the source package")
     def test_login_check_starts_after_the_app_center_picker(self) -> None:
         entry = desktop_entry(ROOT / "etc/xdg/autostart/caramos-driver-check.desktop")
         self.assertEqual("/usr/bin/caramos-driver-check --autostart", entry["Exec"])

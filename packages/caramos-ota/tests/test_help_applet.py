@@ -291,10 +291,13 @@ class PanelTests(unittest.TestCase):
              "'panel1:right:2:calendar@cinnamon.org:7', 'panel1:right:3:caramos-control-center@caramos:0']")
     WITH_HELP = STOCK[:-1] + f", {HELP}]"
 
+    @unittest.skipUnless((REPO / "config").is_dir(), "ISO tree is not in the source package")
     def test_new_installs_have_it_at_the_right_end(self) -> None:
         for path in (PANEL_DEFAULTS, PANEL_HOOK):
             with self.subTest(path=path.name):
                 self.assertIn(f"enabled-applets={self.WITH_HELP}\n", path.read_text(encoding="utf-8"))
+
+    def test_it_goes_at_the_right_end_of_the_stock_panel(self) -> None:
         self.assertEqual(self.WITH_HELP, migration.add_applet(self.STOCK))
 
     def test_it_goes_after_the_applets_of_a_changed_panel(self) -> None:
