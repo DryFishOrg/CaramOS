@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).parents[3]
-# CaramOS 1.0.21 preinstalls no Chrome, WPS or Zalo (the App Center installs them): new users get the
+# CaramOS 1.3.0 preinstalls no Chrome, WPS or Zalo (the App Center installs them): new users get the
 # preinstalled browser, Files, the App Center and Settings. Cinnamon reads the schema default; the dconf and
 # hook copies are kept in step with it.
 TARGET_IDS = (

@@ -141,7 +141,10 @@ class AppletTests(unittest.TestCase):
         self.assertIn(".caramos-help-note-icon {\n  icon-size: 12px;", css)
 
     def test_requests_say_what_vnlf_says_in_the_words_of_the_window(self) -> None:
-        from caramos_driver_check.ui import requests as window_list
+        try:
+            from caramos_driver_check.ui import requests as window_list
+        except ImportError:   # the package builders have no GTK
+            self.skipTest("python3-gi is not installed")
 
         start = self.source.index("function statusOf(request) {")
         words = set(re.findall(r"_\('([^']*)'\)", self.source[start:self.source.index("\n}\n", start)]))

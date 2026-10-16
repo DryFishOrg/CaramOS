@@ -139,7 +139,10 @@ def _manifest_from_descriptors(
             )
 
     target_items = [item for item in descriptors if item.release == target_version]
-    display = target_items[-1] if target_items else descriptors[-1]
+    # The Update Center leads with the newest change worth telling: housekeeping ("normal", such as freeing
+    # disk space) does not take the place of a new feature or an important fix.
+    candidates = target_items or descriptors
+    display = ([item for item in candidates if item.severity != "normal"] or candidates)[-1]
     notes_vi: list[str] = []
     notes_en: list[str] = []
     for item in descriptors:

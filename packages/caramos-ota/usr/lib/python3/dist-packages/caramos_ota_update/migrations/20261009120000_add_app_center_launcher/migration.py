@@ -1,6 +1,6 @@
 """Put the App Center on the Desktop.
 
-CaramOS 1.0.21 stops preinstalling WPS Office and Chrome: the App Center installs them on demand. The
+CaramOS 1.3.0 stops preinstalling WPS Office and Chrome: the App Center installs them on demand. The
 App Center is released on GitHub, not on the PPA, so this migration installs its latest signed release
 when it is missing (caramos_ota.app_center; ISOs already ship it). It then copies its launcher to the
 Desktop of every desktop user and to /etc/skel/Desktop for accounts created later, including the live

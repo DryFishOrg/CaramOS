@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: caramos-ota\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 16:41+0700\n"
+"POT-Creation-Date: 2026-10-15 20:07+0700\n"
 "PO-Revision-Date: 2026-10-12 00:00+0700\n"
 "Last-Translator: Vietnam Linux Family <developer@vietnamlinuxfamily.net>\n"
 "Language-Team: Vietnamese <developer@vietnamlinuxfamily.net>\n"
@@ -444,7 +444,7 @@ msgstr "Thêm vân tay"
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:76
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:636
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:91
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:166
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:167
 msgid "Ask for help"
 msgstr "Nhờ giúp đỡ"
 
@@ -885,82 +885,66 @@ msgid "Install the driver"
 msgstr "Cài driver"
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/app.py:74
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:49
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:43
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:56
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/scan.py:53
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/window.py:30
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:172
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:173
 msgid "Driver Check"
 msgstr "Kiểm tra driver"
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/help_app.py:66
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:72
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:74
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:66
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:68
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help_window.py:20
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help_window.py:71
 #: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:157
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:251
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:252
 msgid "Feedback & Help"
 msgstr "Góp ý & hỗ trợ"
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:36
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:35
 msgid "Open Driver Check to see how to fix it."
 msgstr "Mở Kiểm tra driver để xem cách khắc phục."
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:37
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:36
 #, python-format
 msgid "Driver Check found %d things to fix. Open it to see how."
 msgstr "Kiểm tra driver tìm thấy %d việc cần xử lý. Mở ra để xem cách làm."
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:39
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:37
 msgid "Hardware problem solved"
 msgstr "Đã xử lý xong vấn đề phần cứng"
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:39
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:37
 msgid "The driver problem Driver Check told you about is gone."
 msgstr "Vấn đề driver mà Kiểm tra driver báo trước đây đã được khắc phục."
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:40
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:138
-msgid "CaramOS found drivers for all the hardware it checked."
-msgstr "CaramOS đã có driver cho mọi phần cứng được kiểm tra."
-
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:42
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:133
-msgid "This computer works well with CaramOS"
-msgstr "Máy này chạy tốt với CaramOS"
-
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:43
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:109
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:137
-msgid "All drivers are installed"
-msgstr "Máy đã đủ driver"
-
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:49
 msgid "View details"
 msgstr "Xem chi tiết"
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:57
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:51
 #, python-format
 msgid "VNLF answered your request %s"
 msgstr "VNLF đã trả lời yêu cầu %s của bạn"
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:59
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:53
 #, python-format
 msgid "The community answered your request %s"
 msgstr "Cộng đồng đã trả lời yêu cầu %s của bạn"
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:62
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:56
 #, python-format
 msgid "New answers to %d of your requests"
 msgid_plural "New answers to %d of your requests"
 msgstr[0] "Có câu trả lời mới cho %d yêu cầu của bạn"
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:73
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:67
 msgid "See the answer"
 msgstr "Xem câu trả lời"
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:75
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:69
 msgid "See your requests"
 msgstr "Xem các yêu cầu"
 
@@ -1123,7 +1107,7 @@ msgstr "Chi tiết"
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:72
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:76
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:167
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:168
 msgid "Something does not work and you need advice"
 msgstr "Có gì đó không chạy, bạn cần người chỉ cách"
 
@@ -1149,12 +1133,12 @@ msgstr ""
 "lại máy.”"
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:80
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:168
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:169
 msgid "Report a bug"
 msgstr "Báo lỗi"
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:80
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:169
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:170
 msgid "CaramOS or one of its apps does something wrong"
 msgstr "CaramOS hoặc một ứng dụng của nó chạy sai"
 
@@ -1171,12 +1155,12 @@ msgstr ""
 "nhật, khởi động lại máy vẫn vậy.”"
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:84
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:170
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:171
 msgid "Send feedback"
 msgstr "Góp ý"
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:84
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:171
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:172
 msgid "An idea or a wish for CaramOS"
 msgstr "Ý tưởng hoặc mong muốn cho CaramOS"
 
@@ -1191,7 +1175,7 @@ msgid ""
 msgstr "Ví dụ: “Mong có cách chuyển nhanh giữa kiểu gõ Telex và VNI.”"
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:148
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:252
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:253
 msgid "Write to the Vietnam Linux Family community"
 msgstr "Gửi tới cộng đồng Vietnam Linux Family"
 
@@ -1279,7 +1263,7 @@ msgstr "Lưu hồ sơ phần cứng"
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:246
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/requests.py:75
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:301
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:302
 msgid "Your requests"
 msgstr "Yêu cầu của bạn"
 
@@ -1875,6 +1859,11 @@ msgid "%d thing needs your attention"
 msgid_plural "%d things need your attention"
 msgstr[0] "Có %d việc cần xử lý"
 
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:109
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:137
+msgid "All drivers are installed"
+msgstr "Máy đã đủ driver"
+
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:113
 #, python-format
 msgid "Checked at %s"
@@ -1896,6 +1885,10 @@ msgstr ""
 "Mọi thứ khác đều chạy tốt. Làm theo hướng dẫn bên dưới để hoàn tất cài đặt "
 "máy."
 
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:133
+msgid "This computer works well with CaramOS"
+msgstr "Máy này chạy tốt với CaramOS"
+
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:134
 msgid ""
 "CaramOS found drivers for all the hardware it checked. You can install it "
@@ -1903,6 +1896,10 @@ msgid ""
 msgstr ""
 "CaramOS đã có driver cho mọi phần cứng được kiểm tra. Bạn có thể yên tâm cài "
 "đặt."
+
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:138
+msgid "CaramOS found drivers for all the hardware it checked."
+msgstr "CaramOS đã có driver cho mọi phần cứng được kiểm tra."
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:146
 #, python-format
@@ -2041,11 +2038,11 @@ msgstr "Máy chưa cài công cụ này."
 msgid "Not installed: the password was not entered."
 msgstr "Chưa cài: chưa nhập mật khẩu."
 
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:173
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:174
 msgid "See which drivers this computer is missing"
 msgstr "Xem máy còn thiếu driver nào"
 
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:322
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:323
 #, javascript-format
 msgid "See all %d requests"
 msgstr "Xem tất cả %d yêu cầu"

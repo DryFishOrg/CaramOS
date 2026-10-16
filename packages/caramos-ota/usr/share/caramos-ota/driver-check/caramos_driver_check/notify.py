@@ -21,7 +21,6 @@ HELP_COMMAND = "/usr/bin/caramos-help"
 HELP_ICON = "help-browser"   # Feedback & Help in the menu
 # How long a notification can still open the app from Cinnamon's notification list.
 WAIT_SECONDS = {
-    user_state.NOTIFY_ALL_GOOD: 120,
     user_state.NOTIFY_PROBLEMS: 900,
     user_state.NOTIFY_RESOLVED: 120,
 }
@@ -35,12 +34,7 @@ def text_for(decision: user_state.Decision, report: Report) -> tuple[str, str]:
         if len(decision.new) == 1:
             return first.title, _("Open Driver Check to see how to fix it.")
         return first.title, _("Driver Check found %d things to fix. Open it to see how.") % len(decision.new)
-    if decision.action == user_state.NOTIFY_RESOLVED:
-        return _("Hardware problem solved"), _("The driver problem Driver Check told you about is gone.")
-    body = _("CaramOS found drivers for all the hardware it checked.")
-    if report.live:
-        return _("This computer works well with CaramOS"), body
-    return _("All drivers are installed"), body
+    return _("Hardware problem solved"), _("The driver problem Driver Check told you about is gone.")
 
 
 def show(title: str, body: str, wait_seconds: int) -> int:

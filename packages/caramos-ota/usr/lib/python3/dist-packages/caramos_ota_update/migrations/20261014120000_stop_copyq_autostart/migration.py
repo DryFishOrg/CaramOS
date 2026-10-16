@@ -29,7 +29,7 @@ SKEL = Path("/etc/skel")
 PASSWD_HOME_ROOT = Path("/home")
 ENABLED = "X-GNOME-Autostart-enabled=true"
 DISABLED = "X-GNOME-Autostart-enabled=false"
-# config/includes.chroot/etc/skel/.config/autostart/copyq.desktop of CaramOS up to 1.0.21.
+# config/includes.chroot/etc/skel/.config/autostart/copyq.desktop of the CaramOS ISOs before 1.3.0.
 SHIPPED = """\
 [Desktop Entry]
 Name=CopyQ

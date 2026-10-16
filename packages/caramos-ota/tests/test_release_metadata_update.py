@@ -28,6 +28,24 @@ class ReleaseMetadataUpdateTests(unittest.TestCase):
         self.assertIn("1.0.16", result.summary)
         self.assertEqual("normal", result.severity)
 
+    def test_the_headline_is_the_newest_feature_or_fix_not_housekeeping(self) -> None:
+        from caramos_ota_update.registry import discover_migrations
+
+        catalog = {item.migration_id: item for item in discover_migrations()}
+        pending = [catalog[name] for name in ("20261010120000_remove_unused_icon_colours",
+                                              "20261012180000_add_help_applet",
+                                              "20261014120000_stop_copyq_autostart")]
+        current = ReleaseInfo(name="CaramOS", version="1.0.20", codename="noble", channel="stable")
+        result = manifest._manifest_from_descriptors(pending, current, "1.3.0")
+        self.assertEqual(catalog["20261012180000_add_help_applet"].title, result.title)
+        self.assertEqual("feature", result.severity)
+        # Every change is still listed.
+        for item in pending:
+            self.assertTrue(any(note.startswith(f"{item.migration_id}: ") for note in result.release_notes_en))
+        # Only housekeeping pending: the newest one.
+        result = manifest._manifest_from_descriptors(pending[::2], current, "1.3.0")
+        self.assertEqual(catalog["20261014120000_stop_copyq_autostart"].title, result.title)
+
     def test_metadata_only_target_creates_available_update(self) -> None:
         plan = MigrationPlan(
             current_version="1.0.15",

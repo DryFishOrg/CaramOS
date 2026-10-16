@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: caramos-ota\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-14 16:41+0700\n"
+"POT-Creation-Date: 2026-10-15 20:07+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -436,7 +436,7 @@ msgstr ""
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:76
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:636
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:91
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:166
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:167
 msgid "Ask for help"
 msgstr ""
 
@@ -834,83 +834,67 @@ msgid "Install the driver"
 msgstr ""
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/app.py:74
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:49
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:43
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:56
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/scan.py:53
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/window.py:30
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:172
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:173
 msgid "Driver Check"
 msgstr ""
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/help_app.py:66
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:72
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:74
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:66
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:68
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help_window.py:20
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help_window.py:71
 #: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:157
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:251
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:252
 msgid "Feedback & Help"
 msgstr ""
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:36
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:35
 msgid "Open Driver Check to see how to fix it."
 msgstr ""
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:37
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:36
 #, python-format
 msgid "Driver Check found %d things to fix. Open it to see how."
 msgstr ""
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:39
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:37
 msgid "Hardware problem solved"
 msgstr ""
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:39
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:37
 msgid "The driver problem Driver Check told you about is gone."
 msgstr ""
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:40
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:138
-msgid "CaramOS found drivers for all the hardware it checked."
-msgstr ""
-
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:42
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:133
-msgid "This computer works well with CaramOS"
-msgstr ""
-
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:43
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:109
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:137
-msgid "All drivers are installed"
-msgstr ""
-
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:49
 msgid "View details"
 msgstr ""
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:57
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:51
 #, python-format
 msgid "VNLF answered your request %s"
 msgstr ""
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:59
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:53
 #, python-format
 msgid "The community answered your request %s"
 msgstr ""
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:62
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:56
 #, python-format
 msgid "New answers to %d of your requests"
 msgid_plural "New answers to %d of your requests"
 msgstr[0] ""
 msgstr[1] ""
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:73
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:67
 msgid "See the answer"
 msgstr ""
 
-#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:75
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/notify.py:69
 msgid "See your requests"
 msgstr ""
 
@@ -1064,7 +1048,7 @@ msgstr ""
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:72
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:76
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:167
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:168
 msgid "Something does not work and you need advice"
 msgstr ""
 
@@ -1086,12 +1070,12 @@ msgid ""
 msgstr ""
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:80
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:168
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:169
 msgid "Report a bug"
 msgstr ""
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:80
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:169
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:170
 msgid "CaramOS or one of its apps does something wrong"
 msgstr ""
 
@@ -1106,12 +1090,12 @@ msgid ""
 msgstr ""
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:84
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:170
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:171
 msgid "Send feedback"
 msgstr ""
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:84
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:171
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:172
 msgid "An idea or a wish for CaramOS"
 msgstr ""
 
@@ -1126,7 +1110,7 @@ msgid ""
 msgstr ""
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:148
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:252
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:253
 msgid "Write to the Vietnam Linux Family community"
 msgstr ""
 
@@ -1205,7 +1189,7 @@ msgstr ""
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/help.py:246
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/requests.py:75
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:301
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:302
 msgid "Your requests"
 msgstr ""
 
@@ -1774,6 +1758,11 @@ msgid_plural "%d things need your attention"
 msgstr[0] ""
 msgstr[1] ""
 
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:109
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:137
+msgid "All drivers are installed"
+msgstr ""
+
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:113
 #, python-format
 msgid "Checked at %s"
@@ -1791,10 +1780,18 @@ msgid ""
 "computer."
 msgstr ""
 
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:133
+msgid "This computer works well with CaramOS"
+msgstr ""
+
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:134
 msgid ""
 "CaramOS found drivers for all the hardware it checked. You can install it "
 "with confidence."
+msgstr ""
+
+#: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:138
+msgid "CaramOS found drivers for all the hardware it checked."
 msgstr ""
 
 #: usr/share/caramos-ota/driver-check/caramos_driver_check/ui/results.py:146
@@ -1925,11 +1922,11 @@ msgstr ""
 msgid "Not installed: the password was not entered."
 msgstr ""
 
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:173
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:174
 msgid "See which drivers this computer is missing"
 msgstr ""
 
-#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:322
+#: usr/share/caramos-ota/applets/caramos-help@caramos/applet.js:323
 #, javascript-format
 msgid "See all %d requests"
 msgstr ""

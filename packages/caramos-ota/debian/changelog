@@ -1,6 +1,6 @@
-caramos-ota (1.0.21-0caramos1) noble; urgency=medium
+caramos-ota (1.3.0-0caramos1) noble; urgency=medium
 
-  * Release CaramOS 1.0.21.
+  * Release CaramOS 1.3.0.
   * Run all pending timestamp migrations by migration ID ledger.
   * Install the App Center (caramos-app-center, the app picker) from its
     GitHub releases and keep it up to date in the daily check. Releases are
@@ -33,8 +33,27 @@ caramos-ota (1.0.21-0caramos1) noble; urgency=medium
     updates once a minute instead of every 10 seconds; each check read the
     command line of every process.
   * Remove the 14 Tela icon colours CaramOS does not use (about 1.1 GiB).
+  * Add Driver Check (caramos-driver-check, in the menu): see which hardware
+    works and which drivers are missing (Wi-Fi, wired network, graphics,
+    sound, Bluetooth, webcam, fingerprint reader), with each fix explained.
+    It installs the NVIDIA and Broadcom Wi-Fi drivers Ubuntu recommends with
+    one click, opens at the first login and in the live session, and then
+    only speaks up about new problems.
+  * Add Feedback & Help: a question mark at the right end of the panel and
+    the caramos-help window, to ask Vietnam Linux Family for help, report a
+    bug or send feedback, with the hw-probe hardware profile and the Driver
+    Check results when the user ticks them.
+  * Requests can carry up to five screenshots, screen recordings, pictures
+    or videos (up to a minute each), made smaller and without location data.
+  * Requests are shared with the VNLF community unless the user unticks it:
+    a moderator reviews them before they are public; the contact never is.
+  * The panel menu lists the last requests with VNLF's status and the
+    community's answers, and the window lists all of them; a notification
+    tells when VNLF or the community answers.
+  * Stop CopyQ from starting at login; it stays installed with its history,
+    and new installs no longer include it.
 
- -- Vietnam Linux Family <developer@vietnamlinuxfamily.net>  Sat, 10 Oct 2026 09:21:09 +0700
+ -- Vietnam Linux Family <developer@vietnamlinuxfamily.net>  Wed, 14 Oct 2026 20:41:35 +0700
 
 caramos-ota (1.0.20-0caramos1) noble; urgency=medium
 

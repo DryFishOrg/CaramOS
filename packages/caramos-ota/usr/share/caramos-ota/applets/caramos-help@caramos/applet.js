@@ -159,6 +159,7 @@ class CaramOSHelpApplet extends Applet.IconApplet {
 
         this.menuManager = new PopupMenu.PopupMenuManager(this);
         this.menu = new Applet.AppletPopupMenu(this, orientation);
+        this.menu.actor.add_style_class_name('caramos-help-popup');   // rounded like the Control Center
         this.menuManager.addMenu(this.menu);
 
         this.menu.addActor(this._header());

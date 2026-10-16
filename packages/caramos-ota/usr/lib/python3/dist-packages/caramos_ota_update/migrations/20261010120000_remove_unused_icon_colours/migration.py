@@ -1,6 +1,6 @@
 """Remove the colours of the Tela circle icon theme that CaramOS does not use.
 
-ISOs up to 1.0.21 installed every colour of the theme (`install.sh -a`): 15 colours, each as a base, a
+ISOs before 1.3.0 installed every colour of the theme (`install.sh -a`): 15 colours, each as a base, a
 -light and a -dark folder. CaramOS uses Tela-circle-light, and Tela-circle-dark in dark mode, both on top
 of Tela-circle. The 14 other colours are about 600,000 small files and symlinks, 1.1 GiB on disk, which
 also slow down installing and anything that walks /usr (backups, search indexes). New ISOs install the

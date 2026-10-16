@@ -1,8 +1,8 @@
 """What the user has already been told, so the check speaks up once per problem and not at every login.
 
 The first check (first login after installing, every boot of the live USB because its home is in RAM,
-and the first login after the OTA update that brings Driver Check) opens the window when something needs
-attention and otherwise shows a short "all good" notification. Later logins stay quiet unless a new
+and the first login after the OTA update that brings Driver Check) opens the window, also when everything
+works: people trying CaramOS want to see that their hardware does. Later logins stay quiet unless a new
 problem shows up (new hardware, a kernel update that broke a driver) or a known one is gone.
 """
 
@@ -21,7 +21,6 @@ STATE_NAME = "caramos-driver-check/state.json"
 # What the autostart run does.
 QUIET = "quiet"
 SHOW_WINDOW = "window"
-NOTIFY_ALL_GOOD = "all-good"
 NOTIFY_PROBLEMS = "problems"
 NOTIFY_RESOLVED = "resolved"
 
@@ -77,9 +76,7 @@ def decide(report: Report, state: UserState) -> Decision:
 
     problems = {finding.key: finding for finding in report.problems}
     if not state.first_check_done:
-        if problems:
-            return Decision(SHOW_WINDOW, new=tuple(problems.values()))
-        return Decision(NOTIFY_ALL_GOOD)
+        return Decision(SHOW_WINDOW, new=tuple(problems.values()))
     new = tuple(finding for key, finding in problems.items() if key not in state.seen)
     resolved = tuple(sorted(key for key in state.seen if key not in problems))
     if any(finding.level == CRITICAL for finding in new):

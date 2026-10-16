@@ -6,7 +6,6 @@ import os
 import sys
 import tempfile
 import unittest
-from dataclasses import replace
 from pathlib import Path
 from unittest import mock
 
@@ -38,9 +37,12 @@ class DecisionTests(unittest.TestCase):
         self.assertEqual(user_state.SHOW_WINDOW, decision.action)
         self.assertEqual((NVIDIA,), decision.new)
 
-    def test_first_check_without_problems_only_notifies(self) -> None:
-        # Information (a camera that may not work) alone does not open the window.
-        self.assertEqual(user_state.NOTIFY_ALL_GOOD, user_state.decide(report(IPU), user_state.UserState()).action)
+    def test_first_check_opens_the_window_also_when_everything_works(self) -> None:
+        # The first login after installing and every live USB boot: people want to see their hardware works.
+        for found in (report(IPU), report()):
+            decision = user_state.decide(found, user_state.UserState())
+            self.assertEqual(user_state.SHOW_WINDOW, decision.action)
+            self.assertEqual((), decision.new)
 
     def test_known_problems_stay_quiet(self) -> None:
         seen = user_state.UserState(first_check_done=True, seen={NVIDIA.key})
@@ -79,15 +81,12 @@ class NotificationTextTests(unittest.TestCase):
         two = user_state.Decision(user_state.NOTIFY_PROBLEMS, new=(NVIDIA, WIFI))
         self.assertIn("2", self.notify.text_for(two, report(NVIDIA, WIFI))[1])
 
-    def test_all_good_differs_in_the_live_session(self) -> None:
-        decision = user_state.Decision(user_state.NOTIFY_ALL_GOOD)
-        installed = self.notify.text_for(decision, report())
-        live = self.notify.text_for(decision, replace(report(), live=True))
-        self.assertNotEqual(installed[0], live[0])
-        self.assertEqual(installed[1], live[1])
+    def test_a_solved_problem_says_so(self) -> None:
+        decision = user_state.Decision(user_state.NOTIFY_RESOLVED, resolved=(WIFI.key,))
+        self.assertEqual("Hardware problem solved", self.notify.text_for(decision, report())[0])
 
     def test_every_notification_waits_for_its_button(self) -> None:
-        for action in (user_state.NOTIFY_ALL_GOOD, user_state.NOTIFY_PROBLEMS, user_state.NOTIFY_RESOLVED):
+        for action in (user_state.NOTIFY_PROBLEMS, user_state.NOTIFY_RESOLVED):
             self.assertGreater(self.notify.WAIT_SECONDS[action], 0)
 
 
