@@ -13,7 +13,7 @@ fi
 
 # CaramOS product version. `make release VERSION=x` stamps this value.
 CARAMOS_VERSION="1.3.0"
-CARAMOS_CODENAME="Open Beta"
+CARAMOS_CODENAME="Official Release"
 
 # Version metadata ban đầu ghi vào rootfs trước khi chạy OTA bootstrap.
 # Giữ 1.0.1 để build ISO luôn chạy đầy đủ migration chain 1.0.1 → latest.

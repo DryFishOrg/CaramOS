@@ -117,11 +117,12 @@ CaramOS/
 │               └── YYYYMMDDHHMMSS_name/
 │                   ├── manifest.json
 │                   └── migration.py
-├── landing/                         # Website/landing page
 ├── docs/                            # Operations/release tracking docs
 ├── assets/                          # Logo, banner, screenshots
 └── .github/workflows/               # CI/release workflow
 ```
+
+The landing page lives in its own repository, [VN-Linux-Family/caramos-landing](https://github.com/VN-Linux-Family/caramos-landing).
 
 Detailed OTA docs:
 

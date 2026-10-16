@@ -593,57 +593,40 @@ Nói ngắn gọn: **CaramOS OTA không còn là package manifest manager; nó l
 
 ---
 
-## 13. Release hiện tại: `caramos-ota` 1.0.12
+## 13. Release hiện tại: CaramOS 1.3.0 (`caramos-ota` 1.3.0)
 
 Người release PPA: **dungleviet**.
 
-Mục tiêu release hiện tại là build ISO/OTA lên version mới nhất `1.0.12`; máy CaramOS cũ vẫn có thể cài `caramos-ota` rồi tự nâng lên `1.0.12`:
+CaramOS 1.3.0 là bản phát hành chính thức (Official Release) đầu tiên; các bản 1.0.x trước đó là Open Beta.
 
-```bash
-sudo apt update
-sudo apt install caramos-ota
-sudo caramos-ota
-```
+| Thành phần | Bản phát hành |
+|---|---|
+| ISO | `CaramOS-1.3.0-cinnamon-amd64.iso`: GitHub Release `v1.3.0`, tệp ISO trên SourceForge |
+| `caramos-ota` | `1.3.0-0caramos1` trên PPA `ppa:vietnamlinuxfamily/caram-os` |
+| App Center | `caramos-app-center` 0.2.0, GitHub Release của repo `VN-Linux-Family/CaramOS-app-center` |
 
-Chuỗi migration được đóng gói trong `caramos-ota`:
+Máy CaramOS cũ không cần cài lại ISO:
+
+- Từ 1.0.2 trở lên: Trung tâm cập nhật tự báo bản 1.3.0, hoặc chạy `sudo caramos-ota --upgrade --yes`.
+- Từ 1.0.1: cài Trung tâm cập nhật một lần bằng
+  `curl -fsSL https://caramos.vietnamlinuxfamily.net/install-caramos-ota.sh | sudo bash`.
+
+Chuỗi migration được đóng gói trong `caramos-ota` 1.3.0:
 
 ```text
-1.0.1 → 1.0.2 → 1.0.3 → 1.0.4 → 1.0.5 → 1.0.6 → 1.0.7 → 1.0.8 → 1.0.9 → 1.0.10 → 1.0.11 → 1.0.12
+1.0.1 → 1.0.2 → … → 1.0.12                         migration legacy v1_0_2 … v1_0_12, đóng băng
+20260715090258_install_control_center → …
+  → 20261014120000_stop_copyq_autostart            17 timestamp migration, chạy theo ledger
 ```
 
-Checklist release nhanh:
+Quy trình release (chi tiết trong [README gốc](../README.md#quy-trình-release)):
 
 ```bash
-cd packages/caramos-ota
-python3 -m py_compile \
-  usr/bin/caramos-ota \
-  usr/bin/caramos-ota-notifier \
-  usr/bin/caramos-ota-update \
-  usr/lib/python3/dist-packages/caramos_ota/*.py \
-  usr/lib/python3/dist-packages/caramos_ota_notifier/*.py \
-  usr/lib/python3/dist-packages/caramos_ota_update/*.py \
-  usr/lib/python3/dist-packages/caramos_ota_update/migrations/*/*.py
-python3 -m json.tool usr/lib/python3/dist-packages/caramos_ota_update/migrations/migration.json >/dev/null
-dpkg-buildpackage -us -uc -b
-./tools/ship-ota-to-vm.sh   # không sudo; setup VM theo VM_DEV_WORKFLOW.md
-```
-
-Trong VM test:
-
-```bash
-cd /tmp/caramos-ota-e2e
-sudo ./vm-run-ota-e2e.sh install-and-cli
-grep -E '^(VERSION_CODENAME|UBUNTU_CODENAME)=' /etc/os-release
-sudo add-apt-repository -y ppa:mozillateam/ppa
-sudo rm -f /etc/apt/sources.list.d/*mozillateam*
-sudo apt update
-```
-
-Upload PPA sau khi bump `debian/changelog` lên `1.0.12-0caramos1`:
-
-```bash
-debuild -S -sa
-dput ppa:vietnamlinuxfamily/caram-os ../caramos-ota_1.0.12-0caramos1_source.changes
+make -C packages/caramos-ota prepare-release VERSION=1.3.0
+git commit -am "[build] Release 1.3.0" && git push origin main
+git tag -a v1.3.0 -m "CaramOS 1.3.0" && git push origin v1.3.0   # CI: ISO, SourceForge, GitHub Release
+make -C packages/caramos-ota source
+make -C packages/caramos-ota gpg-unlock upload                 # caramos-ota lên PPA
 ```
 
 Sau khi PPA publish, kiểm tra candidate:
@@ -653,4 +636,4 @@ sudo apt update
 apt-cache policy caramos-ota
 ```
 
-ISO build dùng `CARAMOS_VERSION=1.0.12` cho tên ISO, và `CARAMOS_MIGRATION_BASE_VERSION=1.0.1` để OTA bootstrap chạy đủ migration chain trong rootfs.
+ISO build dùng `CARAMOS_VERSION=1.3.0` cho tên ISO, và `CARAMOS_MIGRATION_BASE_VERSION=1.0.1` để OTA bootstrap chạy đủ migration chain trong rootfs.

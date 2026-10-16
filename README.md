@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/CaramOS_logo.png" alt="CaramOS Logo" width="250">
+  <img src="assets/CaramOS_logo.png" alt="CaramOS Logo" width="220">
 </p>
 
 <h1 align="center">CaramOS</h1>
@@ -13,78 +13,296 @@
 </p>
 
 <p align="center">
-  <a href="README_EN.md">English</a> · <a href="https://vietnamlinuxfamily.net">VNLF</a> · <a href="https://caramos.vietnamlinuxfamily.net">Website</a>
+  <a href="https://github.com/VN-Linux-Family/CaramOS/releases/tag/v1.3.0"><img src="https://img.shields.io/github/v/release/VN-Linux-Family/CaramOS?style=for-the-badge&label=b%E1%BA%A3n%20m%E1%BB%9Bi%20nh%E1%BA%A5t&color=F59F22" alt="Bản mới nhất"></a>
+  <img src="https://img.shields.io/badge/Linux%20Mint-22.3%20Cinnamon-87CF3E?style=for-the-badge&logo=linuxmint&logoColor=white" alt="Linux Mint 22.3 Cinnamon">
+  <img src="https://img.shields.io/badge/Ubuntu-24.04%20LTS-E95420?style=for-the-badge&logo=ubuntu&logoColor=white" alt="Ubuntu 24.04 LTS">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-2F7048?style=for-the-badge" alt="GPL-3.0"></a>
+</p>
+
+<p align="center">
+  <a href="https://sourceforge.net/projects/caramos/files/v1.3.0/CaramOS-1.3.0-cinnamon-amd64.iso/download"><strong>Tải CaramOS 1.3.0</strong></a> ·
+  <a href="https://caramos.vietnamlinuxfamily.net">Website</a> ·
+  <a href="README_EN.md">English</a> ·
+  <a href="https://vietnamlinuxfamily.net">VNLF</a>
 </p>
 
 <p align="center">
   Phát triển bởi: <a href="https://www.facebook.com/groups/vietnamlinuxcommunity">VNLF</a> · <a href="https://www.facebook.com/mrd.900s/">MRD</a> · <a href="https://www.facebook.com/tam.nguyet.that">Kỳ Nguyễn</a>
 </p>
 
+<p align="center">
+  <img src="assets/screenshots/first-login.webp" alt="CaramOS 1.3.0: App Center và Kiểm tra driver ở lần đăng nhập đầu tiên" width="900">
+</p>
+
 ---
 
 ## CaramOS là gì?
 
-**CaramOS** là bản phân phối Linux dựa trên **Linux Mint 22.3 Cinnamon**
-(Ubuntu 24.04 LTS), được thiết kế đặc biệt cho **người dùng Việt Nam**.
-Dự án vẫn build theo hướng **ISO remaster**, nhưng từ giai đoạn `1.0.11`
-trở đi mọi thay đổi sau phát hành được chuẩn hoá qua **CaramOS OTA**.
+**CaramOS** là bản phân phối Linux dựa trên **Linux Mint 22.3 Cinnamon** (nền Ubuntu 24.04 LTS),
+làm riêng cho **người dùng Việt Nam**. Mục tiêu của CaramOS là phổ thông hoá Linux: người đang dùng
+Windows chuyển sang mà không phải mày mò, có sẵn tiếng Việt, bộ gõ, giao diện thân thiện, và mọi thứ
+khác chỉ cần vài cú bấm.
 
 > [!IMPORTANT]
-> **Phiên bản hiện tại:** `1.0.12` — **Open Beta**.
-> CaramOS đã chuyển sang mô hình cập nhật bằng OTA. Nếu bạn đang dùng
-> CaramOS `1.0.1`, hãy cài Trung tâm cập nhật bằng lệnh:
+> **CaramOS 1.3.0 là bản phát hành chính thức (Official Release) đầu tiên**, sau chuỗi bản Open Beta
+> 1.0.x.
 >
-> ```bash
-> curl -fsSL https://caramos.vietnamlinuxfamily.net/install-caramos-ota.sh | sudo bash
-> ```
->
-> Sau khi cài xong, mở **Trung tâm cập nhật CaramOS** từ Start Menu để nâng
-> hệ thống lên bản mới nhất.
+> - **Cài mới:** [tải ISO 1.3.0](https://sourceforge.net/projects/caramos/files/v1.3.0/CaramOS-1.3.0-cinnamon-amd64.iso/download)
+>   (2,8 GB) · [SHA256SUMS](https://github.com/VN-Linux-Family/CaramOS/releases/download/v1.3.0/SHA256SUMS) ·
+>   [ghi chú phát hành](https://github.com/VN-Linux-Family/CaramOS/releases/tag/v1.3.0)
+> - **Đang dùng CaramOS 1.0.2 trở lên:** không cần cài lại. Trung tâm cập nhật tự báo bản 1.3.0, bấm
+>   **Cập nhật ngay** là xong. Xem [Nâng cấp từ bản cũ](#nâng-cấp-từ-bản-cũ).
 
-> [!NOTE]
-> Dành cho developer/contributor: từ bây giờ không code trực tiếp các thay đổi
-> hệ thống vào `config/hooks/live/` nếu thay đổi đó cần đến được máy user đã cài.
-> Hãy viết migration trong `packages/caramos-ota`. Xem hướng dẫn phát triển OTA:
-> [packages/caramos-ota/README.md](packages/caramos-ota/README.md).
+## Có gì mới trong 1.3.0
 
-Mục tiêu của CaramOS là phổ thông hoá Linux — giúp người dùng Việt chuyển từ
-Windows sang Linux dễ hơn, có sẵn giao diện thân thiện, bộ gõ tiếng Việt,
-trình duyệt, ứng dụng văn phòng và các tiện ích quen thuộc.
+- **App Center:** lần đăng nhập đầu tiên chọn bộ văn phòng, trình duyệt, ứng dụng liên lạc và tiện ích;
+  CaramOS tải và cài giúp. Gỡ ứng dụng ngay trên thẻ của nó.
+- **Kiểm tra driver:** tự kiểm tra phần cứng ở lần đăng nhập đầu tiên và khi chạy thử từ USB, cài driver
+  NVIDIA và Wi-Fi Broadcom bằng một nút.
+- **Góp ý & hỗ trợ:** dấu hỏi ở góc phải thanh tác vụ, gửi câu hỏi, báo lỗi, góp ý kèm ảnh hoặc video
+  tới cộng đồng Vietnam Linux Family, và được báo khi có người trả lời.
+- **Trung tâm cập nhật mới:** giao diện màu VNLF, ghi rõ từng thay đổi, nút **Cập nhật ngay** luôn ở
+  đáy cửa sổ.
+- **Nhẹ hơn Linux Mint gốc:** ít dịch vụ nền hơn, ít RAM hơn, và tự xử lý khi RAM sắp đầy thay vì để
+  máy đơ. ISO 2,8 GB, nhỏ hơn ISO Linux Mint 22.3 (3,1 GB).
+- **Không cài sẵn những thứ bạn không chọn:** WPS Office, Chrome và Zalo giờ nằm trong App Center,
+  CopyQ không còn tự chạy, 14 màu biểu tượng thừa (khoảng 1,1 GB) được dọn khỏi máy.
 
 ## Tính năng nổi bật
 
-| Tính năng | Mô tả |
-|---|---|
-| **Dựa trên Linux Mint 22.3** | Nền Ubuntu 24.04 LTS ổn định, desktop Cinnamon quen thuộc |
-| **Giao diện CaramOS** | Branding CaramOS, boot menu/Plymouth, logo, wallpaper, panel và theme được tuỳ biến |
-| **Tiếng Việt mặc định** | Locale Việt Nam, timezone Asia/Ho_Chi_Minh, font Be Vietnam Pro |
-| **Bộ gõ tiếng Việt** | Fcitx5 + Lotus được cài và cấu hình sẵn |
-| **Kiểm tra driver** | App cùng giao diện App Center, tự chạy ở lần đăng nhập đầu tiên (cả khi chạy thử từ USB): kiểm tra Wi-Fi, mạng dây, đồ họa, âm thanh, Bluetooth, webcam, vân tay; cài driver NVIDIA và Wi-Fi Broadcom bằng một nút; thiếu driver mạng thì hướng dẫn vào mạng bằng dây LAN, điện thoại qua USB hoặc cài từ USB cài CaramOS; nút Nhờ giúp đỡ gửi lời nhắn kèm hồ sơ phần cứng `hw-probe` tới cộng đồng VNLF |
-| **Góp ý & hỗ trợ** | Biểu tượng dấu chấm hỏi ở góc phải thanh tác vụ: nhờ giúp đỡ, báo lỗi hoặc góp ý gửi thẳng tới cộng đồng VNLF, kèm ảnh chụp màn hình (Flameshot, làm mờ được chỗ riêng tư), video quay màn hình (Ctrl+Shift+Alt+R, tối đa 1 phút) hoặc ảnh, video có sẵn trong máy; ảnh và video được nén nhỏ và bỏ thông tin vị trí trước khi gửi; menu hiện tình trạng các yêu cầu đã gửi và báo khi VNLF hoặc cộng đồng trả lời; yêu cầu được chia sẻ để cộng đồng VNLF cùng giúp (bỏ tick được), VNLF duyệt trước khi đăng |
-| **Nhẹ, không đơ khi hết RAM** | Lúc khởi động xong dùng ít RAM hơn Linux Mint gốc; earlyoom đóng ứng dụng tốn RAM nhất thay vì để máy đơ khi RAM và swap gần hết |
-| **App Center CaramOS** | Lần đăng nhập đầu tiên chọn bộ văn phòng (ONLYOFFICE, WPS, LibreOffice), trình duyệt (Chrome, Cốc Cốc, Edge, Brave) và ứng dụng liên lạc, mỗi lựa chọn ghi rõ ưu và nhược điểm |
-| **Zalo** | Chọn sẵn trong bộ đề xuất của App Center (bản gọi thoại, gọi video được) |
-| **Cinnamon Delight + Tela/Bibata** | Theme, icon và cursor hiện đại, nhẹ, dễ nhìn |
-| **Neofetch/Fastfetch CaramOS** | Logo ASCII màu và OS identity đồng bộ theo version CaramOS |
-| **Build linh hoạt** | Dev build nhanh bằng `lz4`, release build nhỏ hơn bằng `xz`, hỗ trợ Docker |
+### App Center — chọn ứng dụng, CaramOS cài giúp
 
 <p align="center">
-  <img src="assets/caramos_vietnam_banner.png" alt="CaramOS Open Beta banner" width="900">
+  <img src="assets/screenshots/app-center.webp" alt="App Center CaramOS: chọn bộ ứng dụng văn phòng" width="860">
 </p>
+
+Lần đăng nhập đầu tiên, App Center mở ra với một trang duy nhất chia theo nhóm. Bộ đề xuất đã được chọn
+sẵn: chỉ cần bấm **Cài** ở cuối trang, rồi dùng máy bình thường trong lúc CaramOS tải và cài.
+
+- **Bộ văn phòng:** ONLYOFFICE, WPS Office, LibreOffice.
+- **Trình duyệt:** Google Chrome, Cốc Cốc, Microsoft Edge, Brave, Firefox.
+- **Liên lạc và họp trực tuyến:** Zalo (gọi thoại, gọi video được), Telegram, Zoom, Teams for Linux, Discord.
+- **Tiện ích:** font Microsoft (Times New Roman, Arial...), VLC, OBS Studio, RustDesk, GIMP, Thunderbird.
+
+<table>
+  <tr>
+    <td align="center"><img src="assets/screenshots/app-center-chat.webp" alt="Nhóm Liên lạc và họp trực tuyến trong App Center" width="560"></td>
+    <td align="center"><img src="assets/screenshots/app-center-remove.webp" alt="Nút Gỡ cài đặt trên thẻ ứng dụng đã cài" width="260"></td>
+  </tr>
+</table>
+
+Mỗi ứng dụng ghi rõ ưu và nhược điểm, dung lượng, và nguồn cài: Flathub, kho Ubuntu hay gói tải về. Ứng
+dụng đã cài có nút **Gỡ cài đặt** ngay trên thẻ. Mở lại App Center bất cứ lúc nào từ biểu tượng trên
+Desktop hoặc menu; cần thêm ứng dụng khác thì nút **Xem thêm** dẫn tới
+[apps.vietnamlinuxfamily.net](https://apps.vietnamlinuxfamily.net).
+
+### Kiểm tra driver — biết ngay máy còn thiếu gì
+
+<p align="center">
+  <img src="assets/screenshots/driver-check.webp" alt="Kiểm tra driver: máy này chạy tốt với CaramOS" width="860">
+</p>
+
+Ngay khi chạy thử CaramOS từ USB, Kiểm tra driver cho bạn biết máy có hợp với CaramOS không, trước khi
+cài. Sau khi cài, nó chạy lại ở lần đăng nhập đầu tiên, rồi chỉ lên tiếng khi có vấn đề mới.
+
+- Kiểm tra Wi-Fi, mạng dây, card đồ họa, âm thanh, Bluetooth, webcam và đầu đọc vân tay.
+- Cài driver **NVIDIA** và **Wi-Fi Broadcom** bằng một nút, đúng bản Ubuntu khuyên dùng cho máy.
+- Thiếu driver mạng nên máy chưa vào được Internet? Nó chỉ cách vào mạng bằng dây LAN, điện thoại qua
+  USB, hoặc cài driver Broadcom ngay từ USB cài CaramOS.
+- Giải thích từng trường hợp: chưa có driver trong kernel, driver chờ khởi động lại, driver bị chặn
+  (blacklist, Secure Boot), thiếu firmware.
+- Không tự xử lý được? Nút **Nhờ giúp đỡ** gửi lời nhắn kèm hồ sơ phần cứng `hw-probe` tới cộng đồng VNLF.
+
+### Trung tâm cập nhật — nâng cấp không cần cài lại
+
+<p align="center">
+  <img src="assets/screenshots/update-center.webp" alt="Trung tâm cập nhật CaramOS: từ 1.0.20 lên 1.3.0" width="620">
+</p>
+
+CaramOS cập nhật qua **OTA**: máy cài từ bản nào cũng lên được bản mới nhất mà không phải cài lại hay
+mất dữ liệu.
+
+- Mỗi ngày CaramOS kiểm tra một lần. Có bản mới thì Trung tâm cập nhật báo phiên bản hiện tại, phiên bản
+  mới và từng thay đổi sẽ được áp dụng.
+- Không có gì tự cài khi bạn chưa đồng ý: bấm **Cập nhật ngay** khi tiện, hoặc **Để sau**.
+- Thứ bạn đã tự chỉnh được giữ nguyên: hình nền bạn tự chọn, bộ màu biểu tượng bạn đang dùng, applet bạn
+  đã gỡ khỏi thanh tác vụ.
+
+### Control Center — mọi thiết lập nhanh trong một chạm
+
+<table>
+  <tr>
+    <td align="center"><img src="assets/screenshots/control-center-light.webp" alt="Control Center giao diện sáng" width="380"></td>
+    <td align="center"><img src="assets/screenshots/control-center-dark.webp" alt="Control Center giao diện tối" width="380"></td>
+  </tr>
+</table>
+
+Bấm vào góc phải thanh tác vụ để mở Control Center, thay cho các applet mạng, âm thanh và pin rời rạc
+của Cinnamon:
+
+- Âm lượng loa và micro, chọn thiết bị phát và thu.
+- Mạng dây, Wi-Fi, VPN và Bluetooth, mỗi ô có danh sách riêng để chọn nhanh.
+- **Chế độ tối** cho cả hệ thống, **Ánh sáng đêm**, và **Chế độ nguồn** (Hiệu năng, Cân bằng, Tiết
+  kiệm pin).
+- Độ sáng màn hình và pin trên laptop, nút chụp màn hình, mở Cài đặt, khoá máy và tắt máy.
+
+### Góp ý & hỗ trợ — cộng đồng VNLF ngay trên thanh tác vụ
+
+<table>
+  <tr>
+    <td align="center" width="42%"><img src="assets/screenshots/help-menu.webp" alt="Menu Góp ý & hỗ trợ trên thanh tác vụ" width="340"></td>
+    <td align="center"><img src="assets/screenshots/help-form.webp" alt="Cửa sổ Góp ý & hỗ trợ" width="480"></td>
+  </tr>
+</table>
+
+Dấu hỏi ở góc phải thanh tác vụ là đường tắt tới cộng đồng **Vietnam Linux Family**:
+
+- **Nhờ giúp đỡ** khi có gì đó không chạy, **Báo lỗi** khi CaramOS hoặc một ứng dụng chạy sai, **Góp ý**
+  khi bạn có ý tưởng cho CaramOS.
+- Kèm ảnh chụp màn hình (làm mờ được chỗ riêng tư), video quay màn hình tối đa 1 phút, hoặc ảnh và video
+  có sẵn trong máy. Ảnh và video được nén nhỏ và bỏ thông tin vị trí trước khi gửi.
+- Kèm hồ sơ phần cứng và kết quả Kiểm tra driver nếu bạn đồng ý, để người giúp thấy đúng máy của bạn.
+  Hồ sơ phần cứng không có tên người dùng, tên máy và địa chỉ IP.
+- Yêu cầu được chia sẻ để cộng đồng cùng giúp (bỏ tick được); VNLF duyệt trước khi đăng, thông tin liên
+  hệ không công khai.
+
+<table>
+  <tr>
+    <td align="center"><img src="assets/screenshots/help-requests.webp" alt="Danh sách yêu cầu đã gửi và tình trạng" width="520"></td>
+    <td align="center"><img src="assets/screenshots/help-notification.webp" alt="Thông báo khi VNLF trả lời" width="340"></td>
+  </tr>
+</table>
+
+Menu và cửa sổ **Yêu cầu của bạn** cho biết VNLF đang xem, đã trả lời hay đã xử lý xong, và cộng đồng đã
+có bao nhiêu câu trả lời. Có câu trả lời mới, CaramOS gửi thông báo; bấm vào là mở đúng trang của yêu cầu.
+
+### Island Dock — thanh tác vụ ba đảo
+
+<p align="center">
+  <img src="assets/screenshots/island-dock.webp" alt="Thanh tác vụ ba đảo của CaramOS" width="900">
+</p>
+
+Thanh tác vụ của CaramOS tách thành ba "đảo" nổi, bo tròn, cách đều nhau:
+
+- **Bên trái:** nút Start Menu CaramOS.
+- **Ở giữa:** ứng dụng ghim và ứng dụng đang chạy, có chấm nhỏ dưới ứng dụng đang mở.
+- **Bên phải:** khay hệ thống, bộ gõ, đồng hồ, Control Center và Góp ý & hỗ trợ.
+
+### Giao diện sáng – tối, đồng bộ từ lúc bật máy
+
+<p align="center">
+  <img src="assets/screenshots/desktop-dark.webp" alt="CaramOS ở chế độ tối" width="900">
+</p>
+
+- Theme Cinnamon Delight, biểu tượng Tela Circle, con trỏ Bibata, font **Be Vietnam Pro**.
+- Chế độ tối một chạm trong Control Center; hình nền tự đổi theo (Sage Mist khi sáng, Indigo Night khi
+  tối). Bộ 5 hình nền CaramOS 2048×1152.
+- Menu khởi động, màn hình chờ, trình cài đặt và cả menu GRUB trên máy cài song song nhiều hệ điều hành
+  đều mang giao diện CaramOS.
+
+### Tiếng Việt từ đầu
+
+<p align="center">
+  <img src="assets/screenshots/installer-lotus.webp" alt="Bộ gõ Fcitx5 Lotus trong trình cài đặt CaramOS" width="620">
+</p>
+
+- Giao diện tiếng Việt, múi giờ Asia/Ho_Chi_Minh, định dạng ngày giờ Việt Nam. Chọn ngôn ngữ khác trong
+  Cài đặt > Ngôn ngữ thì cả hệ thống theo.
+- Bộ gõ **Fcitx5 + Lotus** bật sẵn: mặc định Telex, có VNI và các kiểu gõ phổ biến khác. **Ctrl+Shift**
+  chuyển tiếng Anh/tiếng Việt, phím **`** (dưới Esc) mở menu đổi kiểu gõ.
+- Ứng dụng cài từ Flathub vẫn gõ tiếng Việt và dùng font của hệ thống bình thường.
+
+### Nhẹ và ổn định
+
+- Nền **Linux Mint 22.3 / Ubuntu 24.04 LTS**, được cập nhật bảo mật đến năm 2029.
+- **Ít RAM hơn:** máy rảnh dùng 865 MiB RAM, Linux Mint 22.3 gốc dùng 941 MiB (cùng máy ảo 4 nhân,
+  6 GB RAM, đo 5 phút sau khi khởi động).
+- Ít dịch vụ nền hơn Linux Mint gốc: không nạp OpenGL vô ích cho các dịch vụ của Cinnamon, bộ gõ không
+  khởi động portal thừa, dịch vụ nhắc lịch chỉ chạy khi bạn có lịch, bỏ dịch vụ báo lỗi kernel cho
+  Ubuntu.
+- **earlyoom:** khi RAM và swap gần hết, CaramOS đóng ứng dụng tốn RAM nhất thay vì để cả máy treo. Trên
+  máy thử với ổ cứng chậm, Linux Mint gốc đơ hơn 30 phút trong tình huống này, CaramOS không lần nào đứng
+  hình.
+- ISO 2,8 GB, nhỏ hơn ISO Linux Mint 22.3 (3,1 GB) dù có thêm App Center, Kiểm tra driver và Góp ý & hỗ
+  trợ.
 
 ## Trải nghiệm CaramOS
 
-Từ boot menu đến desktop, CaramOS được tuỳ biến đồng bộ để mang lại cảm giác
-thân thiện, hiện đại và sẵn sàng cho người dùng Việt Nam.
-
-| Bước | Hình ảnh |
+| | |
 |---|---|
-| **1. GRUB boot menu**<br>Chọn live session hoặc cài đặt CaramOS. | <img src="assets/screenshots/01-grub-menu.png" alt="CaramOS GRUB boot menu" width="420"> |
-| **2. Startup loading**<br>Màn hình khởi động/Plymouth branding. | <img src="assets/screenshots/02-startup-loading.png" alt="CaramOS startup loading screen" width="420"> |
-| **3. Desktop**<br>Giao diện Cinnamon đã tuỳ biến theme, icon, panel và wallpaper. | <img src="assets/screenshots/03-desktop.png" alt="CaramOS Cinnamon desktop" width="420"> |
-| **4. Neofetch**<br>Thông tin hệ thống và nhận diện CaramOS trong terminal. | <img src="assets/screenshots/04-neofetch.png" alt="CaramOS neofetch output" width="420"> |
+| **Menu khởi động**<br>Chạy thử CaramOS từ USB hoặc cài vào máy. | <img src="assets/screenshots/boot-menu.webp" alt="Menu khởi động CaramOS 1.3.0" width="420"> |
+| **Trình cài đặt**<br>Slideshow giới thiệu App Center, bộ gõ và cộng đồng trong lúc cài. | <img src="assets/screenshots/installer-apps.webp" alt="Trình cài đặt CaramOS" width="420"> |
+| **Start Menu**<br>Tìm ứng dụng bằng tiếng Việt, gõ không dấu vẫn ra. | <img src="assets/screenshots/start-menu.webp" alt="Tìm Trung tâm cập nhật trong Start Menu CaramOS" width="420"> |
+| **Terminal**<br>Nhận diện CaramOS 1.3.0 ngay trong `neofetch`. | <img src="assets/screenshots/neofetch.webp" alt="neofetch trên CaramOS 1.3.0" width="420"> |
 
-## Công nghệ sử dụng
+<p align="center">
+  <img src="assets/caramos_vietnam_banner.png" alt="CaramOS — Linux cho người Việt" width="420">
+</p>
+
+## Tải và cài đặt
+
+### Yêu cầu máy
+
+- Máy tính 64-bit (x86_64), UEFI hoặc BIOS.
+- RAM 2 GB trở lên, khuyên dùng 4 GB.
+- Ổ đĩa trống 20 GB trở lên, khuyên dùng 100 GB.
+- USB từ 4 GB để tạo bộ cài.
+
+### 1. Tải ISO
+
+- [CaramOS-1.3.0-cinnamon-amd64.iso](https://sourceforge.net/projects/caramos/files/v1.3.0/CaramOS-1.3.0-cinnamon-amd64.iso/download)
+  (2,8 GB, trên SourceForge vì GitHub giới hạn dung lượng mỗi tệp đính kèm).
+- [SHA256SUMS](https://github.com/VN-Linux-Family/CaramOS/releases/download/v1.3.0/SHA256SUMS) để kiểm tra
+  tệp tải về:
+
+```bash
+sha256sum -c SHA256SUMS
+```
+
+### 2. Ghi ra USB
+
+Dùng [balenaEtcher](https://etcher.balena.io), [Ventoy](https://www.ventoy.net) hoặc Rufus (Windows).
+Trên Linux có thể dùng `dd`:
+
+```bash
+sudo dd if=CaramOS-1.3.0-cinnamon-amd64.iso of=/dev/sdX bs=4M status=progress oflag=sync
+```
+
+### 3. Chạy thử và cài đặt
+
+1. Khởi động lại máy, vào menu chọn thiết bị khởi động (thường là F12, F10, F2, Esc hoặc Del tuỳ máy) và
+   chọn USB.
+2. Chọn **Start CaramOS** để chạy thử. Kiểm tra driver tự mở và cho biết máy có chạy tốt với CaramOS không.
+3. Mở biểu tượng **Cài đặt CaramOS** trên Desktop và làm theo hướng dẫn.
+
+## Nâng cấp từ bản cũ
+
+Máy đã cài CaramOS không cần cài lại ISO.
+
+- **Từ CaramOS 1.0.2 trở lên:** Trung tâm cập nhật tự kiểm tra mỗi ngày và báo bản 1.3.0; bấm **Cập nhật
+  ngay**. Muốn nâng cấp liền, mở Terminal và chạy:
+
+  ```bash
+  sudo caramos-ota --upgrade --yes
+  ```
+
+- **Từ CaramOS 1.0.1:** cài Trung tâm cập nhật một lần, rồi mở **Trung tâm cập nhật CaramOS** từ Start
+  Menu:
+
+  ```bash
+  curl -fsSL https://caramos.vietnamlinuxfamily.net/install-caramos-ota.sh | sudo bash
+  ```
+
+---
+
+## Dành cho nhà phát triển
+
+> [!NOTE]
+> Không code trực tiếp các thay đổi hệ thống vào `config/hooks/live/` nếu thay đổi đó cần đến được máy
+> người dùng đã cài. Hãy viết migration trong `packages/caramos-ota`. Xem hướng dẫn phát triển OTA:
+> [packages/caramos-ota/README.md](packages/caramos-ota/README.md).
+
+### Công nghệ sử dụng
 
 | Thành phần | Công nghệ / vai trò hiện tại |
 |---|---|
@@ -93,19 +311,19 @@ thân thiện, hiện đại và sẵn sàng cho người dùng Việt Nam.
 | **Desktop** | Cinnamon + LightDM theo Linux Mint base |
 | **Build method** | ISO remaster: extract → customize → OTA bootstrap → repack |
 | **Build scripts** | Bash + Makefile, tách module trong `scripts/` |
-| **OTA model** | `caramos-ota` version migration-driven OTA |
-| **Migration runner** | `caramos-ota-update` chạy timestamp migrations chưa apply theo ledger |
+| **OTA** | `caramos-ota`: timestamp migrations chạy theo ledger, phát hành qua PPA `ppa:vietnamlinuxfamily/caram-os` |
 | **Update Center** | `caramos-ota-notifier` + `pkexec caramos-ota --upgrade --yes` |
-| **Developer workflow** | Thay đổi hệ thống sau release phải vào `packages/caramos-ota` migration |
+| **App Center** | `caramos-app-center` (Python, GTK4, libadwaita), repo riêng, phát hành bằng GitHub Release có chữ ký |
+| **Kiểm tra driver, Góp ý & hỗ trợ** | `caramos-driver-check`, `caramos-help` (GTK4, libadwaita) và applet Cinnamon `caramos-help@caramos`, trong gói `caramos-ota` |
+| **Control Center** | Applet Cinnamon `caramos-control-center@caramos` |
 | **Legacy hooks** | `config/hooks/live/` chỉ dùng cho bootstrap/build-time nền tảng, không là nơi phát triển feature OTA mới |
 | **Overlay** | `config/includes.chroot/` chứa file nền cần có trong ISO/rootfs |
-| **Compression dev** | SquashFS `lz4` |
-| **Compression release** | SquashFS `xz` |
-| **Theme / Icon / Cursor** | Cinnamon Delight, Tela Circle/Cinnamon Delight Icons, Bibata |
+| **Compression** | SquashFS `lz4` cho dev, `xz` cho release |
+| **Theme / Icon / Cursor** | Cinnamon Delight, Tela Circle, Bibata |
 | **Font / Input** | Be Vietnam Pro, Fcitx5 + Lotus |
-| **Apps có sẵn** | Firefox; còn lại (bộ văn phòng, Chrome, Zalo...) cài qua App Center (Flathub hoặc gói của nhà phát triển) |
+| **Apps có sẵn** | Firefox; còn lại cài qua App Center (Flathub, kho Ubuntu hay gói tải về) |
 
-## Cấu trúc dự án
+### Cấu trúc dự án
 
 ```text
 ./
@@ -116,7 +334,7 @@ thân thiện, hiện đại và sẵn sàng cho người dùng Việt Nam.
 │   ├── utils.sh                     # Log, deps, download ISO, mount helpers
 │   ├── extract.sh                   # Mount ISO + rsync + unsquashfs
 │   ├── customize.sh                 # Chroot + packages + overlay + hooks + OTA bootstrap
-│   ├── ota_bootstrap.sh             # Build caramos-ota .deb và chạy migration vào ISO rootfs
+│   ├── ota_bootstrap.sh             # Build caramos-ota, App Center .deb và chạy migration vào ISO rootfs
 │   ├── repack.sh                    # mksquashfs + xorriso
 │   ├── boot_config.sh               # Boot menu + Plymouth branding
 │   ├── overlay.sh                   # Copy config/includes.chroot vào rootfs
@@ -127,80 +345,58 @@ thân thiện, hiện đại và sẵn sàng cho người dùng Việt Nam.
 │   ├── hooks/live/                  # Hook build-time legacy, hạn chế thêm logic mới
 │   └── includes.chroot/             # Overlay copy trực tiếp vào rootfs trước OTA bootstrap
 ├── packages/                        # Debian packages do CaramOS duy trì
-│   └── caramos-ota/                 # Trung tâm cập nhật + migration runner + migration data
-│       ├── debian/changelog         # Version package OTA publish qua PPA
-│       ├── usr/bin/                 # caramos-ota, notifier, update runner
-│       └── usr/lib/python3/dist-packages/
-│           └── caramos_ota_update/migrations/
-│               ├── migration.json   # Index version migration
-│               └── vX_Y_Z/          # Migration cho từng release
-├── landing/                         # Landing page caramos.vietnamlinuxfamily.net
+│   ├── caramos-ota/                 # Trung tâm cập nhật, migration, Control Center, Kiểm tra driver, Góp ý & hỗ trợ
+│   │   ├── debian/changelog         # Version package OTA publish qua PPA
+│   │   ├── usr/bin/                 # caramos-ota, notifier, update runner, caramos-driver-check, caramos-help
+│   │   └── usr/lib/python3/dist-packages/caramos_ota_update/migrations/
+│   │       ├── v1_0_2 … v1_0_12/    # Migration legacy (đóng băng)
+│   │       └── YYYYMMDDHHMMSS_slug/ # Timestamp migration (từ 1.0.13)
+│   └── caramos-app-center/          # Git submodule VN-Linux-Family/CaramOS-app-center
 ├── docs/                            # Tài liệu vận hành/release tracking
-├── assets/                          # Logo/banner/source assets
+├── assets/                          # Logo, banner, ảnh chụp màn hình
 ├── Dockerfile                       # Docker builder
 └── docker-compose.yml               # Docker build entrypoint
 ```
+
+Landing page [caramos.vietnamlinuxfamily.net](https://caramos.vietnamlinuxfamily.net) nằm ở repo riêng
+[VN-Linux-Family/caramos-landing](https://github.com/VN-Linux-Family/caramos-landing).
 
 > [!IMPORTANT]
 > `config/hooks/live/` không còn là nơi chính để phát triển cập nhật hệ thống.
 > Nếu thay đổi cần áp dụng cho máy người dùng đã cài CaramOS, hãy viết migration
 > trong `packages/caramos-ota/usr/lib/python3/dist-packages/caramos_ota_update/migrations/`.
 
-## Version & release model
+### Version & release model
 
-CaramOS dùng mô hình version giống Linux kernel: **version nằm trong source tree**,
-không lấy tag làm nguồn duy nhất.
-
-Version được khai báo trong [scripts/config.sh](scripts/config.sh):
+Version sản phẩm nằm trong source tree, ở [scripts/config.sh](scripts/config.sh):
 
 ```bash
-CARAMOS_VERSION_MAJOR=1
-CARAMOS_VERSION_MINOR=0
-CARAMOS_VERSION_PATCH=1
-CARAMOS_VERSION_EXTRA=""
-CARAMOS_CODENAME="Open Beta"
-CARAMOS_VERSION="${CARAMOS_VERSION_MAJOR}.${CARAMOS_VERSION_MINOR}.${CARAMOS_VERSION_PATCH}${CARAMOS_VERSION_EXTRA}"
+CARAMOS_VERSION="1.3.0"
 ```
 
-Version này được dùng cho:
+`make release VERSION=x.y.z` đóng dấu version này cùng lúc vào `scripts/config.sh`, metadata release và
+`debian/changelog` của `caramos-ota`. Version được dùng cho:
 
 - tên ISO: `CaramOS-<version>-cinnamon-amd64.iso`
 - boot menu/boot branding
-- `/etc/os-release`
-- `/etc/lsb-release`
-- `/etc/linuxmint/info`
+- `/etc/os-release`, `/etc/lsb-release`, `/etc/linuxmint/info`
 - `neofetch` / `fastfetch`
-- GitHub Release artifact
+- GitHub Release và package `caramos-ota` trên PPA
 
-Khi release production, Git tag phải khớp version trong source.
-Ví dụ source version là `1.0.1` thì tag hợp lệ là:
+Khi release, Git tag phải khớp version trong source: version `1.3.0` thì tag là `v1.3.0`. Nếu tag
+không khớp, GitHub Actions dừng trước khi build.
 
-```bash
-v1.0.1
-```
+### Cập nhật OTA
 
-Nếu tag không khớp, GitHub Actions sẽ fail trước khi build release.
-
-## Cập nhật OTA
-
-CaramOS đã chuyển sang mô hình **OTA-first**. ISO mới vẫn được phát hành, nhưng
-máy đã cài từ bản cũ không cần cài lại: user chỉ cần cài `caramos-ota`, sau đó
-Update Center/OTA sẽ nâng hệ thống lên version mới nhất bằng chuỗi migration đã
-review.
-
-User đang ở CaramOS `1.0.1` chạy:
-
-```bash
-curl -fsSL https://caramos.vietnamlinuxfamily.net/install-caramos-ota.sh | sudo bash
-```
-
-Flow cập nhật:
+CaramOS dùng mô hình **OTA-first**. ISO mới vẫn được phát hành, còn máy đã cài từ bản cũ nâng lên bản mới
+nhất bằng chuỗi migration đã review:
 
 ```text
 systemd timer
   └── caramos-ota --check
-      ├── cập nhật package caramos-ota nếu repo có bản mới
-      ├── resolve migration chain
+      ├── cập nhật package caramos-ota nếu PPA có bản mới
+      ├── cập nhật App Center từ GitHub Release (đã kiểm tra chữ ký)
+      ├── resolve migration chưa chạy theo ledger
       └── ghi /var/lib/caramos-ota/state.json
 
 Update Center
@@ -214,26 +410,25 @@ Nguyên tắc chính:
 - Timer chỉ check/chuẩn bị state, không tự mở GUI và không tự apply migration.
 - Migration chỉ chạy khi user xác nhận trong desktop session hoặc admin chạy CLI.
 - Logic thay đổi hệ thống nằm trong `packages/caramos-ota`, không nhét vào hook.
-- Developer muốn thêm update sau release phải viết OTA migration có version rõ ràng.
-- ISO build cũng dùng chính OTA migration chain để đưa rootfs lên version mới nhất.
+- Thay đổi sau release được viết thành timestamp migration (`YYYYMMDDHHMMSS_slug/`), không gắn version.
+- ISO build cũng dùng chính chuỗi migration này để đưa rootfs lên bản mới nhất.
 
-Xem chi tiết hướng dẫn phát triển OTA: [packages/caramos-ota/README.md](packages/caramos-ota/README.md).
+Xem chi tiết: [packages/caramos-ota/README.md](packages/caramos-ota/README.md).
 
-## Build ISO local
+### Build ISO local
 
-Khi build ISO, CaramOS không chỉ copy overlay/hook rồi đóng gói lại. Build flow
-sẽ tự build package `caramos-ota`, cài package này vào rootfs và chạy toàn bộ
-OTA migration chain từ `CARAMOS_MIGRATION_BASE_VERSION` tới version mới nhất
-trước khi repack ISO.
+Khi build ISO, CaramOS không chỉ copy overlay/hook rồi đóng gói lại. Build flow tự build package
+`caramos-ota` và App Center, cài vào rootfs và chạy toàn bộ chuỗi OTA migration từ
+`CARAMOS_MIGRATION_BASE_VERSION` tới bản mới nhất trước khi repack ISO.
 
-Nói ngắn gọn: **ISO build ra đã là bản mới nhất**, còn OTA là đường nâng cấp cho
-máy user đã cài từ ISO cũ.
+Nói ngắn gọn: **ISO build ra đã là bản mới nhất**, còn OTA là đường nâng cấp cho máy đã cài từ ISO cũ.
 
 Cài dependency build trên Ubuntu/Mint/Debian:
 
 ```bash
 sudo apt update
-sudo apt install squashfs-tools xorriso rsync wget curl isolinux syslinux-common syslinux-utils gettext
+sudo apt install squashfs-tools xorriso rsync wget curl isolinux syslinux-common syslinux-utils gettext build-essential debhelper
+git submodule update --init
 ```
 
 Build dev đầy đủ, nén `lz4` để test nhanh:
@@ -259,17 +454,17 @@ Trong quá trình `customize`, script sẽ chạy:
 ```text
 extract base ISO
   → install packages + overlay + build-time hooks
-  → build/install bundled caramos-ota
+  → build/install bundled caramos-ota + caramos-app-center
   → caramos-ota-update --from "$CARAMOS_MIGRATION_BASE_VERSION" --target latest
   → repack squashfs + ISO
 ```
 
-## Make targets
+### Make targets
 
 | Lệnh | Mục đích |
 |---|---|
 | `make build` | Build dev đầy đủ, nén `lz4` |
-| `make release VERSION=x.y.z` | Build release, nén `xz` |
+| `make release VERSION=x.y.z` | Đóng dấu version và build release, nén `xz` |
 | `make prepare` | Bung ISO/rootfs ra `build/` để sửa nhanh |
 | `make customize-only` | Chạy packages, overlay và hooks trong rootfs |
 | `make overlay` | Chỉ copy `config/includes.chroot` vào rootfs |
@@ -310,7 +505,7 @@ Debug trong chroot:
 make shell
 ```
 
-## Docker build
+### Docker build
 
 Dùng Docker nếu máy không phải Ubuntu/Mint/Debian phù hợp:
 
@@ -321,70 +516,42 @@ make docker-build
 Release build trong Docker:
 
 ```bash
-make docker-release
+make docker-release VERSION=x.y.z
 ```
 
-## GitHub Actions release
+### Quy trình release
 
 Workflow CI nằm ở [.github/workflows/build.yml](.github/workflows/build.yml).
 
 - Push/PR vào branch `main` hoặc `develop`: build dev ISO bằng `./build.sh`.
-- Push tag `v*`: kiểm tra tag khớp source version, build release bằng `./build.sh --release`, tạo `SHA256SUMS`, upload artifact và tạo GitHub Release.
+- Push tag `v*`: kiểm tra tag khớp `CARAMOS_VERSION`, build release bằng `./build.sh --release`, tạo
+  `SHA256SUMS`, đưa ISO lên SourceForge và tạo GitHub Release có link tải.
 
-Quy trình release `1.0.1`:
-
-```bash
-# 1. Bump version trong scripts/config.sh nếu cần
-# CARAMOS_VERSION_MAJOR=1
-# CARAMOS_VERSION_MINOR=0
-# CARAMOS_VERSION_PATCH=11
-
-# 2. Commit và merge vào main
-git add scripts/config.sh
-git commit -m "[release] bump CaramOS to 1.0.11"
-git push
-
-# 3. Sau khi merge main
-git checkout main
-git pull origin main
-git tag v1.0.11
-git push origin v1.0.11
-```
-
-GitHub Release sẽ đính kèm:
-
-```text
-CaramOS-1.0.11-cinnamon-amd64.iso
-SHA256SUMS
-```
-
-## Cài đặt cho người dùng cuối
-
-### 1. Tải ISO
-
-Tải ISO từ trang GitHub Releases của dự án sau khi có bản phát hành.
-
-### 2. Ghi ra USB
-
-Linux/macOS:
+Ví dụ release `1.3.0`:
 
 ```bash
-sudo dd if=CaramOS-1.0.12-cinnamon-amd64.iso of=/dev/sdX bs=4M status=progress oflag=sync
+# 1. Đóng dấu version: scripts/config.sh, metadata và changelog của caramos-ota
+make -C packages/caramos-ota prepare-release VERSION=1.3.0
+git commit -am "[build] Release 1.3.0"
+git push origin main
+
+# 2. Tag: GitHub Actions build ISO, SourceForge và GitHub Release
+git tag -a v1.3.0 -m "CaramOS 1.3.0"
+git push origin v1.3.0
+
+# 3. Gói caramos-ota lên PPA (cần chìa GPG của người release)
+make -C packages/caramos-ota source
+make -C packages/caramos-ota gpg-unlock upload
 ```
 
-Hoặc dùng Balena Etcher/Ventoy trên mọi hệ điều hành.
+GitHub Release có `SHA256SUMS` và link tải ISO trên SourceForge (ISO lớn hơn giới hạn tệp đính kèm của
+GitHub). App Center có version và quy trình release riêng, xem
+[VN-Linux-Family/CaramOS-app-center](https://github.com/VN-Linux-Family/CaramOS-app-center).
 
-### 3. Boot và cài đặt
+### Đóng góp
 
-1. Khởi động lại máy, vào BIOS/UEFI bằng F2/F12/Del/Esc tuỳ máy.
-2. Chọn boot từ USB.
-3. Chọn live session hoặc **Cài đặt CaramOS**.
-4. Làm theo hướng dẫn cài đặt trên màn hình.
-
-## Đóng góp
-
-Xem [CONTRIBUTING.md](CONTRIBUTING.md) để biết thêm về kiến trúc OTA-first,
-quy trình build/test và hướng dẫn đóng góp.
+Xem [CONTRIBUTING.md](CONTRIBUTING.md) để biết thêm về kiến trúc OTA-first, quy trình build/test và
+hướng dẫn đóng góp.
 
 Quy ước nhanh:
 
@@ -392,12 +559,13 @@ Quy ước nhanh:
 |---|---|
 | Cập nhật máy user đã cài | `packages/caramos-ota/usr/lib/python3/dist-packages/caramos_ota_update/migrations/` |
 | Phát triển/troubleshoot OTA | `packages/caramos-ota/` |
+| Sửa App Center | submodule `packages/caramos-app-center` (commit và push trong submodule trước) |
 | Thêm package nền cho ISO mới | `config/packages.txt` |
 | Sửa overlay nền của ISO | `config/includes.chroot/` |
 | Hook build-time bắt buộc | `config/hooks/live/` — hạn chế, không dùng thay OTA migration |
-| Sửa version ISO | `scripts/config.sh` |
+| Sửa version ISO | `make release VERSION=x.y.z` (đóng dấu `scripts/config.sh`) |
 | Theo dõi chỗ cần bump version | `docs/release-version-tracking.md` |
-| Sửa landing page | `landing/src/main.jsx` |
+| Sửa landing page | repo [VN-Linux-Family/caramos-landing](https://github.com/VN-Linux-Family/caramos-landing) |
 | Sửa workflow release | `.github/workflows/build.yml` |
 
 ## Contributors
@@ -422,6 +590,7 @@ CaramOS là phần mềm mã nguồn mở theo giấy phép [GPL-3.0](LICENSE).
 - [DrMcC0y](https://github.com/DrMcC0y) — Cinnamon Delight theme/icons
 - [vinceliuice](https://github.com/vinceliuice) — Tela Circle icons
 - [ful1e5](https://github.com/ful1e5) — Bibata cursor
+- Fcitx5 và Lotus — bộ gõ tiếng Việt
 - Cộng đồng Linux/FOSS Việt Nam
 
 ---

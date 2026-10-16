@@ -114,11 +114,12 @@ CaramOS/
 │                   ├── manifest.json
 │                   ├── __init__.py
 │                   └── *.py
-├── landing/                         # Website/landing page
 ├── docs/                            # Tài liệu vận hành/release tracking
 ├── assets/                          # Logo, banner, screenshot
 └── .github/workflows/               # CI/release workflow
 ```
+
+Landing page nằm ở repo riêng [VN-Linux-Family/caramos-landing](https://github.com/VN-Linux-Family/caramos-landing).
 
 Tài liệu OTA chi tiết nằm tại:
 

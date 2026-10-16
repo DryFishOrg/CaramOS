@@ -76,11 +76,21 @@ make release VERSION=x.y.z
 
 ## Landing page
 
-Nếu release có thay đổi user-facing hoặc ISO mới, kiểm tra landing page:
+Landing page nằm ở repo riêng [VN-Linux-Family/caramos-landing](https://github.com/VN-Linux-Family/caramos-landing).
+Nếu release có thay đổi user-facing hoặc ISO mới, cập nhật và build lại landing page:
 
 ```bash
-cd landing
+git clone git@github.com:VN-Linux-Family/caramos-landing.git
+cd caramos-landing
+yarn install
 yarn build
 ```
+
+| File/vị trí | Cần đổi |
+|---|---|
+| `src/main.jsx` | `const VERSION`, release note của bản mới, nội dung tính năng |
+| `index.html` | `<title>`, description, `og:*`/`twitter:*`, `softwareVersion`, `datePublished`, `downloadUrl` trong JSON-LD |
+| `public/sitemap.xml` | `lastmod` |
+| `public/assets/` | ảnh mới phải có **tên mới**: `_headers` cache `/assets/*` một năm (`immutable`), ghi đè tên cũ thì trình duyệt vẫn hiện ảnh cũ |
 
 Chỉ cập nhật nội dung release/user-facing. Không dùng landing page để mô tả migration internals.
