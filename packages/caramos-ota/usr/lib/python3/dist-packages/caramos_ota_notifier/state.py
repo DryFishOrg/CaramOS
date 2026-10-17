@@ -145,6 +145,7 @@ def resolve_available_update_now() -> tuple[dict[str, Any] | None, dict[str, str
         "channel": manifest.channel,
         "severity": manifest.severity,
         "size": manifest.size,
+        "size_en": manifest.size_en,
         "title": manifest.title,
         "summary": manifest.summary,
         "title_en": manifest.title_en,

@@ -57,9 +57,10 @@ class MigrationRunnerTests(unittest.TestCase):
                 "20261012120000_add_driver_check",
                 "20261012180000_add_help_applet",
                 "20261014120000_stop_copyq_autostart",
+                "20261016220000_translate_cinnamon_spices",
             ],
         )
-        self.assertEqual(14, run_one.call_count)
+        self.assertEqual(15, run_one.call_count)
         self.assertEqual(
             [
                 "20260805111120_update_taskbar_pins_cleanup_desktop",
@@ -76,6 +77,7 @@ class MigrationRunnerTests(unittest.TestCase):
                 "20261012120000_add_driver_check",
                 "20261012180000_add_help_applet",
                 "20261014120000_stop_copyq_autostart",
+                "20261016220000_translate_cinnamon_spices",
             ],
             [entry.args[0].migration_id for entry in run_one.call_args_list],
         )

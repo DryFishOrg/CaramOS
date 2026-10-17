@@ -347,7 +347,7 @@ def build_update_page(update_info: dict[str, Any], on_accept, on_close):
     new_release = format_value(update_info.get("release") or update_info.get("to_version"))
     channel = format_value(update_info.get("channel"), "stable")
     severity = severity_label(format_value(update_info.get("severity"), "normal"))
-    size = format_value(update_info.get("size"))
+    size = format_value(localized(update_info, "size"))
     title = format_value(localized(update_info, "title"), _("A new CaramOS update is available"))
     summary = format_value(
         localized(update_info, "summary"),

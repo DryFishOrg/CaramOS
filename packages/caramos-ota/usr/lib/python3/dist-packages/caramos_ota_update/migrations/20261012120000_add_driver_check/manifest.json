@@ -4,6 +4,7 @@
   "channel": "stable",
   "severity": "feature",
   "size": "hw-probe (~1 MB)",
+  "size_en": "hw-probe (~1 MB)",
   "title": "Kiểm tra driver: biết ngay máy còn thiếu driver nào",
   "summary": "App mới kiểm tra Wi-Fi, mạng dây, đồ họa, âm thanh, Bluetooth, webcam và đầu đọc vân tay, chỉ cách xử lý và cài driver NVIDIA, Wi-Fi Broadcom bằng một nút.",
   "title_en": "Driver Check: see at once which drivers are missing",

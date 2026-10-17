@@ -107,7 +107,7 @@ def _manifest_from_descriptors(
             min_client_version=TOOL_VERSION if target_newer else None,
             channel=release_info.channel,
             severity="normal" if target_newer else "none",
-            size="Release metadata" if target_newer else "Không có cập nhật",
+            size="Thông tin phiên bản" if target_newer else "Không có cập nhật",
             title="Cập nhật CaramOS" if target_newer else "CaramOS đã được cập nhật",
             summary=(
                 f"Cập nhật thông tin hệ thống từ {release_info.version} lên {target_version}."
@@ -122,6 +122,7 @@ def _manifest_from_descriptors(
                 if target_newer
                 else "No new migrations."
             ),
+            size_en="Release metadata" if target_newer else "No update",
         )
 
     for item in descriptors:
@@ -149,6 +150,7 @@ def _manifest_from_descriptors(
         label = item.migration_id
         notes_vi.extend(f"{label}: {note}" for note in (item.release_notes_vi or [item.summary]))
         notes_en.extend(f"{label}: {note}" for note in (item.release_notes_en or [item.summary]))
+    sizes_en = [item.size_en or item.size for item in descriptors if item.size_en or item.size]
 
     return Manifest(
         release=target_version,
@@ -157,13 +159,14 @@ def _manifest_from_descriptors(
         min_client_version=TOOL_VERSION,
         channel=display.channel,
         severity=display.severity,
-        size=" + ".join(item.size for item in descriptors if item.size) or "Migration update",
+        size=" + ".join(item.size for item in descriptors if item.size) or "Cập nhật hệ thống",
         title=display.title,
         summary=display.summary,
         release_notes_vi=notes_vi,
         release_notes_en=notes_en,
         title_en=display.title_en,
         summary_en=display.summary_en,
+        size_en=" + ".join(sizes_en) or "System update",
     )
 
 

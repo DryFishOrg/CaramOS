@@ -80,7 +80,7 @@ class MigrationRegistryTests(unittest.TestCase):
         catalog = discover_migrations()
         descriptors = {item.migration_id: item for item in catalog}
 
-        self.assertEqual(28, len(catalog))
+        self.assertEqual(29, len(catalog))
         self.assertNotIn("v1_0_13", descriptors)
         self.assertNotIn("v1_0_14", descriptors)
         self.assertEqual("1.0.12", latest_legacy_release(catalog))
@@ -105,6 +105,7 @@ class MigrationRegistryTests(unittest.TestCase):
                 "20261012120000_add_driver_check",
                 "20261012180000_add_help_applet",
                 "20261014120000_stop_copyq_autostart",
+                "20261016220000_translate_cinnamon_spices",
             ],
             timestamp_ids,
         )
@@ -145,6 +146,7 @@ class MigrationRegistryTests(unittest.TestCase):
                 "20261012120000_add_driver_check",
                 "20261012180000_add_help_applet",
                 "20261014120000_stop_copyq_autostart",
+                "20261016220000_translate_cinnamon_spices",
             ],
             [item.migration_id for item in plan.migrations],
         )
@@ -181,6 +183,7 @@ class MigrationRegistryTests(unittest.TestCase):
                 "20261012120000_add_driver_check",
                 "20261012180000_add_help_applet",
                 "20261014120000_stop_copyq_autostart",
+                "20261016220000_translate_cinnamon_spices",
             ],
             [item.migration_id for item in plan.migrations],
         )

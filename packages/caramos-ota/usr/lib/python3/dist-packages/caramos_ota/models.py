@@ -33,6 +33,7 @@ class Manifest:
     # English display text for sessions that are not Vietnamese (empty: show the Vietnamese text).
     title_en: str = ""
     summary_en: str = ""
+    size_en: str = ""
 
 
 @dataclass(frozen=True)

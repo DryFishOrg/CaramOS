@@ -4,6 +4,7 @@
   "channel": "stable",
   "severity": "important",
   "size": "Zalo 26.10.10 (~220 MB)",
+  "size_en": "Zalo 26.10.10 (~220 MB)",
   "title": "Cập nhật Zalo lên bản 26.10.10",
   "summary": "Kho Zalo cũ đã ngừng nên Zalo đang cài không còn nhận bản mới. Cập nhật này cài Zalo 26.10.10 từ kho VN-Linux-Family/zalo-for-linux (cần Internet, khoảng 220 MB). Nếu Zalo đang mở, hãy thoát Zalo ở khay hệ thống rồi mở lại.",
   "title_en": "Update Zalo to 26.10.10",

@@ -119,15 +119,30 @@ class CatalogTests(unittest.TestCase):
 
 
 class ManifestLanguageTests(unittest.TestCase):
-    def test_timestamp_manifests_have_english_title_and_summary(self) -> None:
+    def test_timestamp_manifests_have_english_title_summary_and_size(self) -> None:
         for directory in sorted(MIGRATIONS.iterdir()):
             if not TIMESTAMP_ID.match(directory.name):
                 continue
             manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
-            for key in ("title_en", "summary_en"):
+            for key in ("title_en", "summary_en", "size_en"):
                 value = manifest.get(key, "")
                 self.assertTrue(value.strip(), f"{directory.name}: missing {key}")
                 self.assertIsNone(VIETNAMESE.search(value), f"{directory.name}: {key} is not English")
+
+    def test_pending_sizes_are_joined_per_language(self) -> None:
+        from caramos_ota.manifest import _manifest_from_descriptors
+        from caramos_ota.models import ReleaseInfo
+        from caramos_ota_update.registry import discover_migrations
+
+        catalog = {item.migration_id: item for item in discover_migrations()}
+        pending = [catalog["20261009120000_add_app_center_launcher"], catalog["20261010120000_remove_unused_icon_colours"]]
+        release = ReleaseInfo(name="CaramOS", version="1.0.20", codename=pending[0].codename, channel=pending[0].channel)
+        manifest = _manifest_from_descriptors(pending, release, "1.3.0")
+        self.assertEqual("App Center (~1 MB) + Giải phóng khoảng 1,1 GB ổ đĩa", manifest.size)
+        self.assertEqual("App Center (~1 MB) + Frees about 1.1 GB of disk", manifest.size_en)
+        state = {"size": manifest.size, "size_en": manifest.size_en}
+        self.assertEqual(manifest.size, localized(state, "size", {"LANG": "vi_VN.UTF-8"}))
+        self.assertEqual(manifest.size_en, localized(state, "size", {"LANG": "en_US.UTF-8"}))
 
     def test_registry_and_saved_state_carry_both_languages(self) -> None:
         from caramos_ota_update.registry import discover_migrations
@@ -140,6 +155,10 @@ class ManifestLanguageTests(unittest.TestCase):
         for source in (apt_source, state_source):
             self.assertIn('"title_en": manifest.title_en', source)
             self.assertIn('"summary_en": manifest.summary_en', source)
+            self.assertIn('"size_en": manifest.size_en', source)
+        self.assertTrue(locale_fix.size_en)
+        ui_source = (DIST / "caramos_ota_notifier/ui.py").read_text(encoding="utf-8")
+        self.assertIn('localized(update_info, "size")', ui_source)
         self.assertIn("name_en=item.title_en", apt_source)
         self.assertIn('"name_en": item.title_en', state_source)
 

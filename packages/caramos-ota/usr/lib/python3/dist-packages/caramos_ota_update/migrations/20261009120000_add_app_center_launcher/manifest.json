@@ -4,6 +4,7 @@
   "channel": "stable",
   "severity": "feature",
   "size": "App Center (~1 MB)",
+  "size_en": "App Center (~1 MB)",
   "title": "App Center: chọn và cài ứng dụng dễ dàng",
   "summary": "Thêm App Center để cài bộ văn phòng, trình duyệt, ứng dụng liên lạc và tiện ích, kèm biểu tượng trên Desktop.",
   "title_en": "App Center: pick and install apps easily",

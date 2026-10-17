@@ -146,6 +146,7 @@ def detect_updates(
             "channel": manifest.channel,
             "severity": manifest.severity,
             "size": manifest.size,
+            "size_en": manifest.size_en,
             "title": manifest.title,
             "summary": manifest.summary,
             "title_en": manifest.title_en,

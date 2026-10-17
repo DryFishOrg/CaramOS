@@ -45,6 +45,7 @@ class MigrationDescriptor:
     to_version: str | None = None
     title_en: str = ""
     summary_en: str = ""
+    size_en: str = ""
 
     @property
     def legacy(self) -> bool:
@@ -233,7 +234,7 @@ def _descriptor(directory: Path) -> MigrationDescriptor:
         codename=_required_string(raw, "codename", manifest_path),
         channel=str(raw.get("channel") or "stable"),
         severity=str(raw.get("severity") or "normal"),
-        size=str(raw.get("size") or "Migration update"),
+        size=str(raw.get("size") or ""),
         title=str(raw.get("title") or "CaramOS có bản cập nhật mới"),
         summary=summary,
         release_notes_vi=notes_vi,
@@ -242,6 +243,7 @@ def _descriptor(directory: Path) -> MigrationDescriptor:
         to_version=to_version,
         title_en=str(raw.get("title_en") or ""),
         summary_en=str(raw.get("summary_en") or ""),
+        size_en=str(raw.get("size_en") or ""),
     )
 
 

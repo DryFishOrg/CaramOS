@@ -31,9 +31,14 @@ Ví dụ:
 ```json
 {
   "schema": 2,
+  "codename": "noble",
+  "severity": "normal",
+  "size": "Thiết lập desktop",
+  "size_en": "Desktop settings",
   "title": "Cập nhật CaramOS",
   "summary": "Áp dụng thay đổi hệ thống đã được review.",
-  "severity": "normal",
+  "title_en": "CaramOS update",
+  "summary_en": "Apply reviewed system changes.",
   "release_notes_vi": [
     "Cập nhật cấu hình desktop."
   ],
@@ -44,6 +49,10 @@ Ví dụ:
 ```
 
 Quy tắc:
+
+- Chữ hiển thị có hai bản: `title`, `summary`, `size` bằng tiếng Việt; `title_en`, `summary_en`, `size_en` bằng
+  tiếng Anh cho phiên đăng nhập không phải tiếng Việt. Trung tâm cập nhật nối `size` của mọi migration đang chờ
+  sau chữ "Dung lượng:", nên `size` cũng phải là tiếng Việt.
 
 - Không thêm `release`, `version`, `from_version`, `to_version` vào manifest schema 2.
 - Không thêm command, shell script inline, URL tải `.deb`, hoặc package list điều khiển runtime vào manifest.
