@@ -126,7 +126,7 @@ cài. Sau khi cài, nó chạy lại ở lần đăng nhập đầu tiên, rồi
 ### Trung tâm cập nhật — nâng cấp không cần cài lại
 
 <p align="center">
-  <img src="assets/screenshots/update-center.webp" alt="Trung tâm cập nhật CaramOS: từ 1.0.20 lên 1.3.0" width="620">
+  <img src="assets/screenshots/update-center.webp" alt="Trung tâm cập nhật CaramOS: từ 1.0.20 lên 1.3.1" width="620">
 </p>
 
 CaramOS cập nhật qua **OTA**: máy cài từ bản nào cũng lên được bản mới nhất mà không phải cài lại hay

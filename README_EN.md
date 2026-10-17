@@ -128,7 +128,7 @@ about new problems.
 ### Update Center — upgrade without reinstalling
 
 <p align="center">
-  <img src="assets/screenshots/update-center.webp" alt="CaramOS Update Center: from 1.0.20 to 1.3.0" width="620">
+  <img src="assets/screenshots/update-center.webp" alt="CaramOS Update Center: from 1.0.20 to 1.3.1" width="620">
 </p>
 
 CaramOS updates **over the air**: a machine installed from any release reaches the latest one without
