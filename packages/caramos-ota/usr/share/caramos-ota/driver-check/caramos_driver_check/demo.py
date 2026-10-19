@@ -5,6 +5,9 @@
     CARAMOS_DRIVER_CHECK_DEMO=nvidia         online, only the NVIDIA driver is missing
     CARAMOS_DRIVER_CHECK_DEMO=live           the Broadcom laptop in the live USB session
     CARAMOS_DRIVER_CHECK_DEMO=ok             everything works
+    CARAMOS_DRIVER_CHECK_DEMO=atom           an Atom tablet (Cherry Trail, like the Lenovo Yoga Book): SST sound
+                                             without a driver for its board, Bluetooth on a serial port, cameras
+                                             behind the Atom image processor
 """
 
 from __future__ import annotations
@@ -35,6 +38,16 @@ WEBCAM = Device("usb", "1-5", "0bda", "5520", "Integrated Webcam HD", vendor_nam
 FINGERPRINT = Device("usb", "1-9", "27c6", "55a4", "Goodix", vendor_name="Goodix",
                      interfaces=(UsbInterface("1.0", "ff", "00", "00"),))
 FINGERPRINTS = {"27c6:55a4": ""}
+ATOM_WIFI = Device("pci", "0000:01:00.0", "14e4", "43ec", "Broadcom BCM4356 802.11ac Wireless Network Adapter",
+                   vendor_name="Broadcom", driver="brcmfmac", pci_class="028000", net=("wlp1s0",))
+ATOM_GPU = Device("pci", "0000:00:02.0", "8086", "22b0", "Intel Atom/Celeron/Pentium Processor x5-E8000/J3xxx/N3xxx "
+                  "Integrated Graphics Controller", vendor_name="Intel", driver="i915", pci_class="030000")
+ATOM_ISP = Device("pci", "0000:00:03.0", "8086", "22b8", "Intel Atom/Celeron/Pentium Processor x5-E8000/J3xxx/N3xxx "
+                  "Series Imaging Unit", vendor_name="Intel", pci_class="048000")
+SST = Device("acpi", "808622A8:00", "", "808622A8", "Intel Cherry Trail SST audio", vendor_name="Intel",
+             driver="intel_sst_acpi", modules=("snd_intel_sst_acpi",), loaded_modules=("snd_intel_sst_acpi",))
+SERIAL_BLUETOOTH = Device("acpi", "BCM2E7E:00", "", "BCM2E7E", "Broadcom Bluetooth (UART)", vendor_name="Broadcom",
+                          driver="hci_uart_bcm", bluetooth=("hci0",))
 
 
 class DemoScanner:
@@ -50,6 +63,10 @@ class DemoScanner:
 
     def snapshot(self) -> Snapshot:
         online = self.connected()
+        if self.case == "atom":
+            wifi = NetInterface("wlp1s0", wireless=True, up=True, driver="brcmfmac", bus="pci", address="0000:01:00.0")
+            return Snapshot(pci=(ATOM_WIFI, ATOM_GPU, ATOM_ISP), acpi=(SST, SERIAL_BLUETOOTH), net=(wifi,),
+                            connected=online, kernel="6.14.0-37-generic")
         ethernet = NetInterface("enp3s0", wireless=False, up=online, driver="r8169", bus="pci",
                                 address="0000:03:00.0")
         if self.case in ("nvidia", "ok"):
@@ -64,8 +81,10 @@ class DemoScanner:
         return Snapshot(pci=pci, usb=usb, net=net, rfkill=(RfkillSwitch("bluetooth", False, False),),
                         connected=online, kernel="6.14.0-37-generic", live=self.case == "live")
 
-    def proposals(self) -> list[DriverProposal]:
+    def proposals(self, snapshot: Snapshot | None = None) -> list[DriverProposal]:
         time.sleep(1.2)   # UbuntuDrivers loads the APT cache
+        if self.case == "atom":
+            return []
         proposals = [DriverProposal("nvidia-driver-580-open", "nvidia:580-open", NVIDIA.address, "NVIDIA",
                                     "TU117M", free=False)]
         if self.case not in ("nvidia", "ok"):

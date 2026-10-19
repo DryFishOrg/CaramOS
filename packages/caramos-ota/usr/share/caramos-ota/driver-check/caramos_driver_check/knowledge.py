@@ -34,6 +34,10 @@ INTEL_IPU = frozenset({
 
 _IPU_NAME = re.compile(r"\bIPU\b|Imaging Signal Processor|Image Processing Unit", re.IGNORECASE)
 
+# The image processor of Atom tablets (Bay Trail 0f38, Cherry Trail 22b8): its kernel driver (atomisp) is
+# still in staging and gives apps no camera.
+ATOM_ISP = frozenset({"0f38", "22b8"})
+
 # USB vendors whose devices in laptops are fingerprint readers (touchpads are I2C or PS/2, not USB).
 FINGERPRINT_VENDORS = frozenset({"27c6", "06cb", "138a", "2808", "1c7a", "10a5", "298d", "2541", "08ff", "147e"})
 ELAN = "04f3"   # ELAN fingerprint readers are 04f3:0cxx; other ELAN USB devices are touchscreens
@@ -53,6 +57,10 @@ def intel_ipu(device: Device) -> bool:
     if device.bus != "pci" or device.vendor != INTEL or not device.pci_class.startswith("0480"):
         return False
     return device.product in INTEL_IPU or bool(_IPU_NAME.search(device.name))
+
+
+def atom_isp(device: Device) -> bool:
+    return device.bus == "pci" and device.vendor == INTEL and device.product in ATOM_ISP
 
 
 def fingerprint_like(device: Device) -> bool:

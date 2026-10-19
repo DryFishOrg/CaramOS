@@ -17,7 +17,7 @@ entries (no empty or fuzzy `msgstr`; the tests check this):
 cd packages/caramos-ota
 xgettext --language=Python --from-code=UTF-8 --keyword=_ --keyword=ngettext:1,2 \
   --package-name=caramos-ota -o po/caramos-ota/caramos-ota.pot \
-  usr/lib/python3/dist-packages/caramos_ota_notifier/{ui,app,state}.py \
+  usr/lib/python3/dist-packages/caramos_ota_notifier/{ui,app,state,problem}.py \
   usr/lib/python3/dist-packages/caramos_ota_audit/{ui,cli}.py \
   $(find usr/share/caramos-ota/driver-check/caramos_driver_check -name '*.py' | sort)
 xgettext --language=JavaScript --from-code=UTF-8 --keyword=_ --keyword=ngettext:1,2 --join-existing \

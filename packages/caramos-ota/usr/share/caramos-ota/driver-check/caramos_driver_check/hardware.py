@@ -33,6 +33,20 @@ PCI_OTHER = ("0c03", "0805", "0d", "ff00")
 USB_STANDARD_CLASSES = frozenset({"01", "02", "03", "07", "08", "0a", "0e"})
 USB_VIDEO = "0e"
 USB_VENDOR_SPECIFIC = "ff"
+# Devices on the platform bus that the check looks at, by ACPI hardware ID: the Intel SST sound engines of
+# Atom tablets (Bay Trail, Cherry Trail) and Haswell/Broadwell laptops, and Bluetooth chips on a serial port
+# (Broadcom, Intel, Realtek), common in Atom tablets. Without them those computers looked as if they had no
+# sound and no Bluetooth at all (GitHub issue #80, a Lenovo Yoga Book).
+ACPI_AUDIO = {
+    "80860F28": "Intel Bay Trail SST audio",
+    "808622A8": "Intel Cherry Trail SST audio",
+    "INT33C8": "Intel Haswell SST audio",
+    "INT3438": "Intel Broadwell SST audio",
+}
+ACPI_BLUETOOTH = re.compile(r"^(?:BCM2E[0-9A-F]{2}|INT33E[13]|OBDA8723)$")
+_ACPI_BLUETOOTH_VENDORS = {"B": "Broadcom", "I": "Intel", "O": "Realtek"}
+# Sound cards of test modules (snd-dummy, snd-aloop, snd-virmidi), which belong to no hardware.
+VIRTUAL_SOUND_CARDS = frozenset({"Dummy", "Loopback", "VirMIDI"})
 # A phone sharing its connection over a USB cable (USB tethering).
 PHONE_NET_DRIVERS = frozenset({"rndis_host", "ipheth"})
 # Names of USB Wi-Fi adapters in the USB ID database or their own product string.
@@ -92,20 +106,22 @@ class NetInterface:
 
 @dataclass(frozen=True)
 class Device:
-    bus: str                         # "pci" or "usb"
-    address: str                     # "0000:00:14.3" or "3-10"
-    vendor: str                      # "8086"
-    product: str                     # "51f0"
+    bus: str                         # "pci", "usb" or "acpi"
+    address: str                     # "0000:00:14.3", "3-10" or "808622A8:00"
+    vendor: str                      # "8086"; empty for ACPI devices
+    product: str                     # "51f0"; the ACPI hardware ID ("808622A8") for ACPI devices
     name: str
     vendor_name: str = ""            # "Intel"
-    driver: str = ""                 # PCI only; USB drivers bind to interfaces
+    driver: str = ""                 # PCI and ACPI devices; USB drivers bind to interfaces
     modalias: str = ""
     pci_class: str = ""              # "028000"
     subsystem: str = ""              # "8086:0094"
     interfaces: tuple[UsbInterface, ...] = ()
     net: tuple[str, ...] = ()        # network interfaces of the device
-    sound_cards: int = 0             # ALSA cards of the device
-    bluetooth: tuple[str, ...] = ()  # Bluetooth adapters (hci0) of the device
+    # ALSA cards and Bluetooth adapters (hci0) of the device. An ACPI device's card or adapter hangs off
+    # another device in sysfs, so it gets those outside PCI and USB.
+    sound_cards: int = 0
+    bluetooth: tuple[str, ...] = ()
     video_nodes: int = 0             # /dev/video* nodes of the device
     # Kernel modules whose aliases match the device, which of them are loaded, which were installed after
     # this boot (waiting for a restart) and which come from DKMS (signed with the MOK key under Secure
@@ -117,11 +133,11 @@ class Device:
 
     @property
     def id(self) -> str:
-        return f"{self.vendor}:{self.product}"
+        return self.product if self.bus == "acpi" else f"{self.vendor}:{self.product}"
 
     @property
     def key(self) -> str:
-        return f"{self.bus}:{self.vendor}:{self.product}"
+        return f"{self.bus}:{self.id}"
 
     def pci_class_is(self, *prefixes: str) -> bool:
         return self.bus == "pci" and self.pci_class.startswith(prefixes)
@@ -144,6 +160,8 @@ class Device:
     def hardware_page(self) -> str:
         """The device on linux-hardware.org: which drivers and kernels work for it, reported by users."""
 
+        if self.bus == "acpi":
+            return ""   # the site lists PCI and USB devices
         if self.bus == "pci" and self.subsystem:
             return "https://linux-hardware.org/?id=pci:%s-%s-%s" % (
                 self.vendor, self.product, self.subsystem.replace(":", "-"))
@@ -168,6 +186,7 @@ class FirmwareError:
 class Snapshot:
     pci: tuple[Device, ...] = ()
     usb: tuple[Device, ...] = ()
+    acpi: tuple[Device, ...] = ()
     net: tuple[NetInterface, ...] = ()
     rfkill: tuple[RfkillSwitch, ...] = ()
     connected: bool = False          # a default route through a real network interface
@@ -179,7 +198,7 @@ class Snapshot:
 
     @property
     def devices(self) -> tuple[Device, ...]:
-        return self.pci + self.usb
+        return self.pci + self.usb + self.acpi
 
 
 def run_command(command: Sequence[str], timeout: float) -> subprocess.CompletedProcess[str]:
@@ -387,6 +406,59 @@ class SystemReader:
             )
         return devices
 
+    def acpi_devices(self) -> list[Device]:
+        """The ACPI_AUDIO and ACPI_BLUETOOTH devices the firmware reports as present."""
+
+        devices = []
+        for entry in self._entries(self._path("sys/bus/acpi/devices")):
+            hid = self._read(entry / "hid").upper()
+            if hid in ACPI_AUDIO:
+                vendor_name, name = "Intel", ACPI_AUDIO[hid]
+            elif ACPI_BLUETOOTH.match(hid):
+                vendor_name = _ACPI_BLUETOOTH_VENDORS[hid[0]]
+                name = f"{vendor_name} Bluetooth (UART)"
+            else:
+                continue
+            status = self._read(entry / "status")
+            if status.isdigit() and not int(status) & 1:
+                continue   # described by the firmware but not fitted (_STA)
+            devices.append(
+                Device(
+                    bus="acpi",
+                    address=entry.name,
+                    vendor="",
+                    product=hid,
+                    name=name,
+                    vendor_name=vendor_name,
+                    driver=self._link_name(entry / "physical_node" / "driver"),
+                    modalias=self._read(entry / "modalias"),
+                )
+            )
+        return devices
+
+    def platform_sound_cards(self) -> tuple[str, ...]:
+        """Sound cards of no PCI or USB device: those of SST sound engines (their board's machine driver)."""
+
+        cards = []
+        for entry in self._entries(self._path("sys/class/sound")):
+            if not re.fullmatch(r"card\d+", entry.name) or not os.path.lexists(entry / "device"):
+                continue
+            if self._owner(entry) is None and self._read(entry / "id") not in VIRTUAL_SOUND_CARDS:
+                cards.append(entry.name)
+        return tuple(cards)
+
+    def platform_bluetooth(self) -> tuple[str, ...]:
+        """Bluetooth adapters not on USB: those of chips on a serial port (behind a PCI UART on Atom chips)."""
+
+        adapters = []
+        for entry in self._entries(self._path("sys/class/bluetooth")):
+            if not re.fullmatch(r"hci\d+", entry.name) or not os.path.lexists(entry / "device"):
+                continue
+            owner = self._owner(entry)
+            if owner is None or owner[0] != "usb":
+                adapters.append(entry.name)
+        return tuple(adapters)
+
     def net_interfaces(self) -> list[NetInterface]:
         interfaces = []
         for entry in self._entries(self._path("sys/class/net")):
@@ -517,6 +589,9 @@ class SystemReader:
     def _needs_modules(device: Device) -> tuple[str, ...]:
         """Modaliases to look up for a device the check looks at that has no working driver."""
 
+        if device.bus == "acpi":
+            working = device.sound_cards or device.bluetooth
+            return () if working or not device.modalias else (device.modalias,)
         if device.bus == "pci":
             interesting = device.pci_class_is(PCI_ETHERNET, PCI_WIFI, *PCI_DISPLAY, *PCI_AUDIO, PCI_CAMERA, *PCI_OTHER)
             if not interesting:
@@ -560,6 +635,8 @@ class SystemReader:
             if device.pci_class_is(*PCI_AUDIO):
                 return not device.sound_cards
             return device.pci_class_is(*PCI_DISPLAY) and not device.driver
+        if device.bus == "acpi":
+            return not (device.sound_cards or device.bluetooth)
         return bool(device.bluetooth_interfaces) and not device.bluetooth
 
     def snapshot(self) -> Snapshot:
@@ -582,12 +659,25 @@ class SystemReader:
             )
             return self._with_modules(device)
 
+        def attach_acpi(device: Device) -> Device:
+            if device.product in ACPI_AUDIO:
+                device = replace(device, sound_cards=len(platform_cards))
+            else:
+                device = replace(device, bluetooth=platform_adapters)
+            return self._with_modules(device)
+
         pci = tuple(attach(device) for device in self.pci_devices())
         usb = tuple(attach(device) for device in self.usb_devices())
-        firmware = self.firmware_errors() if any(self._not_working(device) for device in pci + usb) else ()
+        acpi_found = self.acpi_devices()
+        platform_cards = self.platform_sound_cards() if acpi_found else ()
+        platform_adapters = self.platform_bluetooth() if acpi_found else ()
+        acpi = tuple(attach_acpi(device) for device in acpi_found)
+        devices = pci + usb + acpi
+        firmware = self.firmware_errors() if any(self._not_working(device) for device in devices) else ()
         return Snapshot(
             pci=pci,
             usb=usb,
+            acpi=acpi,
             net=tuple(net),
             rfkill=tuple(self.rfkill()),
             connected=self.connected(net),

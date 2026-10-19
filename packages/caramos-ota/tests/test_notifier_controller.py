@@ -183,7 +183,18 @@ class UpdateWindowControllerTests(unittest.TestCase):
         self.assertTrue(result_page.shown)
         self.assertTrue(self.window.deletable)
         self.assertEqual("CaramOS - Update complete!", self.window.title)
-        build_result.assert_called_once_with(True, "complete", controller.close)
+        build_result.assert_called_once_with(True, "complete", controller.close, None)
+
+    def test_a_failed_update_can_ask_vnlf_for_help_with_its_log(self) -> None:
+        controller = self.make_controller({"release": "1.1", "title": "Zalo"})
+        controller.start_upgrade()
+        with mock.patch.object(app, "build_result_page", return_value=FakePage("result")) as build_result, \
+                mock.patch.object(app.problem, "help_available", return_value=True), \
+                mock.patch.object(app.problem, "ask_for_help") as ask:
+            controller.on_upgrade_done(False, "Error: Migration update failed.")
+            on_help = build_result.call_args.args[3]
+            on_help()
+        ask.assert_called_once_with("Error: Migration update failed.", {"release": "1.1", "title": "Zalo"})
 
     def test_worker_schedules_ui_callbacks_on_glib(self) -> None:
         controller = self.make_controller({"release": "1.1"})

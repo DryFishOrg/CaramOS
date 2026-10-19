@@ -21,7 +21,7 @@ import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
-from collections.abc import Callable, Iterator, Sequence
+from collections.abc import Callable, Iterator, Mapping, Sequence
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -87,10 +87,29 @@ def message_problem(message: str) -> str:
     return ""
 
 
+def _json_length(value: Any) -> int:
+    return length(json.dumps(value, ensure_ascii=False, separators=(",", ":")))
+
+
+def _with_logs(report: dict[str, Any] | None, logs: Mapping[str, str]) -> dict[str, Any]:
+    """report with "logs", their beginnings cut until the whole report fits the API's limit."""
+
+    texts = dict(logs)
+    base = dict(report or {})
+    while texts and _json_length({**base, "logs": texts}) > MAX_REPORT:
+        name = max(texts, key=lambda key: len(texts[key]))
+        if len(texts[name]) < 512:
+            texts.pop(name)
+            continue
+        cut = texts[name][len(texts[name]) // 4:]
+        texts[name] = "…" + cut[cut.find("\n") + 1:] if "\n" in cut else "…" + cut
+    return {**base, "logs": texts} if texts else base
+
+
 def build_request(message: str, contact: str = "", probe_url: str = "", report: dict[str, Any] | None = None,
                   *, kind: str = "driver", app: str = "caramos-driver-check", kernel: str = "", live: bool = False,
                   virtual: bool = False, upload_id: str = "", attachments: Sequence[str] = (),
-                  public: bool = False) -> dict[str, Any]:
+                  public: bool = False, logs: Mapping[str, str] | None = None) -> dict[str, Any]:
     payload: dict[str, Any] = {
         "schema": SCHEMA,
         "type": kind,
@@ -109,6 +128,9 @@ def build_request(message: str, contact: str = "", probe_url: str = "", report: 
     }
     if probe_url:
         payload["probe_url"] = probe_url
+    if logs:
+        # What the app logged goes with the report, which only VNLF's moderators see (HELP_API.md, "Logs").
+        report = _with_logs(report, logs)
     # A report over the API's limit would get the whole request refused; the rest is worth more.
     if report is not None and length(json.dumps(report, ensure_ascii=False, separators=(",", ":"))) <= MAX_REPORT:
         payload["report"] = report
@@ -119,8 +141,11 @@ def build_request(message: str, contact: str = "", probe_url: str = "", report: 
     return payload
 
 
-def as_text(payload: dict[str, Any], files: Sequence[str] = ()) -> str:
-    """The request as a post to paste by hand when the API cannot be reached; files: the attached ones."""
+def as_text(payload: dict[str, Any], files: Sequence[str] = (), *, with_logs: bool = False) -> str:
+    """The request as a post to paste by hand when the API cannot be reached; files: the attached ones.
+
+    with_logs adds the logs, for the form's preview: a post is public, the logs are for VNLF's team only.
+    """
 
     lines = [payload["message"], ""]
     if payload.get("probe_url"):
@@ -135,6 +160,11 @@ def as_text(payload: dict[str, Any], files: Sequence[str] = ()) -> str:
         lines.append("Pictures and videos: " + ", ".join(files))
     if payload.get("contact"):
         lines += ["", payload["contact"]]
+    logs = (payload.get("report") or {}).get("logs") or {}
+    if with_logs and logs:
+        lines += ["", "Logs (only the VNLF team sees them):"]
+        for name, text in logs.items():
+            lines += [f"--- {name} ---", text]
     return "\n".join(lines).strip() + "\n"
 
 

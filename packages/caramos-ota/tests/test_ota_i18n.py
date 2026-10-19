@@ -23,6 +23,7 @@ UI_SOURCES = [
     DIST / "caramos_ota_notifier/ui.py",
     DIST / "caramos_ota_notifier/app.py",
     DIST / "caramos_ota_notifier/state.py",
+    DIST / "caramos_ota_notifier/problem.py",
     DIST / "caramos_ota_audit/ui.py",
     DIST / "caramos_ota_audit/cli.py",
 ] + sorted((ROOT / "usr/share/caramos-ota/driver-check/caramos_driver_check").rglob("*.py"))

@@ -18,6 +18,8 @@ from .apt import (
     repair_apt,
     repair_dpkg,
 )
+from caramos_ota_update import zalo_update
+
 from .app_center import update_installed_app_center
 from .constants import EXIT_APT, EXIT_CANCEL, EXIT_ERROR, EXIT_OK, TOOL_NAME, TOOL_VERSION
 from .logging_utils import current_log_file, init_log, log_error, log_info, now_iso
@@ -328,6 +330,7 @@ def main(argv: list[str] | None = None) -> int:
             skip_self_update=args.skip_self_update,
             reexec_args=["caramos-ota", "--check", "--skip-self-update"],
         )
+        zalo_update.resume_in_background()
         state["last_check"] = now_iso()
         save_state(state)
         _, updates = detect_updates(release_info, state)
@@ -351,6 +354,7 @@ def main(argv: list[str] | None = None) -> int:
                 skip_self_update=args.skip_self_update,
                 reexec_args=reexec_args,
             )
+            zalo_update.resume_in_background()
             state["last_check"] = now_iso()
             save_state(state)
         manifest, updates = detect_updates(

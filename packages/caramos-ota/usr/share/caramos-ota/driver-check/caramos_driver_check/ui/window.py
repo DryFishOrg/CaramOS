@@ -16,6 +16,7 @@ from caramos_ota.i18n import _
 
 from .. import actions
 from ..analysis import INSTALL, REBOOT, REPORT, WIFI_ON, Action, Finding, Report
+from ..logs import system_logs
 from .help import HelpPages
 from .install import InstallView, done_page
 from .results import ResultsView
@@ -80,7 +81,7 @@ class MainWindow(HelpPages, Adw.ApplicationWindow):
             snapshot = self.scanner.snapshot()
             basic = self.scanner.analyze(snapshot, ())
             GLib.idle_add(lambda: (view.reveal(basic, lambda: self._scan_finished()), False)[1])
-            full = self.scanner.analyze(snapshot, self.scanner.proposals())
+            full = self.scanner.analyze(snapshot, self.scanner.proposals(snapshot))
             GLib.idle_add(self._proposals_ready, view, full)
 
         threading.Thread(target=work, daemon=True).start()
@@ -105,7 +106,7 @@ class MainWindow(HelpPages, Adw.ApplicationWindow):
 
         def work() -> None:
             snapshot = self.scanner.snapshot()
-            report = self.scanner.analyze(snapshot, self.scanner.proposals())
+            report = self.scanner.analyze(snapshot, self.scanner.proposals(snapshot))
             GLib.idle_add(self._quiet_done, report)
 
         threading.Thread(target=work, daemon=True).start()
@@ -184,8 +185,27 @@ class MainWindow(HelpPages, Adw.ApplicationWindow):
     # Asking for help (HelpPages) -------------------------------------------------------------
 
     def show_help(self, kind: str) -> None:
-        if self.report is not None:
-            super().show_help(kind)
+        if self.report is None:
+            return
+        self.help_logs = ()
+        super().show_help(kind)
+        form = self.help_form
+
+        def work() -> None:
+            # What the scans logged and this boot's warnings: a freeze or a slow scan shows there.
+            try:
+                found = system_logs()
+            except Exception:   # noqa: BLE001 - a log that cannot be read must not keep the user from asking
+                found = ()
+            GLib.idle_add(attach, found)
+
+        def attach(found) -> bool:
+            if found and form is not None and self.help_form is form:
+                self.help_logs = found
+                form.set_context("", found)
+            return False
+
+        threading.Thread(target=work, daemon=True).start()
 
     def help_report(self) -> Report | None:
         return self.report

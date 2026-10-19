@@ -20,6 +20,11 @@ case "$1" in
             systemctl start caramos-ota-check.timer || true
         fi
         ;;
+    triggered)
+        # A Cinnamon update put back its own panel files: make the CaramOS changes again. A failure is
+        # logged in /var/log/caramos-ota and must not fail the Cinnamon update.
+        python3 -I -m caramos_ota_update.cinnamon_patches || true
+        ;;
 esac
 
 #DEBHELPER#

@@ -1,8 +1,11 @@
 """Driver packages Ubuntu recommends for this computer, the same list Driver Manager shows.
 
 UbuntuDrivers (ubuntu-drivers-common) matches each device's modalias against the Modaliases field of the
-driver packages in the APT lists, and marks one NVIDIA driver as recommended. This runs as the user and
-takes a second or two (it loads the APT cache), so the window does it while it shows the scan.
+driver packages in the APT lists, and marks one NVIDIA driver as recommended. It loads the APT cache and reads
+the record of every package: about 6 s of a CPU core on a recent PC, half a minute or more on an old laptop,
+and from the live USB every list (about 280 MB) is read through the compressed image. Run inside the window,
+that froze old computers in the live session. So lookup() asks it only when its answer can matter (wanted()),
+and in a separate process at the lowest CPU and disk priority, with a time and memory limit.
 
 Only drivers Ubuntu itself installs automatically are offered for one-click install (NVIDIA, Broadcom
 Wi-Fi, VirtualBox and VMware guest tools); anything else stays with Driver Manager.
@@ -11,11 +14,18 @@ Wi-Fi, VirtualBox and VMware guest tools); anything else stays with Driver Manag
 from __future__ import annotations
 
 import fnmatch
+import json
 import re
-from dataclasses import dataclass
+import resource
+import shutil
+import subprocess
+import sys
+import time
+from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from .hardware import PCI_ADDRESS, USB_DEVICE
+from . import knowledge
+from .hardware import PCI_ADDRESS, PCI_DISPLAY, USB_DEVICE, Snapshot
 
 # Ubuntu's own auto-install list (UbuntuDrivers.detect.auto_install_filter), without the OEM archives.
 ONE_CLICK = ("nvidia-driver-*", "bcmwl*", "broadcom-sta-dkms", "virtualbox-guest*", "open-vm-tools*")
@@ -23,6 +33,10 @@ ONE_CLICK = ("nvidia-driver-*", "bcmwl*", "broadcom-sta-dkms", "virtualbox-guest
 ON_INSTALL_MEDIA = ("bcmwl-kernel-source", "broadcom-sta-dkms")
 PREFERRED = ("bcmwl-kernel-source", "broadcom-sta-dkms")
 NVIDIA_DRIVER = re.compile(r"^nvidia-driver-(?P<flavour>\d+(?:-server)?(?:-open)?)$")
+# VirtualBox and VMware virtual hardware: their guest tools are one-click drivers.
+GUEST_VENDORS = frozenset({"80ee", "15ad"})
+LOOKUP_TIMEOUT = 180                # seconds; a busy old computer gets this long, then the window goes on without
+LOOKUP_MEMORY = 2 * 1024 ** 3       # address space of the lookup process
 
 
 @dataclass(frozen=True)
@@ -115,8 +129,77 @@ def proposals_from(devices: dict[str, dict], installed) -> list[DriverProposal]:
     return proposals
 
 
+def wanted(snapshot: Snapshot) -> str:
+    """Why UbuntuDrivers is worth asking on this computer; "" when its answer cannot matter.
+
+    Only one-click drivers (ONE_CLICK) are proposed: for an NVIDIA card not on the NVIDIA driver (not in the live
+    session, where it comes after installing), a Broadcom Wi-Fi card without a driver, VirtualBox or VMware.
+    """
+
+    reasons = []
+    for device in snapshot.pci:
+        if device.vendor == knowledge.NVIDIA and device.pci_class_is(*PCI_DISPLAY) and device.driver != "nvidia" \
+                and not snapshot.live:
+            reasons.append(f"NVIDIA {device.id}")
+        elif knowledge.broadcom_wifi(device) and not device.net:
+            reasons.append(f"Broadcom Wi-Fi {device.id}")
+        elif device.vendor in GUEST_VENDORS:
+            reasons.append(f"guest tools {device.id}")
+    return ", ".join(dict.fromkeys(reasons))
+
+
+@dataclass(frozen=True)
+class Lookup:
+    proposals: tuple[DriverProposal, ...] = ()
+    outcome: str = "skipped"   # skipped, done, timeout or failed
+    seconds: float = 0.0
+    detail: str = ""           # why it ran or did not, what failed
+
+
+def _lookup_command() -> list[str]:
+    folder = str(Path(__file__).resolve().parents[1])
+    code = (f"import sys; sys.path.insert(0, {folder!r}); "
+            "from caramos_driver_check.drivers import print_proposals; print_proposals()")
+    command = [sys.executable, "-I", "-c", code]
+    for tool, options in (("nice", ["-n", "19"]), ("ionice", ["-c", "3"])):
+        path = shutil.which(tool)
+        if path:
+            command = [path, *options, *command]
+    return command
+
+
+def lookup(snapshot: Snapshot, timeout: float = LOOKUP_TIMEOUT) -> Lookup:
+    """The proposals for this computer, from UbuntuDrivers in a low-priority process when they can matter."""
+
+    reason = wanted(snapshot)
+    if not reason:
+        return Lookup(detail="no NVIDIA card to set up, Broadcom Wi-Fi without driver or VirtualBox/VMware")
+    start = time.monotonic()
+    try:
+        done = subprocess.run(_lookup_command(), check=False, capture_output=True, text=True, timeout=timeout,
+                              stdin=subprocess.DEVNULL)
+    except subprocess.TimeoutExpired:
+        return Lookup(outcome="timeout", seconds=time.monotonic() - start, detail=reason)
+    except OSError as exc:
+        return Lookup(outcome="failed", seconds=time.monotonic() - start, detail=f"{reason}: {exc}")
+    seconds = time.monotonic() - start
+    try:
+        found = tuple(DriverProposal(**item) for item in json.loads(done.stdout or "null"))
+    except (TypeError, ValueError):
+        error = (done.stderr or "").strip().splitlines()[-1:] or [f"exit {done.returncode}"]
+        return Lookup(outcome="failed", seconds=seconds, detail=f"{reason}: {error[0][:200]}")
+    return Lookup(found, "done", seconds, reason)
+
+
+def print_proposals() -> None:
+    """The lookup process: the proposals as JSON on stdout."""
+
+    resource.setrlimit(resource.RLIMIT_AS, (LOOKUP_MEMORY, LOOKUP_MEMORY))
+    print(json.dumps([asdict(proposal) for proposal in find_proposals()]))
+
+
 def find_proposals() -> list[DriverProposal]:
-    """Ask UbuntuDrivers; an empty list when it is missing or the APT cache cannot be read."""
+    """Ask UbuntuDrivers, in this process; an empty list when it is missing or the APT cache cannot be read."""
 
     try:
         import apt_pkg

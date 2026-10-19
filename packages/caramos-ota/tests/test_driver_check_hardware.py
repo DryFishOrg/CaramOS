@@ -85,6 +85,25 @@ class FakeSystem:
             _write(self.root / f"run/udev/data/c{node}", f"E:ID_MODEL_FROM_DATABASE={model}\n")
         return directory
 
+    def acpi(self, name: str, hid: str, *, status: str | None = "15", driver: str = "",
+             parent: Path | None = None) -> Path:
+        """An ACPI device and the device Linux made for it (under parent), bound to driver."""
+
+        directory = self.root / "sys/devices/LNXSYSTM:00/LNXSYBUS:00" / name
+        _write(directory / "hid", f"{hid}\n")
+        _write(directory / "modalias", f"acpi:{hid}:\n")
+        if status is not None:
+            _write(directory / "status", f"{status}\n")
+        node = (parent or self.root / "sys/devices/platform") / name
+        node.mkdir(parents=True, exist_ok=True)
+        _link(directory / "physical_node", node)
+        if driver:
+            target = self.root / "sys/bus/platform/drivers" / driver
+            target.mkdir(parents=True, exist_ok=True)
+            _link(node / "driver", target)
+        _link(self.root / "sys/bus/acpi/devices" / name, directory)
+        return node
+
     def net(self, name: str, owner: Path, *, wireless: bool = False, operstate: str = "up") -> None:
         directory = owner / "net" / name
         _write(directory / "operstate", f"{operstate}\n")
@@ -215,6 +234,42 @@ class HardwareReaderTests(unittest.TestCase):
 
         self.assertEqual(1, device.sound_cards)
 
+    def test_sound_engines_and_serial_bluetooth_of_atom_tablets(self) -> None:
+        # Cherry Trail: the SST engine is an ACPI platform device, its card hangs off the board's machine
+        # device; the Broadcom Bluetooth chip sits on the serial port of a PCI UART.
+        engine = self.system.acpi("808622A8:00", "808622A8", driver="intel_sst_acpi")
+        machine = engine / "cht-bsw-rt5672"
+        machine.mkdir()
+        self.system.class_device("sound", "card0", machine)
+        _write(machine / "sound/card0/id", "chtbswrt5672\n")
+        uart = self.system.pci("0000:00:1e.3", "8086", "228c", "078000", driver="intel-lpss") / "dw-apb-uart.3/serial0"
+        chip = self.system.acpi("BCM2E7E:00", "BCM2E7E", driver="hci_uart_bcm", parent=uart)
+        self.system.class_device("bluetooth", "hci0", chip)
+        self.system.acpi("BCM2E3A:00", "BCM2E3A", status="0")   # described by the firmware, not fitted
+        self.system.acpi("PNP0C0A:00", "PNP0C0A")                 # the battery: not looked at
+
+        devices = {device.address: device for device in SystemReader(self.root, FakeRunner()).snapshot().acpi}
+
+        self.assertEqual(["808622A8:00", "BCM2E7E:00"], sorted(devices))
+        sound, bluetooth = devices["808622A8:00"], devices["BCM2E7E:00"]
+        self.assertEqual(("Intel Cherry Trail SST audio", "intel_sst_acpi", 1), (sound.name, sound.driver, sound.sound_cards))
+        self.assertEqual(("Broadcom Bluetooth (UART)", "hci_uart_bcm", ("hci0",)),
+                         (bluetooth.name, bluetooth.driver, bluetooth.bluetooth))
+        self.assertEqual(("808622A8", "acpi:808622A8", ""), (sound.id, sound.key, sound.hardware_page()))
+
+    def test_test_sound_cards_do_not_count_for_a_sound_engine(self) -> None:
+        self.system.acpi("80860F28:00", "80860F28", driver="intel_sst_acpi")
+        dummy = self.root / "sys/devices/platform/snd_dummy.0"
+        dummy.mkdir(parents=True)
+        self.system.class_device("sound", "card0", dummy)
+        _write(dummy / "sound/card0/id", "Dummy\n")
+        runner = FakeRunner(aliases={"acpi:80860F28:": ("snd_intel_sst_acpi",)})
+
+        engine = SystemReader(self.root, runner).snapshot().acpi[0]
+
+        self.assertEqual(0, engine.sound_cards)
+        self.assertEqual(("snd_intel_sst_acpi",), engine.modules)
+
     def test_modules_are_looked_up_only_for_devices_that_do_not_work(self) -> None:
         self.system.pci("0000:02:00.0", "14e4", "43a0", "028000")   # Broadcom, no driver
         self.system.pci("0000:00:02.0", "8086", "4628", "030000", driver="i915")
@@ -334,6 +389,13 @@ class NamesAndKnowledgeTests(unittest.TestCase):
         self.assertEqual("", support["27c6:55a4"])
         self.assertEqual("", support["06cb:00da"])
         self.assertEqual({}, read_libfprint_support("/nonexistent"))
+
+    def test_the_image_processor_of_atom_tablets(self) -> None:
+        from caramos_driver_check.hardware import Device
+        from caramos_driver_check.knowledge import atom_isp
+
+        self.assertTrue(atom_isp(Device("pci", "0000:00:03.0", "8086", "22b8", "Intel Atom ISP", pci_class="048000")))
+        self.assertFalse(atom_isp(Device("pci", "0000:00:03.0", "8086", "22b0", "Intel HD Graphics", pci_class="030000")))
 
     def test_intel_ipu_needs_the_multimedia_class(self) -> None:
         from caramos_driver_check.hardware import Device

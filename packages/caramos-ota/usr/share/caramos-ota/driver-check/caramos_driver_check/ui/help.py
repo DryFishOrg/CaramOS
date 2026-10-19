@@ -18,6 +18,7 @@ from gi.repository import Adw, Gdk, GLib, Gtk
 from caramos_ota.i18n import _, ngettext
 
 from .. import actions, helpdesk, hwprobe, media
+from ..logs import Log
 from ..analysis import Report
 from .attachments import AttachmentsBox
 from .common import (
@@ -50,6 +51,10 @@ class HelpRequest:
     with_report: bool
     attachments: tuple[media.Attachment, ...] = ()
     public: bool = False   # VNLF may show it to its community
+    logs: tuple[Log, ...] = ()   # what the app that opened the form logged; VNLF's team only
+
+    def log_texts(self) -> dict[str, str]:
+        return {log.name: log.text for log in self.logs}
 
 
 @dataclass(frozen=True)
@@ -124,13 +129,15 @@ class HelpForm(Gtk.Box):
     The report may come later (set_report, ready=False until then): the Feedback & Help window reads the
     computer while the user writes, and sending waits for it. When reading it failed, the report is None
     and requests go without the Driver Check results. With on_requests, the header bar opens the requests
-    sent before.
+    sent before. An app that opens the form after a failure gives a message to start from and its logs
+    (logs.py), attached unless the user unticks them.
     """
 
     def __init__(self, kind: str, choices: tuple[str, ...], report: Report | None, *, ready: bool = True,
                  title: str, online: bool, on_send: Callable[[HelpRequest], None],
                  on_save_probe: Callable[[], None], on_back: Callable[[], None], back_label: str,
-                 on_requests: Callable[[], None] | None = None) -> None:
+                 on_requests: Callable[[], None] | None = None, message: str = "",
+                 logs: Sequence[Log] = ()) -> None:
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.kinds = kinds()
         self.kind = kind
@@ -208,6 +215,15 @@ class HelpForm(Gtk.Box):
         form.append(self.probe_note)
         self.with_report = Gtk.CheckButton(label=_("Attach the Driver Check results"))
         form.append(self.with_report)
+        self.logs: tuple[Log, ...] = ()
+        self.with_logs = Gtk.CheckButton(active=True)
+        form.append(self.with_logs)
+        self.logs_note = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.logs_note.set_margin_start(28)
+        self.logs_note.append(_point("security-high-symbolic", _(
+            "Only the VNLF team sees the log, never the community. E-mail and IP addresses, the computer's name "
+            "and your user name are taken out.")))
+        form.append(self.logs_note)
 
         preview = Gtk.Expander(label=_("See what will be sent"))
         self.preview = Gtk.TextView(editable=False, cursor_visible=False, monospace=True,
@@ -252,10 +268,12 @@ class HelpForm(Gtk.Box):
         self.contact.connect("changed", lambda *_args: self._refresh_preview())
         self.with_probe.connect("toggled", lambda *_args: self._refresh_preview())
         self.with_report.connect("toggled", lambda *_args: self._refresh_preview())
+        self.with_logs.connect("toggled", lambda *_args: self._refresh_preview())
         start = kind if kind in choices else choices[0]
         if self.cards:
             self.cards[start].set_active(True)
         self._set_kind(start)
+        self.set_context(message, logs)
 
     def _kind_card(self, name: str) -> Gtk.ToggleButton:
         kind = self.kinds[name]
@@ -282,6 +300,28 @@ class HelpForm(Gtk.Box):
         if kind in self.cards:
             self.cards[kind].set_active(True)
 
+    def set_context(self, message: str, logs: Sequence[Log]) -> None:
+        """What an app that failed passes on: the message starts the form unless the user wrote one already."""
+
+        buffer = self.message.get_buffer()
+        if message and not self._text().strip():
+            buffer.set_text(message)
+        if logs:
+            self.logs = tuple(logs)
+            self.with_logs.set_active(True)
+        self.with_logs.set_label(_("Attach the logs (%s)") % ", ".join(log.name for log in self.logs))
+        self._show_logs()
+        self._refresh_preview()
+
+    def _logs_offered(self) -> bool:
+        """Logs go with help and bug reports, like the Driver Check results; feedback has no use for them."""
+
+        return bool(self.logs) and self.kinds[self.kind].report is not None
+
+    def _show_logs(self) -> None:
+        self.with_logs.set_visible(self._logs_offered())
+        self.logs_note.set_visible(self._logs_offered())
+
     def set_report(self, report: Report | None) -> None:
         self.report = report
         self.ready = True
@@ -306,6 +346,7 @@ class HelpForm(Gtk.Box):
             self.save_probe.set_visible(offered)
         self.with_report.set_visible(self._report_offered())
         self.with_report.set_active(bool(kind.report))
+        self._show_logs()
         self._sync()
         self._refresh_preview()
 
@@ -332,6 +373,9 @@ class HelpForm(Gtk.Box):
 
     def _report_wanted(self) -> bool:
         return self.report is not None and self.with_report.get_visible() and self.with_report.get_active()
+
+    def _logs_wanted(self) -> tuple[Log, ...]:
+        return self.logs if self._logs_offered() and self.with_logs.get_active() else ()
 
     def _sync(self) -> None:
         problem = helpdesk.message_problem(self._text())
@@ -362,14 +406,17 @@ class HelpForm(Gtk.Box):
             "https://linux-hardware.org/?probe=…" if self._probe_wanted() else "",
             report.to_dict() if report is not None and self._report_wanted() else None, kind=self.kind,
             kernel=report.kernel if report else "", live=report.live if report else False,
-            virtual=report.virtual if report else False)
-        self.preview.get_buffer().set_text(helpdesk.as_text(payload, file_names(self.attachments.ready())))
+            virtual=report.virtual if report else False,
+            logs={log.name: log.text for log in self._logs_wanted()})
+        self.preview.get_buffer().set_text(helpdesk.as_text(payload, file_names(self.attachments.ready()),
+                                                            with_logs=True))
 
     def _send(self) -> None:
         if helpdesk.message_problem(self._text()) or self._waiting():
             return
         self.on_send(HelpRequest(self.kind, self._text(), self.contact.get_text(), self._probe_wanted(),
-                                 self._report_wanted(), tuple(self.attachments.ready()), self.public.get_active()))
+                                 self._report_wanted(), tuple(self.attachments.ready()), self.public.get_active(),
+                                 self._logs_wanted()))
 
 
 def file_names(attachments: Sequence[media.Attachment]) -> list[str]:
@@ -439,7 +486,7 @@ class HelpSend:
             report.to_dict() if report is not None and request.with_report else None, kind=request.kind,
             app=self.app, kernel=report.kernel if report else "", live=report.live if report else False,
             virtual=report.virtual if report else False, upload_id=self.upload_id, attachments=attachments,
-            public=request.public)
+            public=request.public, logs=request.log_texts())
         GLib.idle_add(self._finish, self.on_sent, helpdesk.send(payload), payload)
 
     def _upload(self, files: Sequence[media.Attachment]) -> list[str] | None:
@@ -631,6 +678,8 @@ class HelpPages:
     help_probe_url = ""   # the hw-probe upload of the open form, used again when it is sent again
     help_upload_id = ""   # ties the uploaded pictures and videos of the open form to its request
     help_uploads: dict[str, str] | None = None   # prepared file: its attachment id, used again likewise
+    help_message = ""     # the message a new form starts with (an app that failed opened the window)
+    help_logs: tuple[Log, ...] = ()   # and the logs it attaches
 
     def help_title(self) -> str:
         return _("Ask for help")
@@ -657,7 +706,8 @@ class HelpPages:
                                   title=self.help_title(), online=self.help_online(), on_send=self._send_help,
                                   on_save_probe=self._save_probe, on_back=self.leave_help,
                                   back_label=self.help_back_label(),
-                                  on_requests=self.show_requests if helpdesk.sent_requests() else None)
+                                  on_requests=self.show_requests if helpdesk.sent_requests() else None,
+                                  message=self.help_message, logs=self.help_logs)
         self._set_page("help", self.help_form)
 
     def show_requests(self) -> None:
@@ -707,6 +757,7 @@ class HelpPages:
                 self.stack.remove(form)
             self.help_cleanup()
             self.help_form = None
+            self.help_message, self.help_logs = "", ()
         page = result_page(result, payload, title=self.help_title(), done_label=self.help_done_label(),
                            on_done=self.leave_help, on_back=self._back_to_help,
                            on_retry=lambda: self._send_help(request), files=request.attachments)

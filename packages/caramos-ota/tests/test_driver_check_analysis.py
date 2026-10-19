@@ -369,6 +369,44 @@ class SoundBluetoothCameraTests(unittest.TestCase):
         with_webcam = analyze(laptop(pci=(INTEL_WIFI, INTEL_GPU, INTEL_AUDIO, ipu)))
         self.assertEqual((), with_webcam.findings)
 
+    def test_an_atom_tablet_is_not_reported_without_sound_bluetooth_and_cameras(self) -> None:
+        # GitHub issue #80, a Lenovo Yoga Book (Cherry Trail): sound, Bluetooth and the cameras are not on PCI or
+        # USB, and Driver Check said "not found on this computer" and "all drivers present".
+        isp = Device("pci", "0000:00:03.0", "8086", "22b8", "Intel Atom ISP", pci_class="048000")
+        engine = Device("acpi", "808622A8:00", "", "808622A8", "Intel Cherry Trail SST audio", driver="intel_sst_acpi",
+                        modules=("snd_intel_sst_acpi",), loaded_modules=("snd_intel_sst_acpi",))
+        serial_bt = Device("acpi", "BCM2E7E:00", "", "BCM2E7E", "Broadcom Bluetooth (UART)", driver="hci_uart_bcm",
+                           bluetooth=("hci0",))
+        report = analyze(laptop(pci=(INTEL_WIFI, INTEL_GPU, isp), usb=(), acpi=(engine, serial_bt)))
+
+        self.assertEqual([("audio:failed:acpi:808622A8", WARNING), ("camera:atom-isp:pci:8086:22b8", INFO)],
+                         [(f.key, f.level) for f in report.findings])
+        sound = report.findings[0]
+        self.assertIn("Intel SST", sound.detail)
+        self.assertEqual(("ACPI 808622A8", ""), (sound.device_id, sound.link))
+        self.assertEqual([REPORT], kinds(sound))
+        areas = {area.key: (area.level, area.summary) for area in report.areas}
+        self.assertEqual((WARNING, "Intel Cherry Trail SST audio"), areas["audio"])
+        self.assertEqual((OK, "Broadcom Bluetooth (UART)"), areas["bluetooth"])
+        self.assertEqual((INFO, "Intel Atom ISP"), areas["camera"])
+
+    def test_a_sound_engine_with_its_card_works(self) -> None:
+        engine = Device("acpi", "80860F28:00", "", "80860F28", "Intel Bay Trail SST audio", driver="intel_sst_acpi",
+                        sound_cards=1)
+        report = analyze(laptop(pci=(INTEL_WIFI, INTEL_GPU), acpi=(engine,)))
+        self.assertEqual((), report.findings)
+        self.assertEqual(OK, {area.key: area.level for area in report.areas}["audio"])
+
+    def test_serial_bluetooth_without_its_firmware(self) -> None:
+        chip = Device("acpi", "BCM2E7E:00", "", "BCM2E7E", "Broadcom Bluetooth (UART)", driver="hci_uart_bcm",
+                      modules=("hci_uart",), loaded_modules=("hci_uart",))
+        report = analyze(laptop(usb=(WEBCAM,), acpi=(chip,), firmware_errors=(
+            FirmwareError("bluetooth", "hci0", "brcm/BCM4356A2.hcd"),)))
+        finding = report.findings[0]
+        self.assertEqual("bluetooth:failed:acpi:BCM2E7E", finding.key)
+        self.assertIn("brcm/BCM4356A2.hcd", finding.detail)
+        self.assertIn("hci_uart_bcm", finding.detail)
+
     def test_webcam_without_driver(self) -> None:
         broken = replace(WEBCAM, interfaces=(UsbInterface("1.0", "0e", "01", "00"),), video_nodes=0)
         finding = analyze(laptop(usb=(BLUETOOTH, broken))).findings[0]

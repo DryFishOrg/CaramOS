@@ -13,31 +13,74 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import resource
 import sys
+import time
 
 from caramos_ota.i18n import _
 
 from . import notify
 from . import state as user_state
 from .analysis import Report, analyze
-from .drivers import find_proposals
+from .drivers import DriverProposal, lookup
 from .hardware import SystemReader
 from .knowledge import read_libfprint_support
+from .logs import note, system_summary
 
 APP_ID = "net.vietnamlinuxfamily.CaramOSDriverCheck"
 
 
 class Scanner:
-    """What the window and the login check read; demo.DemoScanner replaces it for development."""
+    """What the window and the login check read; demo.DemoScanner replaces it for development.
+
+    Each step goes to Driver Check's log (logs.note), which a help request can attach: how long reading the
+    hardware and asking for drivers took on this computer, and with how much memory free.
+    """
 
     def __init__(self) -> None:
         self.fingerprints = read_libfprint_support()
+        self._lookup: tuple[tuple, list[DriverProposal]] | None = None
 
     def snapshot(self):
-        return SystemReader().snapshot()
+        start = time.monotonic()
+        snapshot = SystemReader().snapshot()
+        note(f"hardware read in {time.monotonic() - start:.1f} s: {len(snapshot.pci)} PCI, {len(snapshot.usb)} USB, "
+             f"{len(snapshot.acpi)} ACPI devices{' · live USB' if snapshot.live else ''} · {system_summary()}")
+        return snapshot
 
-    def proposals(self):
-        return find_proposals()
+    @staticmethod
+    def _lookup_key(snapshot) -> tuple:
+        """What the drivers UbuntuDrivers proposes depend on: the devices, the installed and the known packages."""
+
+        stamps = []
+        for path in ("/var/lib/dpkg/status", "/var/lib/apt/lists"):
+            try:
+                stamps.append(os.stat(path).st_mtime_ns)
+            except OSError:
+                stamps.append(0)
+        devices = tuple((device.address, device.id, device.driver, bool(device.net)) for device in snapshot.pci)
+        return devices, snapshot.live, tuple(stamps)
+
+    def proposals(self, snapshot) -> list[DriverProposal]:
+        key = self._lookup_key(snapshot)
+        if self._lookup is not None and self._lookup[0] == key:
+            return self._lookup[1]   # checking again: the same computer and packages, the same answer
+        found = lookup(snapshot)
+        if found.outcome == "skipped":
+            note(f"driver lookup skipped: {found.detail}")
+        elif found.outcome == "done":
+            peak = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss // 1024
+            names = ", ".join(proposal.package for proposal in found.proposals) or "none"
+            note(f"driver lookup for {found.detail}: {found.seconds:.1f} s, peak {peak} MB, proposals: {names} · "
+                 f"{system_summary()}")
+        elif found.outcome == "timeout":
+            note(f"driver lookup for {found.detail} stopped after {found.seconds:.0f} s · {system_summary()}")
+        else:
+            note(f"driver lookup failed after {found.seconds:.1f} s: {found.detail}")
+        proposals = list(found.proposals)
+        if found.outcome in ("skipped", "done"):
+            self._lookup = (key, proposals)
+        return proposals
 
     def analyze(self, snapshot, proposals) -> Report:
         return analyze(snapshot, self.fingerprints, proposals)
@@ -114,7 +157,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.json:
         scanner = make_scanner()
-        report = scanner.analyze(scanner.snapshot(), scanner.proposals())
+        snapshot = scanner.snapshot()
+        report = scanner.analyze(snapshot, scanner.proposals(snapshot))
         print(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))
         return 0
     if not has_display():

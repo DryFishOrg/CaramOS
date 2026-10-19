@@ -2,6 +2,9 @@
 
     caramos-help                  open the window, with "Ask for help" chosen
     caramos-help --type bug       open it with a bug report chosen (also: os, feedback)
+    caramos-help --type bug --message TEXT --log FILE
+                                  an app that failed (App Center, Update Center): the form starts with TEXT
+                                  and attaches FILE (several --log for several files), see logs.py
     caramos-help --requests       open it on the list of the requests sent from this computer
     caramos-help --refresh        no window: ask VNLF how the requests are doing, notify new answers
 
@@ -14,6 +17,7 @@ list asked for; what the user wrote stays.
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 
 from caramos_ota.i18n import _
@@ -29,6 +33,9 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
                                      description="Ask the VNLF community for help, report a bug or send feedback.")
     parser.add_argument("--type", dest="kind", choices=KINDS, default="os",
                         help="the kind of request chosen when the window opens (default: os)")
+    parser.add_argument("--message", default="", help="the text the form starts with")
+    parser.add_argument("--log", dest="logs", action="append", default=[], metavar="FILE",
+                        help="a log to attach (only the VNLF team sees it); can be given several times")
     parser.add_argument("--requests", action="store_true", help="open the list of the requests sent from here")
     parser.add_argument("--refresh", action="store_true",
                         help="no window: ask VNLF how the requests are doing and notify new answers")
@@ -67,13 +74,17 @@ def main(argv: list[str] | None = None) -> int:
     application = Adw.Application(application_id=APP_ID, flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
 
     def command_line(app, command_line) -> int:
+        from .logs import read_logs
+
         args = parse_args(command_line.get_arguments()[1:])
+        # A second caramos-help hands its arguments to the open window: its paths are relative to its folder.
+        logs = read_logs(os.path.join(command_line.get_cwd() or "/", path) for path in args.logs)
         window = app.get_active_window()
         if window is None:
             load_css()
-            window = HelpWindow(app, make_scanner(), args.kind)
+            window = HelpWindow(app, make_scanner(), args.kind, args.message, logs)
         elif not args.requests:
-            window.select(args.kind)
+            window.select(args.kind, args.message, logs)
         if args.requests:
             window.show_requests()
         window.present()

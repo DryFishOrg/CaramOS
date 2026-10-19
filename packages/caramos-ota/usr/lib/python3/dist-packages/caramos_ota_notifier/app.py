@@ -9,6 +9,7 @@ from typing import Any
 
 from caramos_ota.i18n import _
 
+from . import problem
 from .constants import OTA_COMMAND, PKEXEC_COMMAND, UPGRADE_TIMEOUT_SECONDS
 from .state import read_available_update, read_no_update_status, resolve_available_update_now
 from .ui import (
@@ -97,6 +98,7 @@ class UpdateWindowController:
     def __init__(self, Gtk, GLib, update_info: dict[str, Any] | None, no_update_status: dict[str, str] | None):
         self.Gtk = Gtk
         self.GLib = GLib
+        self.update_info = update_info
         self.window, self.stack = build_update_window()
         self.upgrade_running = False
         self.pulse_source_id: int | None = None
@@ -193,7 +195,10 @@ class UpdateWindowController:
         if self.stage_label is not None:
             self.stage_label.set_text(_("Update complete.") if success else _("Update failed."))
 
-        result_page = build_result_page(success, detail, self.close)
+        on_help = None
+        if not success and problem.help_available():
+            on_help = lambda: problem.ask_for_help(detail, self.update_info)   # noqa: E731
+        result_page = build_result_page(success, detail, self.close, on_help)
         old_result = self.stack.get_child_by_name("result")
         if old_result is not None:
             self.stack.remove(old_result)

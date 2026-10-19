@@ -43,8 +43,11 @@ def _is_sensitive_key(key: Any) -> bool:
     )
 
 
-def redact_text(text: str) -> str:
-    """Redact obvious secrets, PII, network identifiers, and local paths."""
+def redact_text(text: str, *, long_tokens: bool = True) -> str:
+    """Redact obvious secrets, PII, network identifiers, and local paths.
+
+    long_tokens=False keeps long runs of letters and digits (URLs, checksums), which logs need to be useful.
+    """
 
     if not text:
         return text
@@ -62,7 +65,7 @@ def redact_text(text: str) -> str:
     hostname = socket.gethostname()
     if hostname:
         redacted = re.sub(re.escape(hostname), "[REDACTED_HOST]", redacted, flags=re.IGNORECASE)
-    return _LONG_TOKEN_RE.sub(_TOKEN_PLACEHOLDER, redacted)
+    return _LONG_TOKEN_RE.sub(_TOKEN_PLACEHOLDER, redacted) if long_tokens else redacted
 
 
 def redact_value(value: Any) -> Any:

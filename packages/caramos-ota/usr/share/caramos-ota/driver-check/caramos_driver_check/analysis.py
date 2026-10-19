@@ -18,6 +18,8 @@ from caramos_ota.i18n import _
 from . import knowledge
 from .drivers import DriverProposal
 from .hardware import (
+    ACPI_AUDIO,
+    ACPI_BLUETOOTH,
     PCI_AUDIO,
     PCI_DISPLAY,
     PCI_ETHERNET,
@@ -208,7 +210,8 @@ class _Analysis:
     def _firmware_files(self, device: Device) -> tuple[str, ...]:
         names = {device.address, *device.bluetooth}
         files = [error.file for error in self.snapshot.firmware_errors if error.device in names]
-        if not files and device.bluetooth_interfaces and not device.bluetooth:
+        serial_bluetooth = device.bus == "acpi" and bool(ACPI_BLUETOOTH.match(device.product))
+        if not files and (device.bluetooth_interfaces or serial_bluetooth) and not device.bluetooth:
             # A Bluetooth adapter whose firmware failed is gone again; its errors name the old hciN.
             files = [error.file for error in self.snapshot.firmware_errors if error.driver == "bluetooth"]
         return tuple(dict.fromkeys(files))
@@ -504,16 +507,43 @@ class _Analysis:
             detail = _("Speakers and microphone do not work yet (the sound settings show “Dummy Output”).")
             self._add("audio", WARNING, f"audio:{reason}:{device.key}", titles[reason],
                       detail + " " + self._explain(device, reason, device.driver), device, self._actions_for(reason))
-        self._area("audio", devices + usb_audio)
+        engines = [device for device in self.snapshot.acpi if device.product in ACPI_AUDIO]
+        for device in engines:
+            if device.sound_cards:
+                continue
+            reason = self._reason(device, working_driver=bool(device.driver))
+            titles = {
+                "restart": _("Restart to start the sound driver"),
+                "blocked": _("The sound driver did not load"),
+                "failed": _("Speakers and microphone are not detected"),
+                "no-driver": _("Sound has no driver"),
+            }
+            if reason in {"failed", "no-driver"} and not self._firmware_files(device):
+                # The engine's driver may well run: what is missing is the driver of this computer's board.
+                explanation = _(
+                    "This computer's sound goes through the Intel SST sound engine, which needs a sound driver "
+                    "made for each computer model, and Linux %s has none for this one yet. Ask the community "
+                    "for help with the button below."
+                ) % kernel_version(self.snapshot.kernel)
+                actions: tuple[Action, ...] = (_action(REPORT),)
+            else:
+                explanation = self._explain(device, reason, device.driver)
+                actions = self._actions_for(reason)
+            detail = _("Speakers and microphone do not work yet (the sound settings show “Dummy Output”).")
+            self._add("audio", WARNING, f"audio:{reason}:{device.key}", titles[reason], detail + " " + explanation,
+                      device, actions)
+        self._area("audio", devices + usb_audio + engines)
 
     # Bluetooth ---------------------------------------------------------------------------------
 
     def _bluetooth(self) -> None:
         devices = [device for device in self.snapshot.usb if device.bluetooth_interfaces]
+        devices += [device for device in self.snapshot.acpi if ACPI_BLUETOOTH.match(device.product)]
         for device in devices:
             if device.bluetooth:
                 continue
-            driver = next((interface.driver for interface in device.bluetooth_interfaces if interface.driver), "")
+            driver = device.driver or next(
+                (interface.driver for interface in device.bluetooth_interfaces if interface.driver), "")
             reason = self._reason(device, working_driver=bool(driver))
             titles = {
                 "restart": _("Restart to start the Bluetooth driver"),
@@ -547,14 +577,21 @@ class _Analysis:
             self._add("camera", WARNING, f"camera:{reason}:{device.key}", titles[reason],
                       self._explain(device, reason, ""), device, self._actions_for(reason))
         ipu = [device for device in self.snapshot.pci if knowledge.intel_ipu(device)]
+        atom = [device for device in self.snapshot.pci if knowledge.atom_isp(device)]
         if working:
-            ipu = []
+            ipu = atom = []
         if ipu:
             self._add("camera", INFO, f"camera:ipu:{ipu[0].key}", _("The built-in camera may not work yet"), _(
                 "This laptop's camera is connected through an Intel IPU image processor, common on laptops since "
                 "2021. Most apps on Linux cannot use this kind of camera yet; a USB webcam works right away."
             ), ipu[0], (_action(REPORT),))
-        self._area("camera", webcams + ipu)
+        if atom:
+            self._add("camera", INFO, f"camera:atom-isp:{atom[0].key}", _("The built-in cameras do not work yet"), _(
+                "This computer's cameras are connected through the image processor of Intel Atom chips. Linux "
+                "only has an unfinished driver for it, so apps cannot use these cameras; a USB webcam works "
+                "right away."
+            ), atom[0])
+        self._area("camera", webcams + ipu + atom)
 
     # Fingerprint reader ------------------------------------------------------------------------
 
@@ -654,7 +691,7 @@ def analyze(snapshot: Snapshot, fingerprint_support: Mapping[str, str] | None = 
     """The report for one snapshot.
 
     fingerprint_support comes from knowledge.read_libfprint_support(), proposals from
-    drivers.find_proposals() (empty when UbuntuDrivers is not available).
+    drivers.lookup() (empty when it was not needed or UbuntuDrivers is not available).
     """
 
     return _Analysis(snapshot, fingerprint_support or {}, proposals).report()

@@ -1,3 +1,42 @@
+caramos-ota (1.3.2-0caramos1) noble; urgency=medium
+
+  * Release CaramOS 1.3.2.
+  * Run all pending timestamp migrations by migration ID ledger.
+  * New migration 20261018120000_restore_taskbar_after_cinnamon_update
+    (ticket H-1046): Mint's Cinnamon 6.6.9 update put back its own panel
+    files, so the centre taskbar icons spilled out of their dock. The
+    migration makes the CaramOS changes again and sizes the centre zone's
+    icons at 32 px. A dpkg trigger on the Cinnamon applet folders runs
+    caramos_ota_update.cinnamon_patches after every later Cinnamon update.
+  * New migration 20261018120100_update_zalo_native_calls (tickets H-1039,
+    H-1042, H-1060): the Zalo that CaramOS or the App Center installed
+    moves to Zalo for Linux 26.10.11, which calls without Wine and opens
+    quickly. The 170 MB download runs in the background
+    (caramos-zalo-update) and the daily check tries again for up to 30
+    days, so a slow or missing connection neither fails nor holds up the
+    update.
+  * Update Center: a failed update offers "Ask for help", which opens
+    Feedback & Help with the output and the end of the OTA log attached.
+  * Feedback & Help: caramos-help --message TEXT --log FILE starts a bug
+    report with logs, as the App Center (0.2.2) and the Update Center do.
+    Help requests and bug reports also attach system.log (CaramOS, kernel,
+    memory, the warnings and errors of this boot and the end of the
+    previous one) and driver-check.log. Logs go in the request's report,
+    which only VNLF's moderators see, after e-mail and IP addresses, MAC
+    addresses, passwords, the home folder, the computer's name and the
+    login name are taken out.
+  * Driver Check no longer freezes old computers in the live session. The
+    UbuntuDrivers lookup runs only when a one-click driver can come out of
+    it (NVIDIA outside the live session, Broadcom Wi-Fi without a driver,
+    VirtualBox or VMware), in a separate process at the lowest CPU and disk
+    priority with a time and memory limit, and once per computer state.
+  * Driver Check reads ACPI devices (GitHub #80): the Intel SST sound
+    engine of Atom tablets such as the Lenovo Yoga Book, serial Bluetooth
+    and the Atom image processor behind their cameras, and says what is
+    missing.
+
+ -- Vietnam Linux Family <developer@vietnamlinuxfamily.net>  Mon, 19 Oct 2026 16:46:05 +0700
+
 caramos-ota (1.3.1-0caramos1) noble; urgency=medium
 
   * Release CaramOS 1.3.1.

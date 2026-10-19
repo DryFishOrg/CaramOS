@@ -9,7 +9,9 @@ CaramOS sends help requests, bug reports and feedback to Vietnam Linux Family:
   (`feedback`), with the hardware profile and the Driver Check results when the user ticks them.
 
 Both can attach up to five pictures or videos (screenshots, screen recordings, files): see
-[Pictures and videos](#pictures-and-videos). Live on vietnamlinuxfamily.net since 2026-10-14, like the
+[Pictures and videos](#pictures-and-videos). When the **App Center** or the **Update Center** fails, its "Ask for
+help" button opens Feedback & Help with a bug report started and what the app logged attached: see
+[Logs](#logs). Live on vietnamlinuxfamily.net since 2026-10-14, like the
 rest of this document unless it says otherwise.
 
 Unless the user unticks it, VNLF may also publish a request for its community, after a moderator has
@@ -59,7 +61,7 @@ User-Agent: <client.app>/<CaramOS version>
 | `"contact"` | no | Free text, at most 200 characters: email, phone/Zalo number or Facebook link. Can be empty. **Personal data: only moderators see it, never published.** |
 | `"public"` | no | `true` when "Cho cộng đồng VNLF xem để cùng giúp" is ticked (it is by default), `false` when the user unticked it. CaramOS always sends it; missing or `null` means `false` (versions that never asked). Anything else is 422. See [Sharing with the community](#sharing-with-the-community). |
 | `"probe_url"` | no | Link to the user's `hw-probe -all -upload`: only `https://linux-hardware.org/…` (or `www.`). Missing when the user unticked it, or hw-probe failed and the user chose to send without it. |
-| `"report"` | no | The Driver Check report, the same JSON as `caramos-driver-check --json`, at most 64 KB. Missing when the user unticked it (and for feedback); the app leaves out a bigger one. |
+| `"report"` | no | The Driver Check report, the same JSON as `caramos-driver-check --json`, at most 64 KB. Missing when the user unticked it (and for feedback); the app leaves out a bigger one. It may carry `"logs"`: see [Logs](#logs). |
 | `"system"` | yes | CaramOS version, kernel release, live USB session, virtual machine, UI language. |
 | `"client"` | yes | `"app"`: `caramos-driver-check` or `caramos-help`; `"version"`: the CaramOS version. |
 | `"upload_id"` | with `attachments` | The UUID the files were uploaded with (below). |
@@ -79,6 +81,33 @@ under 128 KB; the server refuses anything bigger with 413.
 | 429 | `{"error": "rate_limited", "retry_after": 600}` and a `Retry-After` header (seconds) | "Bạn vừa gửi nhiều yêu cầu, thử lại sau N phút". Production allows 5 requests an hour and 20 a day per address. |
 | 503 | `{"error": "unavailable", "message": "…"}` | The limiter is down: "Máy chủ VNLF đang lỗi, thử lại sau", offers to copy and post by hand. |
 | other 5xx, no connection, timeout (20 s) | anything | "Máy chủ VNLF đang lỗi" / "Không kết nối được", offers to copy and post by hand. |
+
+## Logs
+
+When an install or a removal fails in the App Center, or an update fails in the Update Center, the page that
+says so has an "Ask for help" button ("Nhờ giúp đỡ"). It saves what the app logged and opens Feedback & Help:
+
+```
+caramos-help --type bug --message "App Center chưa cài được Zalo." --log ~/.cache/caramos-app-center/install-failure.log
+caramos-help --type bug --message "Trung tâm cập nhật không cài được bản cập nhật “…”." --log ~/.cache/caramos-ota/update-failure.log
+```
+
+The form starts with that message (the user adds to it) and a ticked "Kèm nhật ký của ứng dụng (…)" box. The
+App Center's log has, for each app that failed, its id and install method, the reason shown and the end of the
+helper's output (apt-get, flatpak or the recipe). The Update Center's log has the output of `caramos-ota
+--upgrade` and the end of the day's `/var/log/caramos-ota/*.log`.
+
+Before anything is shown or sent (`caramos_driver_check/logs.py`), each log loses e-mail and IP addresses, MAC
+addresses, `password=`/`token=`-style values, the home folder, the computer's name and the user's login name,
+and keeps its last 24 KB. The request carries them inside the report, so they need nothing new from VNLF:
+
+```json
+"report": {"areas": [], "findings": [], "logs": {"install-failure.log": "App Center 0.2.2: install failed at …"}}
+```
+
+`"logs"` maps a file name to its text. With the Driver Check results the logs are cut from their start until the
+whole report fits its 64 KB. Like the rest of the report they are for VNLF's moderators only: never on the
+request's page, never on the community page, and never in the text the app offers to post by hand.
 
 ## Pictures and videos
 

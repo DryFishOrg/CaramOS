@@ -442,8 +442,8 @@ def build_progress_page():
     return page, progress, stage_lbl, log_view
 
 
-def build_result_page(success: bool, detail: str, on_close):
-    """Build the result page shown after update."""
+def build_result_page(success: bool, detail: str, on_close, on_help=None):
+    """Build the result page shown after update; on_help: after a failure, ask VNLF for help with the log."""
 
     Gtk, _gdk, _glib = import_gtk()
     if success:
@@ -455,7 +455,13 @@ def build_result_page(success: bool, detail: str, on_close):
             error=True,
         )
     details, _view = _details(Gtk, _("Update details"), detail or "", expanded=not success)
-    return _page(Gtk, [hero, details], [_button(Gtk, _("Close"), "primary", lambda _button: on_close())])
+    buttons = [_button(Gtk, _("Close"), "primary", lambda _button: on_close())]
+    hint = ""
+    if not success and on_help is not None:
+        # The bar packs from the end: Close stays at the right edge.
+        buttons.append(_button(Gtk, _("Ask for help"), "secondary", lambda _button: on_help()))
+        hint = _("Ask for help sends VNLF what the update logged, for its team only.")
+    return _page(Gtk, [hero, details], buttons, hint=hint)
 
 
 def build_no_update_page(status: dict[str, str] | None, on_close):

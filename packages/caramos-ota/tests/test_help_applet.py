@@ -218,12 +218,12 @@ class FormTests(unittest.TestCase):
         self.assertIn('"request, they are published with it once VNLF has reviewed them."', attachments)
 
     def test_the_request_carries_the_choice(self) -> None:
-        self.assertIn("tuple(self.attachments.ready()), self.public.get_active()))", self.source)
-        self.assertIn("public=request.public)", self.source)
+        self.assertIn("tuple(self.attachments.ready()), self.public.get_active(),", self.source)
+        self.assertIn("public=request.public, logs=request.log_texts())", self.source)
         self.assertIn('if payload.get("public"):', self.source)
 
     def test_the_header_opens_the_requests_sent_before(self) -> None:
-        self.assertIn("on_requests=self.show_requests if helpdesk.sent_requests() else None)", self.source)
+        self.assertIn("on_requests=self.show_requests if helpdesk.sent_requests() else None,", self.source)
         self.assertIn('label=_("Your requests")))', self.source)
         self.assertIn('self._set_page("requests", page)', self.source)
 
