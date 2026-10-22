@@ -60,9 +60,10 @@ class MigrationRunnerTests(unittest.TestCase):
                 "20261016220000_translate_cinnamon_spices",
                 "20261018120000_restore_taskbar_after_cinnamon_update",
                 "20261018120100_update_zalo_native_calls",
+                "20261022120000_start_fcitx_at_login",
             ],
         )
-        self.assertEqual(17, run_one.call_count)
+        self.assertEqual(18, run_one.call_count)
         self.assertEqual(
             [
                 "20260805111120_update_taskbar_pins_cleanup_desktop",
@@ -82,6 +83,7 @@ class MigrationRunnerTests(unittest.TestCase):
                 "20261016220000_translate_cinnamon_spices",
                 "20261018120000_restore_taskbar_after_cinnamon_update",
                 "20261018120100_update_zalo_native_calls",
+                "20261022120000_start_fcitx_at_login",
             ],
             [entry.args[0].migration_id for entry in run_one.call_args_list],
         )
